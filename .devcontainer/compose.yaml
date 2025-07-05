@@ -1,0 +1,12 @@
+services:
+  front:
+    build:
+      context: ../frontend
+      dockerfile: .dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../frontend/app:/workspace:rw
+    stdin_open: true
+    tty: true
+  
