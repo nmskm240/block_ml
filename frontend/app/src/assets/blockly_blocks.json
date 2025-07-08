@@ -82,9 +82,20 @@
     },
     {
       "kind": "category",
+      "name": "CSV",
+      "colour": "210",
+      "contents": [
+        { "kind": "block", "type": "select_csv_file" }
+      ]
+    },
+    {
+      "kind": "category",
       "name": "変数",
       "colour": "%{BKY_VARIABLES_HUE}",
-      "custom": "VARIABLE"
+      "contents": [
+        { "kind": "block", "type": "variables_get" },
+        { "kind": "block", "type": "variables_set" }
+      ]
     },
     {
       "kind": "category",

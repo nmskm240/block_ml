@@ -1,23 +1,32 @@
 import React from "react";
-import { useBlocklyExecutor, useBlocklyWorkspace, usePyodide } from "../hooks";
+import { FileUploader } from "../../../components/FileUploader";
+import { useBlockly, useUploadFile } from "../providers";
 
 export const Editor: React.FC = () => {
-  const { blocklyDiv, workspaceRef } = useBlocklyWorkspace();
-  const { pyodideRef, isLoading } = usePyodide();
-  const { output, runCode } = useBlocklyExecutor(workspaceRef.current, pyodideRef.current);
+  const { blocklyDivRef } = useBlockly();
+  const { files, addFile, removeFile } = useUploadFile();
 
   return (
     <div style={{ padding: 20 }}>
       <h2>Blockly + Pyodide デモ</h2>
       <div
-        ref={blocklyDiv}
-        style={{ height: 300, width: "100%", border: "1px solid #ccc" }}
+        ref={blocklyDivRef}
+        style={{ height: 600, width: "100%", border: "1px solid #ccc" }}
       />
-      <button onClick={runCode} disabled={isLoading} style={{ marginTop: 10 }}>
-        {isLoading ? "読み込み中..." : "実行"}
-      </button>
-      <h3>出力:</h3>
-      <pre>{output}</pre>
+      <FileUploader
+        accept=".csv"
+        onUpload={(fileName, context) => {
+          addFile({ name: fileName, content: context });
+        }}
+      />
+      <ul>
+        {files.map((file) => (
+          <li key={file.name}>
+            {file.name}
+            <button onClick={() => removeFile(file.name)}>削除</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
