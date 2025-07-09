@@ -1,10 +1,22 @@
 import React from "react";
 import { FileUploader } from "../../../components/FileUploader";
-import { useBlockly, useUploadFile } from "../providers";
+import { useBlockly, useUploadFile, usePyodide } from "../providers";
 
 export const Editor: React.FC = () => {
-  const { blocklyDivRef } = useBlockly();
+  const { blocklyDivRef, toPython } = useBlockly();
   const { files, addFile, removeFile } = useUploadFile();
+  const { pyodideRef, isLoading } = usePyodide();
+
+  const run = async () => {
+    const code = toPython();
+    if (!code) return;
+    
+    if (!pyodideRef.current && !isLoading) {
+      console.error("Pyodide is not loaded yet.");
+      return;
+    }
+    await pyodideRef.current!.runPythonAsync(code)
+  };
 
   return (
     <div style={{ padding: 20 }}>
@@ -13,6 +25,10 @@ export const Editor: React.FC = () => {
         ref={blocklyDivRef}
         style={{ height: 600, width: "100%", border: "1px solid #ccc" }}
       />
+      <button onClick={run} style={{ marginTop: 10 }}>
+        {/* FIXME: スプラッシュスクリーンにしたい */}
+        {/* {isLoading ? "読み込み中..." : "実行"} */}
+      </button>
       <FileUploader
         accept=".csv"
         onUpload={(fileName, context) => {

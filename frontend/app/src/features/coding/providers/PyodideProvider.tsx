@@ -1,0 +1,46 @@
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { loadPyodide, type PyodideInterface } from "pyodide";
+
+type PyodideContextType = {
+  pyodideRef: React.MutableRefObject<PyodideInterface | null>;
+  isLoading: boolean;
+};
+
+const PyodideContext = createContext<PyodideContextType | undefined>(undefined);
+
+export const PyodideProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const pyodideRef = useRef<PyodideInterface | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      pyodideRef.current = await loadPyodide({
+        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.28.0/full/",
+      });
+      await pyodideRef.current.loadPackage(["pandas"]);
+      setIsLoading(false);
+    };
+    load();
+  }, []);
+
+  return (
+    <PyodideContext.Provider value={{ pyodideRef, isLoading }}>
+      {children}
+    </PyodideContext.Provider>
+  );
+};
+
+export const usePyodide = () => {
+  const ctx = useContext(PyodideContext);
+  if (!ctx) throw new Error("usePyodide must be used within PyodideProvider");
+  return ctx;
+};

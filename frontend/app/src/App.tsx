@@ -1,16 +1,22 @@
 import { Header } from "./components";
 import { Editor } from "./features/coding/components";
-import { BlocklyProvider, UploadFileProvider } from "./features/coding/providers";
+import {
+  BlocklyProvider,
+  PyodideProvider,
+  UploadFileProvider,
+} from "./features/coding/providers";
 
 function App() {
   return (
     <div>
       <Header />
-      <UploadFileProvider>
-        <BlocklyProvider>
-          <Editor />
-        </BlocklyProvider>
-      </UploadFileProvider>
+      <PyodideProvider>
+        <UploadFileProvider>
+          <BlocklyProvider>
+            <Editor />
+          </BlocklyProvider>
+        </UploadFileProvider>
+      </PyodideProvider>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { usePyodide } from "../hooks/usePyodide";
+import { usePyodide } from "../providers";
 
 export type UploadFile = {
   name: string;
@@ -12,35 +12,66 @@ type UploadFileContextType = {
   removeFile: (fileName: string) => void;
 };
 
-const UploadFileContext = createContext<UploadFileContextType | undefined>(undefined);
+const UploadFileContext = createContext<UploadFileContextType | undefined>(
+  undefined
+);
 
-export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const { pyodideRef } = usePyodide();
 
-  const syncToPyodideFS = (newFiles: UploadFile[]) => {
+  const PYODIDE_FS_DIR = "/home/pyodide";
+
+  const syncToPyodideFS = (currentFiles: UploadFile[]) => {
     if (!pyodideRef.current) return;
 
-    // 一旦、既存ファイルを全部削除（シンプルにするため）
-    newFiles.forEach(file => {
-      pyodideRef.current!.FS.writeFile(file.name, file.content);
+    try {
+      pyodideRef.current?.FS.mkdirTree("/home");
+    } catch {}
+    try {
+      pyodideRef.current?.FS.mkdirTree("/home/pyodide");
+    } catch {}
+
+    const existingFiles = pyodideRef.current.FS.readdir(PYODIDE_FS_DIR);
+    existingFiles.forEach((fileName) => {
+      if (fileName !== "." && fileName !== "..") {
+        try {
+          pyodideRef.current?.FS.unlink(`${PYODIDE_FS_DIR}/${fileName}`);
+        } catch (e) {
+          console.warn(`FSからの削除失敗: ${fileName}`, e);
+        }
+      }
     });
+
+    currentFiles.forEach((file) => {
+      pyodideRef.current?.FS.writeFile(
+        `${PYODIDE_FS_DIR}/${file.name}`,
+        file.content
+      );
+    });
+
+    console.log(
+      "FS after sync:",
+      pyodideRef.current.FS.readdir(PYODIDE_FS_DIR)
+    );
   };
 
   const addFile = (file: UploadFile) => {
-    setFiles(prev => {
-      const updated = [...prev.filter(f => f.name !== file.name), file];
+    setFiles((prev) => {
+      const updated = [...prev.filter((f) => f.name !== file.name), file];
       syncToPyodideFS(updated);
       return updated;
     });
   };
 
   const removeFile = (fileName: string) => {
-    setFiles(prev => {
-      const updated = prev.filter(f => f.name !== fileName);
+    setFiles((prev) => {
+      const updated = prev.filter((f) => f.name !== fileName);
       if (pyodideRef.current) {
         try {
-          pyodideRef.current.FS.unlink(fileName);
+          pyodideRef.current!.FS.unlink(`${PYODIDE_FS_DIR}/${fileName}`);
         } catch (e) {
           console.warn(`ファイル ${fileName} の削除に失敗:`, e);
         }
@@ -58,6 +89,7 @@ export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
 export const useUploadFile = () => {
   const ctx = useContext(UploadFileContext);
-  if (!ctx) throw new Error("useUploadFile must be used within UploadFileProvider");
+  if (!ctx)
+    throw new Error("useUploadFile must be used within UploadFileProvider");
   return ctx;
 };

@@ -17,9 +17,9 @@ export const defineCustomBlocks = (filesRef: React.RefObject<UploadFile[]>) => {
         }),
         "CSV_FILE"
       );
-      this.setOutput(true, "String");
+      this.setOutput(true, "DataFrame");
       this.setColour(210);
-      this.setTooltip("選択したCSVファイルのファイル名を返します。");
+      this.setTooltip("選択したCSVファイルをDataframeとして返します。");
     },
   };
 };
