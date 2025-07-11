@@ -14,6 +14,8 @@ export const DATA_FRAME_DROP_COLUMN = {
       .appendField("の列")
       .setCheck(["Array", "String"]);
     this.appendDummyInput().appendField("を削除");
+this.setPreviousStatement(true);
+    this.setNextStatement(true);
     this.setColour(120);
     this.setTooltip("");
   },
