@@ -9,7 +9,7 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       name: "制御",
       colour: "%{BKY_LOGIC_HUE}",
       contents: [
-        { kind: "block", type: "dynamic_if" },
+        { kind: "block", type: "controls_if" },
         { kind: "block", type: "controls_ifelse" },
         { kind: "block", type: "controls_repeat_ext" },
         { kind: "block", type: "controls_whileUntil" },
@@ -56,7 +56,7 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       colour: "%{BKY_TEXTS_HUE}",
       contents: [
         { kind: "block", type: "text" },
-        { kind: "block", type: "dynamic_text_join" },
+        { kind: "block", type: "text_join" },
         { kind: "block", type: "text_append" },
         { kind: "block", type: "text_length" },
         { kind: "block", type: "text_isEmpty" },
@@ -74,7 +74,7 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       name: "リスト",
       colour: "%{BKY_LISTS_HUE}",
       contents: [
-        { kind: "block", type: "dynamic_list_create" },
+        { kind: "block", type: "lists_create_with" },
         { kind: "block", type: "lists_repeat" },
         { kind: "block", type: "lists_length" },
         { kind: "block", type: "lists_isEmpty" },

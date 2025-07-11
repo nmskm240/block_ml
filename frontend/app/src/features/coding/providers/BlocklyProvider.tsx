@@ -6,10 +6,9 @@ import React, {
   useState,
 } from "react";
 import * as Blockly from "blockly";
+import '@blockly/block-plus-minus';
 import "blockly/blocks";
 import { pythonGenerator } from "blockly/python";
-import {} from "@blockly/block-dynamic-connection";
-import * as BlockDynamicConnection from "@blockly/block-dynamic-connection";
 import { defaultToolbox } from "../blockly";
 
 export type BlocklyContextType = {
@@ -29,14 +28,8 @@ export const BlocklyProvider: React.FC<{
   useEffect(() => {
     if (blocklyDivRef.current && !workspace) {
       const ws = Blockly.inject(blocklyDivRef.current, {
-        plugins: {
-          connectionPreviewer: BlockDynamicConnection.decoratePreviewer(
-            Blockly.InsertionMarkerPreviewer
-          ),
-        },
         toolbox: defaultToolbox,
       });
-      ws.addChangeListener(BlockDynamicConnection.finalizeConnections);
       setWorkspace(ws);
     }
   }, []);
