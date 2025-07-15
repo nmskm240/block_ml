@@ -1,5 +1,9 @@
 import type * as Blockly from "blockly";
-import { DATA_FRAME_DROP_COLUMN_KEY, DATA_FRAME_READ_CSV_KEY,  } from "./blocks/dataframe";
+import {
+  DATA_FRAME_DROP_COLUMN_KEY,
+  DATA_FRAME_READ_CSV_KEY,
+  DATA_FRAME_PLOT_BLOCK_KEY,
+} from "./blocks/dataframe";
 
 export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: "categoryToolbox",
@@ -102,6 +106,7 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       contents: [
         { kind: "block", type: DATA_FRAME_READ_CSV_KEY },
         { kind: "block", type: DATA_FRAME_DROP_COLUMN_KEY },
+        { kind: "block", type: DATA_FRAME_PLOT_BLOCK_KEY },
       ]
     }
   ]
