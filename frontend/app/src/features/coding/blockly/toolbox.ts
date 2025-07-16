@@ -1,9 +1,6 @@
 import type * as Blockly from "blockly";
-import {
-  DATA_FRAME_DROP_COLUMN_KEY,
-  DATA_FRAME_READ_CSV_KEY,
-  DATA_FRAME_PLOT_BLOCK_KEY,
-} from "./blocks/dataframe";
+import * as df from "./blocks/dataframe";
+import * as sk from "./blocks/sklearn";
 
 export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: "categoryToolbox",
@@ -19,8 +16,8 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: "block", type: "controls_whileUntil" },
         { kind: "block", type: "controls_for" },
         { kind: "block", type: "controls_forEach" },
-        { kind: "block", type: "controls_flow_statements" }
-      ]
+        { kind: "block", type: "controls_flow_statements" },
+      ],
     },
     {
       kind: "category",
@@ -32,8 +29,8 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: "block", type: "logic_negate" },
         { kind: "block", type: "logic_boolean" },
         { kind: "block", type: "logic_null" },
-        { kind: "block", type: "logic_ternary" }
-      ]
+        { kind: "block", type: "logic_ternary" },
+      ],
     },
     {
       kind: "category",
@@ -51,8 +48,8 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: "block", type: "math_modulo" },
         { kind: "block", type: "math_constrain" },
         { kind: "block", type: "math_random_int" },
-        { kind: "block", type: "math_random_float" }
-      ]
+        { kind: "block", type: "math_random_float" },
+      ],
     },
     {
       kind: "category",
@@ -70,8 +67,8 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: "block", type: "text_changeCase" },
         { kind: "block", type: "text_trim" },
         { kind: "block", type: "text_print" },
-        { kind: "block", type: "text_prompt_ext" }
-      ]
+        { kind: "block", type: "text_prompt_ext" },
+      ],
     },
     {
       kind: "category",
@@ -85,29 +82,112 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: "block", type: "lists_indexOf" },
         { kind: "block", type: "lists_getIndex" },
         { kind: "block", type: "lists_setIndex" },
-        { kind: "block", type: "lists_getSublist" }
-      ]
+        { kind: "block", type: "lists_getSublist" },
+      ],
     },
     {
       kind: "category",
       name: "変数",
       colour: "%{BKY_VARIABLES_HUE}",
-      custom: "VARIABLE"
+      contents: [
+        {
+          kind: "button",
+          text: "変数を作成",
+          callbackkey: "CREATE_VARIABLE",
+        },
+        {
+          kind: "button",
+          text: "型付き変数を作成",
+          callbackkey: "CREATE_TYPED_VARIABLE",
+        },
+        {
+          kind: "block",
+          type: "variables_get_dynamic",
+        },
+        {
+          kind: "block",
+          type: "variables_set_dynamic",
+        },
+        {
+          kind: "block",
+          type: "variables_get",
+        },
+        {
+          kind: "block",
+          type: "variables_set",
+        },
+      ],
     },
     {
       kind: "category",
       name: "関数",
       colour: "%{BKY_PROCEDURES_HUE}",
-      custom: "PROCEDURE"
+      custom: "PROCEDURE",
     },
     {
       kind: "category",
       name: "DataFrame",
       contents: [
-        { kind: "block", type: DATA_FRAME_READ_CSV_KEY },
-        { kind: "block", type: DATA_FRAME_DROP_COLUMN_KEY },
-        { kind: "block", type: DATA_FRAME_PLOT_BLOCK_KEY },
-      ]
-    }
-  ]
+        { kind: "block", type: df.DATA_FRAME_READ_CSV_KEY },
+        {
+          kind: "block",
+          type: df.DATA_FRAME_DROP_COLUMN_KEY,
+          inputs: {
+            columns: {
+              shadow: {
+                type: "text",
+              },
+            },
+          },
+        },
+        { kind: "block", type: df.DATA_FRAME_PLOT_BLOCK_KEY },
+        {
+          kind: "block",
+          type: df.DATA_FRAME_FILTER_BLOCK_KEY,
+          inputs: {
+            Condition: {
+              shadow: {
+                type: "logic_boolean",
+              },
+            },
+          },
+        },
+        {
+          kind: "block",
+          type: df.DATA_FRAME_SELECT_COLUMN,
+          inputs: {
+            columns: {
+              shadow: {
+                type: "text",
+              },
+            },
+          },
+        },
+      ],
+    },
+    {
+      kind: "category",
+      name: "ML",
+      contents: [
+        { kind: "block", type: sk.SK_LEARN_SELECT_MODEL },
+        {
+          kind: "block",
+          type: sk.SK_LEARN_FIT_MODEL,
+          inputs: {
+            X: {
+              shadow: {
+                type: "variables_get_dynamic",
+              },
+            },
+            Y: {
+              shadow: {
+                type: "variables_get_dynamic",
+              },
+            },
+          },
+        },
+        // { kind: "block", type: sk.SK_LEARN_ENCODER },
+      ],
+    },
+  ],
 };

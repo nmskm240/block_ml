@@ -28,7 +28,7 @@ export const PyodideProvider: React.FC<{ children: React.ReactNode }> = ({
       pyodideRef.current = await loadPyodide({
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.28.0/full/",
       });
-      await pyodideRef.current.loadPackage(["pandas"]);
+      await pyodideRef.current.loadPackage(["pandas", "scikit-learn"]);
 
       pyodideRef.current.globals.set(
         "__render_plot",

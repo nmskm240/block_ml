@@ -6,11 +6,11 @@ import React, {
   useState,
 } from "react";
 import * as Blockly from "blockly";
-import '@blockly/block-plus-minus';
+import "@blockly/block-plus-minus";
+import { TypedVariableModal } from "@blockly/plugin-typed-variable-modal";
 import "blockly/blocks";
 import { pythonGenerator } from "blockly/python";
 import { defaultToolbox } from "../blockly";
-
 export type BlocklyContextType = {
   blocklyDivRef: React.RefObject<HTMLDivElement | null>;
   workspace: Blockly.WorkspaceSvg | null;
@@ -30,6 +30,21 @@ export const BlocklyProvider: React.FC<{
       const ws = Blockly.inject(blocklyDivRef.current, {
         toolbox: defaultToolbox,
       });
+      const typedVarModal = new TypedVariableModal(ws, "callbackName", [
+        ["DataFrame", "DataFrame"],
+        ["Model", "Model"],
+        ["Series", "Series"],
+      ]);
+      typedVarModal.init();
+      ws.registerButtonCallback("CREATE_VARIABLE", function (button) {
+        Blockly.Variables.createVariableButtonHandler(
+          button.getTargetWorkspace()
+        );
+      });
+      ws.registerButtonCallback("CREATE_TYPED_VARIABLE", function (button) {
+        typedVarModal.show();
+      });
+
       setWorkspace(ws);
     }
   }, []);

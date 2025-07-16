@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@blockly/block-plus-minus": "^9.0.1",
+    "@blockly/plugin-typed-variable-modal": "^9.0.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.2.0",
