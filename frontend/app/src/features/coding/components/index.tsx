@@ -1,2 +1,2 @@
 export { Editor } from "./Editor";
-export { PlotView } from "./GraphViewer";
+export { PlotlyViewer } from "./PlotlyViewer";

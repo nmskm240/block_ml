@@ -1,5 +1,5 @@
 import { Header } from "./components";
-import { Editor, PlotView } from "./features/coding/components";
+import { Editor, PlotlyViewer } from "./features/coding/components";
 import {
   BlocklyProvider,
   PlotlyProvider,
@@ -20,7 +20,7 @@ function App() {
                   <Editor />
                 </div>
                 <div style={{ flex: 1, borderLeft: "1px solid #ccc" }}>
-                  <PlotView />
+                  <PlotlyViewer />
                 </div>
               </div>
             </BlocklyProvider>

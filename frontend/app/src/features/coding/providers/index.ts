@@ -1,4 +1,14 @@
-export { useBlockly, BlocklyProvider, type BlocklyContextType } from "./BlocklyProvider";
-export { useUploadFile, UploadFileProvider, type UploadFile } from "./UploadFieldProvider";
+export { useBlockly, BlocklyProvider } from "./BlocklyProvider";
+export {
+  useUploadFile,
+  UploadFileProvider,
+  type UploadFile,
+} from "./UploadFieldProvider";
 export { usePyodide, PyodideProvider } from "./PyodideProvider";
-export { usePlotly, PlotlyProvider } from "./PlotlyProvider";
+export {
+  usePlotly,
+  PlotlyProvider,
+  type PlotOutput,
+  type TableOutput,
+  type Output,
+} from "./PlotlyProvider";

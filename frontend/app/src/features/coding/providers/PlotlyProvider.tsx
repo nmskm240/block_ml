@@ -1,40 +1,102 @@
-import type { Data, Layout } from "plotly.js";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import type { Data, Layout } from 'plotly.js';
 
-export interface PlotlyData {
-  data: Data[];
-  layout: Partial<Layout>;
+// --- 型定義 ---
+export interface PlotOutput {
+  id: string;
+  type: 'plot';
+  title: string;
+  data: {
+    data: Data[];
+    layout: Partial<Layout>;
+  };
 }
 
+export interface TableOutput {
+  id: string;
+  type: 'table';
+  title: string;
+  data: {
+    columns: string[];
+    rows: (string | number)[][];
+  };
+}
+
+export type Output = PlotOutput | TableOutput;
+
+// --- コンテキストの型定義 ---
 type PlotlyContextType = {
-  plotData: PlotlyData | null;
-  setPlotData: (data: PlotlyData) => void;
+  outputs: Output[];
+  addPlot: (title: string, plotData: { data: Data[]; layout: Partial<Layout> }) => string; // idを返すように変更
+  addTable: (title: string, tableData: { columns: string[]; rows: (string | number)[][] }) => string; // idを返すように変更
+  removeOutput: (id: string) => void;
+  setActiveOutput: (id: string) => void;
+  activeOutputId: string | null;
 };
 
-const PlotlyContext = createContext<PlotlyContextType | undefined>(
-  undefined
-);
+// --- コンテキストの作成 ---
+const PlotlyContext = createContext<PlotlyContextType | undefined>(undefined);
 
-export const PlotlyProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [plotData, setData] = useState<PlotlyData | null>(null);
+// --- Providerコンポーネント ---
+export const PlotlyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [outputs, setOutputs] = useState<Output[]>([]);
+  const [activeOutputId, setActiveOutput] = useState<string | null>(null);
 
-  const setPlotData = (data: PlotlyData) => {
-    setData(data);
-  };
+  const addPlot = useCallback((title: string, plotData: { data: Data[]; layout: Partial<Layout> }) => {
+    const newPlot: PlotOutput = {
+      id: uuidv4(),
+      type: 'plot',
+      title,
+      data: plotData,
+    };
+    setOutputs(prev => [...prev, newPlot]);
+    setActiveOutput(newPlot.id);
+    return newPlot.id;
+  }, []);
+
+  const addTable = useCallback((title: string, tableData: { columns: string[]; rows: (string | number)[][] }) => {
+    const newTable: TableOutput = {
+      id: uuidv4(),
+      type: 'table',
+      title,
+      data: tableData,
+    };
+    setOutputs(prev => [...prev, newTable]);
+    setActiveOutput(newTable.id);
+    return newTable.id;
+  }, []);
+
+  const removeOutput = useCallback((id: string) => {
+    setOutputs(prev => {
+      const newOutputs = prev.filter(output => output.id !== id);
+      // アクティブなタブが削除された場合、隣のタブまたはnullにフォーカスを移す
+      if (activeOutputId === id) {
+        const removedIndex = prev.findIndex(output => output.id === id);
+        if (newOutputs.length === 0) {
+          setActiveOutput(null);
+        } else if (removedIndex >= newOutputs.length) {
+          setActiveOutput(newOutputs[newOutputs.length - 1].id);
+        } else {
+          setActiveOutput(newOutputs[removedIndex].id);
+        }
+      }
+      return newOutputs;
+    });
+  }, [activeOutputId]);
 
   return (
-    <PlotlyContext.Provider value={{ plotData, setPlotData }}>
+    <PlotlyContext.Provider value={{ outputs, addPlot, addTable, removeOutput, activeOutputId, setActiveOutput }}>
       {children}
     </PlotlyContext.Provider>
   );
 };
 
+// --- カスタムフック ---
 export const usePlotly = () => {
-  const ctx = useContext(PlotlyContext);
-  if (!ctx) {
-    throw new Error("usePlotly must be used within PlotlyProvider");
+  const context = useContext(PlotlyContext);
+  if (!context) {
+    throw new Error('usePlotly must be used within a PlotlyProvider');
   }
-  return ctx;
+  return context;
 };

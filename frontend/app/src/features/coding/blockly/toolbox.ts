@@ -1,6 +1,7 @@
 import type * as Blockly from "blockly";
 import * as df from "./blocks/dataframe";
 import * as sk from "./blocks/sklearn";
+import * as ch from "./blocks/chart";
 
 export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: "categoryToolbox",
@@ -140,7 +141,6 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
             },
           },
         },
-        { kind: "block", type: df.DATA_FRAME_PLOT_BLOCK_KEY },
         {
           kind: "block",
           type: df.DATA_FRAME_FILTER_BLOCK_KEY,
@@ -187,6 +187,28 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
           },
         },
         // { kind: "block", type: sk.SK_LEARN_ENCODER },
+        { kind: "block", type: sk.SK_LEARN_PREDICT_AND_EVALUATE,
+          inputs: {
+            X: {
+              shadow: {
+                type: "variables_get_dynamic"
+              }
+            },
+            Y: {
+              shadow: {
+                type: "variables_get_dynamic"
+              }
+            }
+          }
+         },
+      ],
+    },
+    {
+      kind: "category",
+      name: "出力",
+      contents: [
+        { kind: "block", type: ch.CHART_PLOT_BLOCK_KEY },
+        { kind: "block", type: ch.CHART_SHOW_TABLE_BLOCK_KEY },
       ],
     },
   ],

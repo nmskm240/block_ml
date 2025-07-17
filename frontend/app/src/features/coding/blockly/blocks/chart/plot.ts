@@ -5,8 +5,10 @@ export const CHART_PLOT_BLOCK_KEY = "chart_plot";
 
 Blockly.Blocks[CHART_PLOT_BLOCK_KEY] = {
   init: function () {
+    this.appendValueInput("DF").setCheck("DataFrame").appendField("グラフ描画");
     this.appendDummyInput()
-      .appendField("グラフ表示")
+      .appendField("タイトル")
+      .appendField(new Blockly.FieldTextInput("グラフ"), "TITLE")
       .appendField("x列")
       .appendField(new Blockly.FieldTextInput("x"), "X_COLUMN")
       .appendField("y列")
@@ -22,8 +24,6 @@ Blockly.Blocks[CHART_PLOT_BLOCK_KEY] = {
         ]),
         "CHART_TYPE"
       );
-
-    this.appendValueInput("DF").setCheck("DataFrame").appendField("対象DF");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(260);
@@ -32,24 +32,26 @@ Blockly.Blocks[CHART_PLOT_BLOCK_KEY] = {
 };
 
 pythonGenerator.forBlock[CHART_PLOT_BLOCK_KEY] = (block, generator) => {
+  const title = block.getFieldValue("TITLE");
   const xCol = block.getFieldValue("X_COLUMN");
   const yCol = block.getFieldValue("Y_COLUMN");
   const chartType = block.getFieldValue("CHART_TYPE");
   const dfCode = generator.valueToCode(block, "DF", Order.NONE) || "df";
-  const useJupyterMode = false; // TODO: フラグで切り替えられるように
 
   (generator as any).definitions_["import_plotly"] =
     "import plotly.express as px";
   (generator as any).definitions_["import_json"] = "import json";
 
-  if (useJupyterMode) {
-    return `fig = px.${chartType}(${dfCode}, x="${xCol}", y="${yCol}")\nfig.show()\n`;
-  }
-
+  let plotCode;
   // ヒストグラムの場合はy軸を使わない
   if (chartType === "histogram") {
-    return `fig = px.histogram(${dfCode}, x="${xCol}")\n__render_plotly_json(fig.to_json())\n`;
+    plotCode = `px.histogram(${dfCode}, x="${xCol}")`;
+  } else {
+    plotCode = `px.${chartType}(${dfCode}, x="${xCol}", y="${yCol}")`;
   }
 
-  return `\nfig = px.${chartType}(${dfCode}, x="${xCol}", y="${yCol}")\n__render_plotly_json(fig.to_json())\n`;
+  return `
+fig = ${plotCode}
+__show_plot_json("${title}", fig.to_json())
+  `;
 };

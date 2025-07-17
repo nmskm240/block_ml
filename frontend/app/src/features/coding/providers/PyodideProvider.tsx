@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { loadPyodide, type PyodideInterface } from "pyodide";
-import { usePlotly } from "../providers";
+import { usePlotly } from "./PlotlyProvider";
 
 type PyodideContextType = {
   pyodideRef: React.MutableRefObject<PyodideInterface | null>;
@@ -20,7 +20,7 @@ export const PyodideProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const pyodideRef = useRef<PyodideInterface | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { setPlotData } = usePlotly();
+  const { addPlot, addTable } = usePlotly();
 
   useEffect(() => {
     const load = async () => {
@@ -36,13 +36,27 @@ export const PyodideProvider: React.FC<{ children: React.ReactNode }> = ({
       const micropip = pyodideRef.current.pyimport("micropip");
       await micropip.install("plotly");
 
+      // --- Pythonに公開するグローバル関数 ---
       pyodideRef.current.globals.set(
-        "__render_plotly_json",
-        (json: string) => {
+        "__show_plot_json",
+        (title: string, json: string) => {
           const plotData = JSON.parse(json);
-          setPlotData(plotData);
+          addPlot(title, plotData);
         }
       );
+
+      pyodideRef.current.globals.set(
+        "__show_table_json",
+        (title: string, json: string) => {
+          const parsedData = JSON.parse(json);
+          const tableData = {
+            columns: parsedData.columns,
+            rows: parsedData.data,
+          };
+          addTable(title, tableData);
+        }
+      );
+
       setIsLoading(false);
     };
     load();

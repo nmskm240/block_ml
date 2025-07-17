@@ -11,7 +11,8 @@ import { TypedVariableModal } from "@blockly/plugin-typed-variable-modal";
 import "blockly/blocks";
 import { pythonGenerator } from "blockly/python";
 import { defaultToolbox } from "../blockly";
-export type BlocklyContextType = {
+
+type BlocklyContextType = {
   blocklyDivRef: React.RefObject<HTMLDivElement | null>;
   workspace: Blockly.WorkspaceSvg | null;
   toPython: () => string;
