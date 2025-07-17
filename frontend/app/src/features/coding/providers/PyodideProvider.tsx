@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { loadPyodide, type PyodideInterface } from "pyodide";
-import { usePlotViewer } from "../providers";
+import { usePlotly } from "../providers";
 
 type PyodideContextType = {
   pyodideRef: React.MutableRefObject<PyodideInterface | null>;
@@ -20,7 +20,7 @@ export const PyodideProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const pyodideRef = useRef<PyodideInterface | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { setPlotData } = usePlotViewer();
+  const { setPlotData } = usePlotly();
 
   useEffect(() => {
     const load = async () => {
@@ -28,26 +28,19 @@ export const PyodideProvider: React.FC<{ children: React.ReactNode }> = ({
       pyodideRef.current = await loadPyodide({
         indexURL: "https://cdn.jsdelivr.net/pyodide/v0.28.0/full/",
       });
-      await pyodideRef.current.loadPackage(["pandas", "scikit-learn"]);
+      await pyodideRef.current.loadPackage([
+        "pandas",
+        "scikit-learn",
+        "micropip",
+      ]);
+      const micropip = pyodideRef.current.pyimport("micropip");
+      await micropip.install("plotly");
 
       pyodideRef.current.globals.set(
-        "__render_plot",
-        (x: any, y: any, type: string) => {
-          const toJsArray = (s: any): any[] => {
-            if (Array.isArray(s)) return s;
-            if (s?.toJs) return s.toJs(); // Pyodide の toJs() サポート
-            if (s?.values) return Array.from(s.values); // Series.values
-            try {
-              return Array.from(s);
-            } catch {
-              return [];
-            }
-          };
-          setPlotData({
-            x: toJsArray(x),
-            y: toJsArray(y),
-            type: "line",
-          });
+        "__render_plotly_json",
+        (json: string) => {
+          const plotData = JSON.parse(json);
+          setPlotData(plotData);
         }
       );
       setIsLoading(false);

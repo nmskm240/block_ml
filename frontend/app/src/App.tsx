@@ -2,7 +2,7 @@ import { Header } from "./components";
 import { Editor, PlotView } from "./features/coding/components";
 import {
   BlocklyProvider,
-  PlotViewerProvider,
+  PlotlyProvider,
   PyodideProvider,
   UploadFileProvider,
 } from "./features/coding/providers";
@@ -11,7 +11,7 @@ function App() {
   return (
     <div>
       <Header />
-      <PlotViewerProvider>
+      <PlotlyProvider>
         <PyodideProvider>
           <UploadFileProvider>
             <BlocklyProvider>
@@ -26,7 +26,7 @@ function App() {
             </BlocklyProvider>
           </UploadFileProvider>
         </PyodideProvider>
-      </PlotViewerProvider>
+      </PlotlyProvider>
     </div>
   );
 }

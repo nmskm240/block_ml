@@ -1,25 +1,18 @@
 import React from "react";
 import Plot from "react-plotly.js";
-import { usePlotViewer } from "../providers/PlotViewerProvider";
+import { usePlotly } from "../providers/PlotlyProvider";
 
 export const PlotView: React.FC = () => {
-  const { plotData } = usePlotViewer();
+  const { plotData } = usePlotly();
 
   if (!plotData) return <p>グラフはまだありません。</p>;
 
   return (
     <Plot
-      data={[
-        {
-          x: plotData!.x,
-          y: plotData!.y,
-          type: "scatter",
-          mode: "lines+markers",
-          marker: { color: "red" },
-        },
-        { type: "bar", x: plotData!.x, y: plotData!.y },
-      ]}
-      layout={{ title: { text: "A Fancy Plot" } }}
+      data={plotData.data}
+      layout={plotData.layout}
+      style={{ width: "100%", height: "100%" }}
+      useResizeHandler
     />
   );
 };
