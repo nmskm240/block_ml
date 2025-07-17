@@ -21,6 +21,6 @@ Blockly.Blocks[DATA_FRAME_SELECT_COLUMN] = {
 pythonGenerator.forBlock[DATA_FRAME_SELECT_COLUMN] = (block, generator) => {
   const df = block.getField("df")?.getText() || "df";
   let columns = generator.valueToCode(block, "columns", Order.NONE) || "[]";
-  columns = columns.startsWith("[") ? columns : `[${columns}]`;
-  return [`${df}${columns}`, Order.ATOMIC];
+  columns = columns.startsWith("[") ? columns : `${columns}`;
+  return [`${df}[${columns}]`, Order.ATOMIC];
 };
