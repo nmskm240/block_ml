@@ -163,6 +163,7 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
             },
           },
         },
+        { kind: "block", type: df.DATA_FRAME_IMPUTE_MISSING_VALUES },
       ],
     },
     {
@@ -186,7 +187,7 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
             },
           },
         },
-        // { kind: "block", type: sk.SK_LEARN_ENCODER },
+        { kind: "block", type: sk.SK_LEARN_LABEL_ENCODING },
         { kind: "block", type: sk.SK_LEARN_PREDICT_AND_EVALUATE,
           inputs: {
             X: {
@@ -196,7 +197,7 @@ export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
             },
             Y: {
               shadow: {
-                type: "variables_get_dynamic"
+                type: "text"
               }
             }
           }

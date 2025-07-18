@@ -1,6 +1,7 @@
 import * as Blockly from "blockly/core";
 import { Order, pythonGenerator } from "blockly/python";
 import { CsvFileDropdown } from "../../fields";
+import { BLOCKLY_VARIABLE_DATA_FRAME } from "../../variable_types";
 
 type DataFrameReadCsvBlock = Blockly.Block & IDataFrameReadCsv;
 interface IDataFrameReadCsv extends DataFrameReadCsvType {}
@@ -13,7 +14,7 @@ export const DATA_FRAME_READ_CSV = {
     this.appendDummyInput()
       .appendField("csvファイル")
       .appendField(new CsvFileDropdown(), "CSV_FILE");
-    this.setOutput(true, "DataFrame");
+    this.setOutput(true, BLOCKLY_VARIABLE_DATA_FRAME);
     this.setColour(210);
     this.setTooltip("選択したCSVファイルをDataframeとして返します。");
   },

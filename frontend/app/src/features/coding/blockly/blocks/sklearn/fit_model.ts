@@ -11,7 +11,7 @@ Blockly.Blocks[SK_LEARN_FIT_MODEL] = {
   init: function () {
     this.appendDummyInput("")
       .appendField("モデル")
-      .appendField(new FieldVariableSklearnModel("model"))
+      .appendField(new FieldVariableSklearnModel("model"), "model")
       .appendField("を");
     this.appendValueInput("X")
       .appendField("学習データ")
