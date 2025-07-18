@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { usePyodide } from "../providers";
+import { usePyodide } from ".";
 
 export type UploadFile = {
   name: string;

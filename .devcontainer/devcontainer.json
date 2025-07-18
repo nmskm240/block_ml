@@ -1,19 +1,18 @@
 {
-    "name": "block_ml",
-    "dockerComposeFile": "compose.yaml",
-    "service": "front",
-    "workspaceFolder": "/workspace",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode",
-                "dsznajder.es7-react-js-snippets",
-                "xabikos.ReactSnippets",
-            ]
-        }
-    },
-    "mounts": [
-        "source=${localWorkspaceFolder}/data,target=/workspace/data,type=bind"
-    ]
+  "name": "block_ml",
+  "image": "node:20-bookworm-slim",
+  "workspaceFolder": "/workspace",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "dsznajder.es7-react-js-snippets",
+        "xabikos.ReactSnippets"
+      ]
+    }
+  }
 }
