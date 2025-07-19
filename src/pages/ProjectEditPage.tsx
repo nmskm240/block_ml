@@ -6,17 +6,9 @@ import {
   PyodideProvider,
   UploadFileProvider,
 } from "../features/coding/providers";
-import { useAuth } from "../providers";
 import { AuthService } from "../services";
-import { Navigate } from 'react-router-dom';
 
 export const ProjectEditPage = () => {
-  const { user } = useAuth();
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
   return (
     <div>
       <Header />

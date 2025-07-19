@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase/client';
 import { useFormStatus } from 'react-dom';
 import { useNavigate } from "react-router-dom";
+import { AuthService } from '../services';
 
 const Auth: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,8 +12,7 @@ const Auth: React.FC = () => {
     e.preventDefault();
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+      await AuthService.signIn(email, password);
       alert('Logged in successfully!');
       navigate('/'); // Redirect to home or another page after login
     } catch (error: any) {
@@ -25,8 +24,7 @@ const Auth: React.FC = () => {
     e.preventDefault();
 
     try {
-      const { error } = await supabase.auth.signUp({ email, password });
-      if (error) throw error;
+      await AuthService.signUp(email, password);
       alert('Signed up successfully! Check your email for verification.');
     } catch (error: any) {
       alert(error.message);

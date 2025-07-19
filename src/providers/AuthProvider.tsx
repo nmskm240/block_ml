@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const init = async () => {
-      const { session } = await AuthService.getSession();
+      const session = await AuthService.getSession();
       if (session) {
         setSession(session);
         setUser(session.user);
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
     init();
 
-    const { data: listener } = AuthService.onAuthStateChanged((_, session) => {
+    const { data: listener } = AuthService.onAuthStateChange((_, session) => {
       setSession(session);
       setUser(session?.user ?? null);
     });

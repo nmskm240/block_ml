@@ -1,26 +1,28 @@
-// services/authService.ts
-import { supabase } from '../lib/supabase/client';
+import { supabase } from '../lib/supabase';
 
-export const signUp = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  return { data, error };
-};
+export const AuthService = {
+  signIn: async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  },
 
-export const signIn = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  return { data, error };
-};
+  signUp: async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+  },
 
-export const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  return { error };
-};
+  signOut: async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  },
 
-export const getSession = async () => {
-  const { data, error } = await supabase.auth.getSession();
-  return { session: data.session, error };
-};
+  getSession: async () => {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    return session;
+  },
 
-export const onAuthStateChanged = (callback: (event: string, session: any) => void) => {
-  return supabase.auth.onAuthStateChange(callback);
+  onAuthStateChange: (callback: Parameters<typeof supabase.auth.onAuthStateChange>[0]) => {
+    return supabase.auth.onAuthStateChange(callback);
+  },
 };
