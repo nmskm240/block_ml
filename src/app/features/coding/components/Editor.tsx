@@ -1,11 +1,15 @@
-import React from "react";
-import { FileUploader } from "../../../components/FileUploader";
+import React from 'react';
+import * as Blockly from 'blockly/core';
+import { FileUploader } from '../../../components/FileUploader';
 import {
   useBlockly,
   useUploadFile,
   usePyodide,
   type UploadFile,
-} from "../providers";
+} from '../providers';
+import container from '../../../../lib/container';
+import type { ProjectRepository } from '../../../repositories/ProjectRepository';
+import { AuthService } from '../../../services';
 
 export const Editor: React.FC = () => {
   const { blocklyDivRef, workspace, toPython } = useBlockly();
@@ -28,10 +32,20 @@ export const Editor: React.FC = () => {
     if (!code) return;
 
     if (!pyodideRef.current && !isLoading) {
-      console.error("Pyodide is not loaded yet.");
+      console.error('Pyodide is not loaded yet.');
       return;
     }
     await pyodideRef.current!.runPythonAsync(code);
+  };
+
+  const save = async () => {
+    if (!workspace) return;
+
+    const user = await AuthService.getUser();
+    const json = Blockly.serialization.workspaces.save(workspace);
+    const repository =
+      container.container.resolve<ProjectRepository>('ProjectRepository');
+    await repository.save({ userId: user?.id ?? '', projectId: '' }, json);
   };
 
   return (
@@ -39,7 +53,7 @@ export const Editor: React.FC = () => {
       <h2>Blockly + Pyodide デモ</h2>
       <div
         ref={blocklyDivRef}
-        style={{ height: 600, width: "100%", border: "1px solid #ccc" }}
+        style={{ height: 600, width: '100%', border: '1px solid #ccc' }}
       />
       <button onClick={run} style={{ marginTop: 10 }}>
         {/* FIXME: スプラッシュスクリーンにしたい */}
@@ -59,6 +73,7 @@ export const Editor: React.FC = () => {
           </li>
         ))}
       </ul>
+      <button onClick={save}>Save Project</button>
     </div>
   );
 };

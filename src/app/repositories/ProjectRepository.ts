@@ -1,4 +1,4 @@
-import { PrismaClient, type Project } from '../lib/prisma';
+import { PrismaClient, type Project } from '../../lib/prisma';
 import { injectable } from 'tsyringe';
 
 export interface IProjectRepository {

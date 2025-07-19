@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
-import { PrismaClient } from "../lib/prisma";
+import { PrismaClient } from "./prisma";
 
 // PrismaClientのインスタンスをシングルトンとして登録
 container.registerSingleton<PrismaClient>("PrismaClient", PrismaClient);
