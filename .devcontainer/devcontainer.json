@@ -10,7 +10,8 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "dsznajder.es7-react-js-snippets",
-        "xabikos.ReactSnippets"
+        "xabikos.ReactSnippets",
+        "Prisma.prisma"
       ]
     }
   }

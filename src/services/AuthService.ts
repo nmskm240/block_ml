@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 export const AuthService = {
   signIn: async (email: string, password: string) => {
@@ -20,6 +20,12 @@ export const AuthService = {
     const { data: { session }, error } = await supabase.auth.getSession();
     if (error) throw error;
     return session;
+  },
+
+  getUser: async () => {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    return user;
   },
 
   onAuthStateChange: (callback: Parameters<typeof supabase.auth.onAuthStateChange>[0]) => {
