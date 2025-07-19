@@ -1,7 +1,6 @@
 {
   "name": "block_ml",
-  "image": "node:20-bookworm-slim",
-  "workspaceFolder": "/workspace",
+  "image": "node:20-bookworm",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
