@@ -1,7 +1,10 @@
+"use client";
+
+
 import React, { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useNavigate } from "react-router-dom";
-import { AuthService } from '../services';
+import { AuthService } from '../features/auth/AuthService';
 
 const Auth: React.FC = () => {
   const [email, setEmail] = useState('');

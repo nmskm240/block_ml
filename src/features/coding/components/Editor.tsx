@@ -1,15 +1,15 @@
+'use client';
+
 import React from 'react';
 import * as Blockly from 'blockly/core';
-import { FileUploader } from '../../../components/FileUploader';
+import { FileUploader } from '@/components/FileUploader';
 import {
   useBlockly,
   useUploadFile,
   usePyodide,
   type UploadFile,
 } from '../providers';
-import container from '../../../../lib/container';
-import type { ProjectRepository } from '../../../repositories/ProjectRepository';
-import { AuthService } from '../../../services';
+import { AuthService } from "@/features/auth/AuthService";
 
 export const Editor: React.FC = () => {
   const { blocklyDivRef, workspace, toPython } = useBlockly();
@@ -17,6 +17,7 @@ export const Editor: React.FC = () => {
   const { pyodideRef, isLoading } = usePyodide();
 
   const filesRef = React.useRef<UploadFile[]>(files);
+
   React.useEffect(() => {
     filesRef.current = files;
   }, [files]);
@@ -43,9 +44,6 @@ export const Editor: React.FC = () => {
 
     const user = await AuthService.getUser();
     const json = Blockly.serialization.workspaces.save(workspace);
-    const repository =
-      container.container.resolve<ProjectRepository>('ProjectRepository');
-    await repository.save({ userId: user?.id ?? '', projectId: '' }, json);
   };
 
   return (

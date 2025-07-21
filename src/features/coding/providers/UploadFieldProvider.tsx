@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
-import { usePyodide } from ".";
+"use client";
+
+import React from "react";
+import { usePyodide } from "./PyodideProvider";
 
 export type UploadFile = {
   name: string;
@@ -12,14 +14,14 @@ type UploadFileContextType = {
   removeFile: (fileName: string) => void;
 };
 
-const UploadFileContext = createContext<UploadFileContextType | undefined>(
+const UploadFileContext = React.createContext<UploadFileContextType | undefined>(
   undefined
 );
 
 export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [files, setFiles] = useState<UploadFile[]>([]);
+  const [files, setFiles] = React.useState<UploadFile[]>([]);
   const { pyodideRef } = usePyodide();
 
   const PYODIDE_FS_DIR = "/home/pyodide";
@@ -35,7 +37,7 @@ export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch {}
 
     const existingFiles = pyodideRef.current.FS.readdir(PYODIDE_FS_DIR);
-    existingFiles.forEach((fileName) => {
+    existingFiles.forEach((fileName: any) => {
       if (fileName !== "." && fileName !== "..") {
         try {
           pyodideRef.current?.FS.unlink(`${PYODIDE_FS_DIR}/${fileName}`);
@@ -88,7 +90,7 @@ export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export const useUploadFile = () => {
-  const ctx = useContext(UploadFileContext);
+  const ctx = React.useContext(UploadFileContext);
   if (!ctx)
     throw new Error("useUploadFile must be used within UploadFileProvider");
   return ctx;

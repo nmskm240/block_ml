@@ -3,7 +3,7 @@ import * as df from "./blocks/dataframe";
 import * as sk from "./blocks/sklearn";
 import * as ch from "./blocks/chart";
 
-export const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
+export const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: "categoryToolbox",
   contents: [
     {
