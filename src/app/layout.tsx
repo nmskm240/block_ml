@@ -1,3 +1,7 @@
+'use client';
+
+import { SessionProvider } from 'next-auth/react';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -6,7 +10,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

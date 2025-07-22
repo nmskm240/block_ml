@@ -1,4 +1,4 @@
-import { PrismaClient, type Project } from '../../lib/prisma';
+import { PrismaClient, type Project } from '@/lib/prisma';
 import { injectable } from 'tsyringe';
 
 export interface IProjectRepository {
@@ -6,8 +6,8 @@ export interface IProjectRepository {
   getProjectsByUserId(userId: string): Promise<Project[]>;
   save(
     id: { userId: string; projectId: string },
-    json: string | { [key: string]: any }
-  ): Promise<string>;
+    json: string
+  ): Promise<Project>;
 }
 
 @injectable()
@@ -27,8 +27,8 @@ export class ProjectRepository implements IProjectRepository {
   }
   async save(
     id: { userId: string; projectId: string },
-    json: string | { [key: string]: any }
-  ): Promise<string> {
+    json: string
+  ): Promise<Project> {
     if (!json || (!id.userId && !id.projectId)) {
       throw new Error();
     }
@@ -47,6 +47,6 @@ export class ProjectRepository implements IProjectRepository {
       }
       return saved;
     });
-    return saved.id;
+    return saved;
   }
 }

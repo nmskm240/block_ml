@@ -3,24 +3,16 @@
 import React from 'react';
 import * as Blockly from 'blockly/core';
 import { FileUploader } from '@/components/FileUploader';
-import {
-  useBlockly,
-  useUploadFile,
-  usePyodide,
-  type UploadFile,
-} from '../providers';
-import { AuthService } from "@/features/auth/AuthService";
+import { useBlockly, useUploadFile, usePyodide } from '../providers';
 
-export const Editor: React.FC = () => {
+type EditorProps = {
+  onSave: (json: string) => void;
+};
+
+export const Editor: React.FC<EditorProps> = ({ onSave }) => {
   const { blocklyDivRef, workspace, toPython } = useBlockly();
   const { files, addFile, removeFile } = useUploadFile();
   const { pyodideRef, isLoading } = usePyodide();
-
-  const filesRef = React.useRef<UploadFile[]>(files);
-
-  React.useEffect(() => {
-    filesRef.current = files;
-  }, [files]);
 
   React.useEffect(() => {
     if (workspace) {
@@ -37,13 +29,6 @@ export const Editor: React.FC = () => {
       return;
     }
     await pyodideRef.current!.runPythonAsync(code);
-  };
-
-  const save = async () => {
-    if (!workspace) return;
-
-    const user = await AuthService.getUser();
-    const json = Blockly.serialization.workspaces.save(workspace);
   };
 
   return (
@@ -71,7 +56,16 @@ export const Editor: React.FC = () => {
           </li>
         ))}
       </ul>
-      <button onClick={save}>Save Project</button>
+      <button
+        disabled={!workspace}
+        onClick={() =>
+          onSave(
+            JSON.stringify(Blockly.serialization.workspaces.save(workspace!))
+          )
+        }
+      >
+        Save Project
+      </button>
     </div>
   );
 };
