@@ -1,5 +1,9 @@
+"use client";
+
 import React from "react";
-import Plot from "react-plotly.js";
+import dynamic from 'next/dynamic'
+// Plotlyはクライアント限定でロード
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { usePlotly, type PlotOutput, type TableOutput } from "../providers";
 import { Close } from "@mui/icons-material";
 

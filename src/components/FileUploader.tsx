@@ -2,7 +2,7 @@ import React from "react";
 
 type FileUploaderProps = {
   accept?: string,
-  onUpload: (fileName: string, fileContent: string) => void;
+  onUpload: (file: File) => void;
 };
 
 export const FileUploader: React.FC<FileUploaderProps> = ({ accept, onUpload }) => {
@@ -10,8 +10,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ accept, onUpload }) 
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const context = await file.text();
-    onUpload(file.name, context);
+    onUpload(file);
   };
 
   return <input type="file" accept={accept} onChange={handleChange} aria-label="Upload file" />;

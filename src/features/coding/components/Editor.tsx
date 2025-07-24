@@ -1,21 +1,18 @@
-import React from "react";
-import { FileUploader } from "../../../components/FileUploader";
-import {
-  useBlockly,
-  useUploadFile,
-  usePyodide,
-  type UploadFile,
-} from "../providers";
+'use client';
 
-export const Editor: React.FC = () => {
+import React from 'react';
+import * as Blockly from 'blockly/core';
+import { FileUploader } from '@/components/FileUploader';
+import { useBlockly, useUploadFile, usePyodide } from '../providers';
+
+type EditorProps = {
+  onSave: (json: { [key: string]: any }, files: File[]) => void;
+};
+
+export const Editor: React.FC<EditorProps> = ({ onSave }) => {
   const { blocklyDivRef, workspace, toPython } = useBlockly();
   const { files, addFile, removeFile } = useUploadFile();
   const { pyodideRef, isLoading } = usePyodide();
-
-  const filesRef = React.useRef<UploadFile[]>(files);
-  React.useEffect(() => {
-    filesRef.current = files;
-  }, [files]);
 
   React.useEffect(() => {
     if (workspace) {
@@ -28,7 +25,7 @@ export const Editor: React.FC = () => {
     if (!code) return;
 
     if (!pyodideRef.current && !isLoading) {
-      console.error("Pyodide is not loaded yet.");
+      console.error('Pyodide is not loaded yet.');
       return;
     }
     await pyodideRef.current!.runPythonAsync(code);
@@ -39,7 +36,7 @@ export const Editor: React.FC = () => {
       <h2>Blockly + Pyodide デモ</h2>
       <div
         ref={blocklyDivRef}
-        style={{ height: 600, width: "100%", border: "1px solid #ccc" }}
+        style={{ height: 600, width: '100%', border: '1px solid #ccc' }}
       />
       <button onClick={run} style={{ marginTop: 10 }}>
         {/* FIXME: スプラッシュスクリーンにしたい */}
@@ -47,8 +44,8 @@ export const Editor: React.FC = () => {
       </button>
       <FileUploader
         accept=".csv"
-        onUpload={(fileName, context) => {
-          addFile({ name: fileName, content: context });
+        onUpload={(file) => {
+          addFile(file);
         }}
       />
       <ul>
@@ -59,6 +56,14 @@ export const Editor: React.FC = () => {
           </li>
         ))}
       </ul>
+      <button
+        disabled={!workspace}
+        onClick={() =>
+          onSave(Blockly.serialization.workspaces.save(workspace!), files)
+        }
+      >
+        Save Project
+      </button>
     </div>
   );
 };
