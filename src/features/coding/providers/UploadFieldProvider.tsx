@@ -1,44 +1,36 @@
-"use client";
+'use client';
 
-import React from "react";
-import { usePyodide } from "./PyodideProvider";
-
-export type UploadFile = {
-  name: string;
-  content: string;
-};
+import React from 'react';
+import { usePyodide } from './PyodideProvider';
 
 type UploadFileContextType = {
-  files: UploadFile[];
-  addFile: (file: UploadFile) => void;
-  removeFile: (fileName: string) => void;
+  files: File[];
+  addFile: (file: File) => Promise<void>;
+  removeFile: (fileName: string) => Promise<void>;
 };
 
-const UploadFileContext = React.createContext<UploadFileContextType | undefined>(
-  undefined
-);
+const UploadFileContext = React.createContext<
+  UploadFileContextType | undefined
+>(undefined);
 
 export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [files, setFiles] = React.useState<UploadFile[]>([]);
+  const [files, setFiles] = React.useState<File[]>([]);
   const { pyodideRef } = usePyodide();
 
-  const PYODIDE_FS_DIR = "/home/pyodide";
+  const PYODIDE_FS_DIR = '/home/pyodide';
 
-  const syncToPyodideFS = (currentFiles: UploadFile[]) => {
+  const syncToPyodideFS = async (currentFiles: File[]) => {
     if (!pyodideRef.current) return;
 
     try {
-      pyodideRef.current?.FS.mkdirTree("/home");
-    } catch {}
-    try {
-      pyodideRef.current?.FS.mkdirTree("/home/pyodide");
+      pyodideRef.current?.FS.mkdirTree(PYODIDE_FS_DIR);
     } catch {}
 
     const existingFiles = pyodideRef.current.FS.readdir(PYODIDE_FS_DIR);
     existingFiles.forEach((fileName: any) => {
-      if (fileName !== "." && fileName !== "..") {
+      if (fileName !== '.' && fileName !== '..') {
         try {
           pyodideRef.current?.FS.unlink(`${PYODIDE_FS_DIR}/${fileName}`);
         } catch (e) {
@@ -47,28 +39,27 @@ export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     });
 
-    currentFiles.forEach((file) => {
+    for (const file of currentFiles) {
+      const buffer = await file.arrayBuffer();
       pyodideRef.current?.FS.writeFile(
         `${PYODIDE_FS_DIR}/${file.name}`,
-        file.content
+        new Uint8Array(buffer)
       );
-    });
+    }
 
     console.log(
-      "FS after sync:",
+      'FS after sync:',
       pyodideRef.current.FS.readdir(PYODIDE_FS_DIR)
     );
   };
 
-  const addFile = (file: UploadFile) => {
-    setFiles((prev) => {
-      const updated = [...prev.filter((f) => f.name !== file.name), file];
-      syncToPyodideFS(updated);
-      return updated;
-    });
+  const addFile = async (file: File) => {
+    const updated = [...files.filter((f) => f.name !== file.name), file];
+    setFiles(updated); // 同期処理
+    await syncToPyodideFS(updated); // 非同期処理はここでやる
   };
 
-  const removeFile = (fileName: string) => {
+  const removeFile = async (fileName: string) => {
     setFiles((prev) => {
       const updated = prev.filter((f) => f.name !== fileName);
       if (pyodideRef.current) {
@@ -80,6 +71,7 @@ export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       return updated;
     });
+    await syncToPyodideFS(files.filter((f) => f.name !== fileName));
   };
 
   return (
@@ -92,6 +84,6 @@ export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useUploadFile = () => {
   const ctx = React.useContext(UploadFileContext);
   if (!ctx)
-    throw new Error("useUploadFile must be used within UploadFileProvider");
+    throw new Error('useUploadFile must be used within UploadFileProvider');
   return ctx;
 };

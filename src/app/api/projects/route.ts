@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import container from '@/app/api/container';
-import { BlocklyUsecase } from '@/usecases';
 import { AuthService } from '@/features/auth/services/AuthService';
 import { ProjectRepository } from '@/repositories/ProjectRepository';
-import { SaveProjectRequest, SaveProjectResponse } from '@/lib/api/types/api';
+import { PostProjectRequest, PostProjectResponse } from '@/lib/api/types/api';
 
-// MEMO: 空プロジェクト作成のAPIとしたほうが適切かもしれない
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as SaveProjectRequest;
-    if (typeof body.data !== 'string') {
+    const body = (await request.json()) as PostProjectRequest;
+    if (!body) {
       return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
     }
 
@@ -22,8 +20,12 @@ export async function POST(request: NextRequest) {
     }
 
     // MEMO: 空プロジェクト作成のAPIになる場合はユースケースも切り分ける
-    const saved = await projectRepository.save({ userId: user.id, projectId: "" }, body.data);
-    const response: SaveProjectResponse = { projectId: saved.id };
+    const saved = await projectRepository.save({ userId: user.id, projectId: "" });
+    const response: PostProjectResponse = {
+      projectId: saved.id,
+      blocklyJson: saved.workspaceJson?.toString(),
+      files: []
+    };
     return NextResponse.json(response, { status: 201 });
   } catch (e) {
     console.error('POST /api/blockly error:', e);

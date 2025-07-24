@@ -11,9 +11,14 @@ import {
   PyodideProvider,
 } from '@/features/coding/providers';
 import { mlToolbox } from '@/lib/blockly';
-import * as controller from "./controller";
+import { ProjectEditPageController } from './controller';
+import { useParams } from 'next/navigation';
 
-export default function IndexPage() {
+export default function ProjectEditPage() {
+  const params = useParams();
+  const projectId = params.id as string;
+  const controller = new ProjectEditPageController(projectId);
+
   return (
     <div>
       <Header />

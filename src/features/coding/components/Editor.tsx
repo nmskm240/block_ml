@@ -6,7 +6,7 @@ import { FileUploader } from '@/components/FileUploader';
 import { useBlockly, useUploadFile, usePyodide } from '../providers';
 
 type EditorProps = {
-  onSave: (json: string) => void;
+  onSave: (json: { [key: string]: any }, files: File[]) => void;
 };
 
 export const Editor: React.FC<EditorProps> = ({ onSave }) => {
@@ -44,8 +44,8 @@ export const Editor: React.FC<EditorProps> = ({ onSave }) => {
       </button>
       <FileUploader
         accept=".csv"
-        onUpload={(fileName, context) => {
-          addFile({ name: fileName, content: context });
+        onUpload={(file) => {
+          addFile(file);
         }}
       />
       <ul>
@@ -59,9 +59,7 @@ export const Editor: React.FC<EditorProps> = ({ onSave }) => {
       <button
         disabled={!workspace}
         onClick={() =>
-          onSave(
-            JSON.stringify(Blockly.serialization.workspaces.save(workspace!))
-          )
+          onSave(Blockly.serialization.workspaces.save(workspace!), files)
         }
       >
         Save Project
