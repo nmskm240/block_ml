@@ -1,69 +1,113 @@
 'use client';
 
 import React from 'react';
-import * as Blockly from 'blockly/core';
-import { FileUploader } from '@/components/FileUploader';
-import { useBlockly, useUploadFile, usePyodide } from '../providers';
+import { useUploadFile } from '../providers';
+import * as Blockly from 'blockly';
+import { registerContinuousToolbox } from '@blockly/continuous-toolbox';
+import { mlToolbox } from '@/lib/blockly';
+import { pythonGenerator } from 'blockly/python';
 
 type EditorProps = {
-  onSave: (json: { [key: string]: any }, files: File[]) => void;
+  toolbox?: Blockly.utils.toolbox.ToolboxDefinition;
 };
 
-export const Editor: React.FC<EditorProps> = ({ onSave }) => {
-  const { blocklyDivRef, workspace, toPython } = useBlockly();
-  const { files, addFile, removeFile } = useUploadFile();
-  const { pyodideRef, isLoading } = usePyodide();
+export type EditorHandle = {
+  toWorkspaceJson: () => string;
+  toPython: () => string;
+};
 
-  React.useEffect(() => {
-    if (workspace) {
-      (workspace as any).fileRef = files;
-    }
-  }, [workspace, files]);
+export const Editor = React.forwardRef<EditorHandle, EditorProps>(
+  ({ toolbox = mlToolbox }, ref) => {
+    const { files, addFile, removeFile } = useUploadFile();
+    const blocklyDivRef = React.useRef<HTMLDivElement | null>(null);
+    const [workspace, setWorkspace] =
+      React.useState<Blockly.WorkspaceSvg | null>(null);
 
-  const run = async () => {
-    const code = toPython();
-    if (!code) return;
+    const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-    if (!pyodideRef.current && !isLoading) {
-      console.error('Pyodide is not loaded yet.');
-      return;
-    }
-    await pyodideRef.current!.runPythonAsync(code);
-  };
+    React.useEffect(() => {
+      if (blocklyDivRef.current && !workspace) {
+        Blockly.setLocale(require('blockly/msg/ja'));
+        registerContinuousToolbox();
+        const ws = Blockly.inject(blocklyDivRef.current, {
+          toolbox: toolbox,
+          trashcan: false,
+          grid: {
+            spacing: 20,
+            length: 3,
+            colour: '#ccc',
+          },
+          move: {
+            scrollbars: true,
+            drag: true,
+            wheel: true,
+          },
+          zoom: {
+            controls: true,
+            wheel: false,
+            startScale: 0.7,
+            maxScale: 1.0,
+            minScale: 0.3,
+            scaleSpeed: 1.2,
+          },
+        });
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>Blockly + Pyodide デモ</h2>
+        setWorkspace(ws);
+      }
+    }, []);
+
+    React.useEffect(() => {
+      if (!containerRef.current || !workspace) return;
+
+      const observer = new ResizeObserver(() => {
+        Blockly.svgResize(workspace);
+      });
+      observer.observe(containerRef.current);
+
+      return () => {
+        observer.disconnect();
+      };
+    }, [workspace]);
+
+    React.useEffect(() => {
+      if (workspace) {
+        (workspace as any).fileRef = files;
+      }
+    }, [workspace, files]);
+
+    React.useImperativeHandle(ref, () => ({
+      toWorkspaceJson: () => {
+        if (!workspace) return '';
+        const json = Blockly.serialization.workspaces.save(workspace);
+        console.log('Generated workspace JSON:', json);
+        return JSON.stringify(json);
+      },
+      toPython: () => {
+        if (!workspace) return '';
+        const code = pythonGenerator.workspaceToCode(workspace);
+        console.log('Generated Python code:', code);
+        return code;
+      },
+    }));
+
+    return (
       <div
-        ref={blocklyDivRef}
-        style={{ height: 600, width: '100%', border: '1px solid #ccc' }}
-      />
-      <button onClick={run} style={{ marginTop: 10 }}>
-        {/* FIXME: スプラッシュスクリーンにしたい */}
-        {/* {isLoading ? "読み込み中..." : "実行"} */}
-      </button>
-      <FileUploader
-        accept=".csv"
-        onUpload={(file) => {
-          addFile(file);
+        ref={containerRef}
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }}
-      />
-      <ul>
-        {files.map((file) => (
-          <li key={file.name}>
-            {file.name}
-            <button onClick={() => removeFile(file.name)}>削除</button>
-          </li>
-        ))}
-      </ul>
-      <button
-        disabled={!workspace}
-        onClick={() =>
-          onSave(Blockly.serialization.workspaces.save(workspace!), files)
-        }
       >
-        Save Project
-      </button>
-    </div>
-  );
-};
+        <div
+          ref={blocklyDivRef}
+          style={{
+            flexGrow: 1,
+            minHeight: 0,
+          }}
+        />
+      </div>
+    );
+  }
+);

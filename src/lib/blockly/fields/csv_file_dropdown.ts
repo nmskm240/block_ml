@@ -1,5 +1,4 @@
 import * as Blockly from "blockly/core";
-import { type UploadFile } from "../../providers";
 
 export class CsvFileDropdown extends Blockly.FieldDropdown {
   constructor() {
@@ -10,7 +9,7 @@ export class CsvFileDropdown extends Blockly.FieldDropdown {
     super.init();
     this.setOptions(() => {
       const workspace = this.sourceBlock_?.workspace;
-      const filesRef: UploadFile[] = (workspace as any)?.fileRef || [];
+      const filesRef: File[] = (workspace as any)?.fileRef || [];
       return filesRef.length > 0
         ? filesRef.map<[string, string]>((f) => [f.name, f.name])
         : [["（ファイルなし）", "__NO_FILE__"]];
