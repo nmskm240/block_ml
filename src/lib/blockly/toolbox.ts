@@ -122,7 +122,7 @@ export const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
           inputs: {
             Condition: {
               shadow: {
-                type: 'logic_boolean',
+                type: 'logic_compare',
               },
             },
           },
@@ -131,7 +131,7 @@ export const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
           kind: 'block',
           type: df.DATA_FRAME_SELECT_COLUMN,
           inputs: {
-            columns: {
+            column: {
               shadow: {
                 type: 'text',
               },
@@ -149,29 +149,12 @@ export const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         {
           kind: 'block',
           type: sk.SK_LEARN_FIT_MODEL,
-          inputs: {
-            X: {
-              shadow: {
-                type: 'variables_get_dynamic',
-              },
-            },
-            Y: {
-              shadow: {
-                type: 'variables_get_dynamic',
-              },
-            },
-          },
         },
         { kind: 'block', type: sk.SK_LEARN_LABEL_ENCODING },
         {
           kind: 'block',
           type: sk.SK_LEARN_PREDICT_AND_EVALUATE,
           inputs: {
-            X: {
-              shadow: {
-                type: 'variables_get_dynamic',
-              },
-            },
             Y: {
               shadow: {
                 type: 'text',

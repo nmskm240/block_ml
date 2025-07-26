@@ -1,26 +1,25 @@
-import * as Blockly from "blockly/core";
-import { pythonGenerator, Order } from "blockly/python";
-import { FieldVariableDataFrame } from "../../variables";
+import * as Blockly from 'blockly/core';
+import { pythonGenerator, Order } from 'blockly/python';
+import { VariableTypes } from '../../types/variables';
 
-export const DATA_FRAME_SELECT_COLUMN = "dataframe_select_column";
+export const DATA_FRAME_SELECT_COLUMN = 'dataframe_select_column';
 
 Blockly.Blocks[DATA_FRAME_SELECT_COLUMN] = {
   init: function () {
-    this.appendDummyInput("")
-      .appendField("DataFrame")
-      .appendField(new FieldVariableDataFrame("df"), "df");
-    this.appendValueInput("columns")
-      .appendField("の列")
-      .setCheck(["Array", "String"]);
-    this.appendDummyInput().appendField("を取得");
+    this.appendDummyInput('')
+      .appendField('DataFrame')
+      .appendField(new Blockly.FieldVariable('df'));
+    this.appendValueInput('column')
+      .appendField('の列')
+      .setCheck(VariableTypes.String);
     this.setOutput(true);
     this.setColour(260);
+    this.setInputsInline(true);
   },
 };
 
 pythonGenerator.forBlock[DATA_FRAME_SELECT_COLUMN] = (block, generator) => {
-  const df = block.getField("df")?.getText() || "df";
-  let columns = generator.valueToCode(block, "columns", Order.NONE) || "[]";
-  columns = columns.startsWith("[") ? columns : `${columns}`;
-  return [`${df}[${columns}]`, Order.ATOMIC];
+  const df = block.getField('df')?.getText() || 'df';
+  let target = generator.valueToCode(block, 'column', Order.NONE) || '""';
+  return [`${df}[${target}]`, Order.ATOMIC];
 };

@@ -1,28 +1,27 @@
-import * as Blockly from "blockly/core";
-import { pythonGenerator, Order } from "blockly/python";
-import { FieldVariableSklearnModel } from "../../variables";
-import { BLOCKLY_VARIABLE_DATA_FRAME } from "../../variable_types";
+import * as Blockly from 'blockly/core';
+import { pythonGenerator, Order } from 'blockly/python';
+import { VariableTypes } from '../../types/variables';
 
-export const SK_LEARN_PREDICT_AND_EVALUATE = "sklearn_predicate_and_evalute";
+export const SK_LEARN_PREDICT_AND_EVALUATE = 'sklearn_predicate_and_evalute';
 
 Blockly.Blocks[SK_LEARN_PREDICT_AND_EVALUATE] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("モデル")
-      .appendField(new FieldVariableSklearnModel("model"), "model")
-      .appendField("を");
-    this.appendValueInput("X")
-      .appendField("データ")
-      .setCheck(BLOCKLY_VARIABLE_DATA_FRAME);
-    this.appendValueInput("Y")
-      .appendField("の目的変数で予測精度を評価")
-      .setCheck("String");
+      .appendField('モデル')
+      .appendField(new Blockly.FieldVariable('model'), 'model')
+      .appendField('を');
+    this.appendDummyInput()
+      .appendField('データ')
+      .appendField(new Blockly.FieldVariable('X'), 'X');
+    this.appendValueInput('Y')
+      .appendField('の目的変数で予測精度を評価')
+      .setCheck(VariableTypes.String);
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(120);
     this.setTooltip(
-      "指定したモデルで、テストデータと目的変数を使って予測精度を評価します"
+      '指定したモデルで、テストデータと目的変数を使って予測精度を評価します'
     );
   },
 };
@@ -31,15 +30,16 @@ pythonGenerator.forBlock[SK_LEARN_PREDICT_AND_EVALUATE] = (
   block,
   generator
 ) => {
-  const modelName = block.getField("model")?.getText() || "model";
-  const xDf = generator.valueToCode(block, "X", Order.NONE) || "df";
-  const yCol = generator.valueToCode(block, "Y", Order.NONE) || "target";
+  const modelName = block.getField('model')?.getText() || 'model';
+  const xDf = generator.valueToCode(block, 'X', Order.NONE) || 'df';
+  const yCol = generator.valueToCode(block, 'Y', Order.NONE) || 'target';
 
-  (generator as any).definitions_["import_sklearn_metrics"] =
-    "from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error, r2_score";
-  (generator as any).definitions_["import_numpy"] = "import numpy as np";
-  (generator as any).definitions_["import_sklearn_base"] = "from sklearn.base import is_classifier";
-  (generator as any).definitions_["import_json"] = "import json";
+  (generator as any).definitions_['import_sklearn_metrics'] =
+    'from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error, r2_score';
+  (generator as any).definitions_['import_numpy'] = 'import numpy as np';
+  (generator as any).definitions_['import_sklearn_base'] =
+    'from sklearn.base import is_classifier';
+  (generator as any).definitions_['import_json'] = 'import json';
 
   const code = `
 _target_col_name = ${yCol}
@@ -124,5 +124,5 @@ else:
   __show_plot_json("Actual vs Predicted", json.dumps(scatter_data))
 `.trim();
 
-  return code + "\n";
+  return code + '\n';
 };
