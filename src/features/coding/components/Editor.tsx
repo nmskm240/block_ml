@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useUploadFile } from '../providers';
 import * as Blockly from 'blockly';
 import { registerContinuousToolbox } from '@blockly/continuous-toolbox';
 import { mlToolbox } from '@/lib/blockly';
@@ -9,6 +8,7 @@ import { pythonGenerator } from 'blockly/python';
 
 type EditorProps = {
   toolbox?: Blockly.utils.toolbox.ToolboxDefinition;
+  fileNames: string[];
 };
 
 export type EditorHandle = {
@@ -17,12 +17,10 @@ export type EditorHandle = {
 };
 
 export const Editor = React.forwardRef<EditorHandle, EditorProps>(
-  ({ toolbox = mlToolbox }, ref) => {
-    const { files, addFile, removeFile } = useUploadFile();
+  ({ toolbox = mlToolbox, fileNames }, ref) => {
     const blocklyDivRef = React.useRef<HTMLDivElement | null>(null);
     const [workspace, setWorkspace] =
       React.useState<Blockly.WorkspaceSvg | null>(null);
-
     const containerRef = React.useRef<HTMLDivElement | null>(null);
 
     React.useEffect(() => {
@@ -71,9 +69,9 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
 
     React.useEffect(() => {
       if (workspace) {
-        (workspace as any).fileRef = files;
+        (workspace as any).fileNames = fileNames;
       }
-    }, [workspace, files]);
+    }, [workspace, fileNames]);
 
     React.useImperativeHandle(ref, () => ({
       toWorkspaceJson: () => {

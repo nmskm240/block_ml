@@ -1,20 +1,20 @@
-import * as Blockly from "blockly/core";
+import * as Blockly from 'blockly/core';
 
 export class CsvFileDropdown extends Blockly.FieldDropdown {
   constructor() {
-    super([["（ファイルなし）", "__NO_FILE__"]]);
+    super([['（ファイルなし）', '__NO_FILE__']]);
   }
 
   public override init(): void {
     super.init();
     this.setOptions(() => {
       const workspace = this.sourceBlock_?.workspace;
-      const filesRef: File[] = (workspace as any)?.fileRef || [];
-      return filesRef.length > 0
-        ? filesRef.map<[string, string]>((f) => [f.name, f.name])
-        : [["（ファイルなし）", "__NO_FILE__"]];
+      const fileNames: string[] = (workspace as any)?.fileNames ?? [];
+      return fileNames.length > 0
+        ? fileNames.map<[string, string]>((f) => [f, f])
+        : [['（ファイルなし）', '__NO_FILE__']];
     });
   }
 }
 
-Blockly.fieldRegistry.register("csv_field_type", CsvFileDropdown);
+Blockly.fieldRegistry.register('csv_field_type', CsvFileDropdown);

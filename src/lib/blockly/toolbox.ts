@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import 'blockly/blocks';
 import '@blockly/block-plus-minus';
 import * as df from './blocks/dataframe';
 import * as sk from './blocks/sklearn';
