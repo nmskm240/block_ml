@@ -1,7 +1,6 @@
 import * as Blockly from "blockly/core";
 import { pythonGenerator, Order } from "blockly/python";
-import { BLOCKLY_VARIABLE_DATA_FRAME } from "../../variable_types";
-import { FieldVariableDataFrame } from "../../variables";
+import { VariableTypes } from "../../types/variables";
 
 export const DATA_FRAME_IMPUTE_MISSING_VALUES =
   "dataframe_impute_missing_values";
@@ -10,7 +9,7 @@ Blockly.Blocks[DATA_FRAME_IMPUTE_MISSING_VALUES] = {
   init: function () {
     this.appendDummyInput()
       .appendField("DataFrame")
-      .appendField(new FieldVariableDataFrame("df"), "df")
+      .appendField(new Blockly.FieldVariable("df"), "df")
       .appendField("の欠損値を")
       .appendField(
         new Blockly.FieldDropdown([
@@ -28,7 +27,7 @@ Blockly.Blocks[DATA_FRAME_IMPUTE_MISSING_VALUES] = {
     //   .setCheck(["Number", "String"])
     //   .appendField("（定数補完の場合）")
     //   .setVisible(false); // 最初は非表示
-    this.setOutput(true, BLOCKLY_VARIABLE_DATA_FRAME);
+    this.setOutput(true, VariableTypes.Dataframe);
     this.setColour(230); // DataFrameブロックと同じ色
     this.setTooltip("指定したデータフレームの欠損値を補完します。");
     this.setHelpUrl(""); // TODO: ヘルプURLを設定

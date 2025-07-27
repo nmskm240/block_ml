@@ -1,1 +1,0 @@
-export const BLOCKLY_VARIABLE_DATA_FRAME = "DataFrame"; 

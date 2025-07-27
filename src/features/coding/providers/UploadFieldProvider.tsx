@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { usePyodide } from './PyodideProvider';
+import path from 'path';
 
 type UploadFileContextType = {
-  files: File[];
+  fileNames: string[];
   addFile: (file: File) => Promise<void>;
   removeFile: (fileName: string) => Promise<void>;
 };
@@ -13,69 +14,43 @@ const UploadFileContext = React.createContext<
   UploadFileContextType | undefined
 >(undefined);
 
+// FIXME: PyodideProviderと分ける意味がなさそうな印象
 export const UploadFileProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [files, setFiles] = React.useState<File[]>([]);
+  //FIXME: File配列にしたいがうまくいかないためファイル名にしている
+  const [fileNames, setFileNames] = React.useState<string[]>([]);
+
   const { pyodideRef } = usePyodide();
 
-  const PYODIDE_FS_DIR = '/home/pyodide';
-
-  const syncToPyodideFS = async (currentFiles: File[]) => {
-    if (!pyodideRef.current) return;
-
-    try {
-      pyodideRef.current?.FS.mkdirTree(PYODIDE_FS_DIR);
-    } catch {}
-
-    const existingFiles = pyodideRef.current.FS.readdir(PYODIDE_FS_DIR);
-    existingFiles.forEach((fileName: any) => {
-      if (fileName !== '.' && fileName !== '..') {
-        try {
-          pyodideRef.current?.FS.unlink(`${PYODIDE_FS_DIR}/${fileName}`);
-        } catch (e) {
-          console.warn(`FSからの削除失敗: ${fileName}`, e);
-        }
-      }
-    });
-
-    for (const file of currentFiles) {
-      const buffer = await file.arrayBuffer();
-      pyodideRef.current?.FS.writeFile(
-        `${PYODIDE_FS_DIR}/${file.name}`,
-        new Uint8Array(buffer)
-      );
-    }
-
-    console.log(
-      'FS after sync:',
-      pyodideRef.current.FS.readdir(PYODIDE_FS_DIR)
-    );
-  };
-
   const addFile = async (file: File) => {
-    const updated = [...files.filter((f) => f.name !== file.name), file];
-    setFiles(updated); // 同期処理
-    await syncToPyodideFS(updated); // 非同期処理はここでやる
+    if (fileNames.findIndex((i) => i == file.name) == -1) {
+      setFileNames((prev) => {
+        const next = [...prev, file.name];
+        return next;
+      });
+    }
+    const buffer = await file.arrayBuffer();
+    const filePath = path.join(
+      process.env.NEXT_PUBLIC_PYODIDE_FS_PATH!,
+      file.name
+    );
+    pyodideRef.current?.FS.writeFile(filePath, new Uint8Array(buffer));
   };
 
   const removeFile = async (fileName: string) => {
-    setFiles((prev) => {
-      const updated = prev.filter((f) => f.name !== fileName);
-      if (pyodideRef.current) {
-        try {
-          pyodideRef.current!.FS.unlink(`${PYODIDE_FS_DIR}/${fileName}`);
-        } catch (e) {
-          console.warn(`ファイル ${fileName} の削除に失敗:`, e);
-        }
-      }
-      return updated;
+    setFileNames((prev) => {
+      const next = [...prev.filter((i) => i !== fileName)];
+      return next;
     });
-    await syncToPyodideFS(files.filter((f) => f.name !== fileName));
+    const filePath = path.join(
+      process.env.NEXT_PUBLIC_PYODIDE_FS_PATH!,
+      fileName
+    );
+    pyodideRef.current?.FS.unlink(filePath);
   };
-
   return (
-    <UploadFileContext.Provider value={{ files, addFile, removeFile }}>
+    <UploadFileContext.Provider value={{ fileNames, addFile, removeFile }}>
       {children}
     </UploadFileContext.Provider>
   );

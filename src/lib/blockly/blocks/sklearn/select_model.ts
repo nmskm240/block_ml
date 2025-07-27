@@ -1,6 +1,6 @@
 import * as Blockly from "blockly/core";
 import { Order, pythonGenerator } from "blockly/python";
-import { FieldVariableSklearnModel } from "../../variables";
+import { VariableTypes } from "../../types/variables";
 
 export const SK_LEARN_SELECT_MODEL = "sklearn_select_model";
 
@@ -15,7 +15,7 @@ Blockly.Blocks[SK_LEARN_SELECT_MODEL] = {
         ]),
         "MODEL_TYPE"
       );
-    this.setOutput(true, new FieldVariableSklearnModel());
+    this.setOutput(true, VariableTypes.Model);
     this.setColour(230);
     this.setTooltip("指定したモデルを作成します");
   },
