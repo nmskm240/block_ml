@@ -70,7 +70,7 @@ export const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: 'block', type: 'text_changeCase' },
         { kind: 'block', type: 'text_trim' },
         { kind: 'block', type: 'text_print' },
-        { kind: 'block', type: 'text_prompt_ext' },
+        // { kind: 'block', type: 'text_prompt_ext' },
       ],
     },
     {

@@ -6,8 +6,10 @@ import { Editor, PlotlyViewer, FileList } from '@/features/coding/components';
 
 import { useProjectEditController } from './controller';
 import { TabContext, TabList } from '@mui/lab';
-import { Box, Fab, IconButton, Tab, CircularProgress } from '@mui/material';
-import { FileUpload, PlayArrow } from '@mui/icons-material';
+import { Box, IconButton, Tab } from '@mui/material';
+import { PlayArrow } from '@mui/icons-material';
+import { Console } from '@/features/coding/components/Console';
+import { useConsoleLog } from '@/features/coding/hooks/ConsoleLog';
 
 const ProjectEditPageTab = {
   CODING: 1,
@@ -16,6 +18,7 @@ const ProjectEditPageTab = {
 
 export default function ProjectEditPage() {
   const [tabValue, setTab] = React.useState<number>(ProjectEditPageTab.CODING);
+  const { logs, clear } = useConsoleLog();
   const { controller, editorRef, fileNames, loading } =
     useProjectEditController();
 
@@ -78,35 +81,37 @@ export default function ProjectEditPage() {
             flexBasis: 0,
             minWidth: 0,
             minHeight: 0,
-            maxWidth: '33.33%',
-            overflowY: 'auto',
+            maxWidth: '25%',
             borderLeft: '1px solid #ddd',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
           }}
         >
-          <FileList fileNames={fileNames} />
+          <div
+            style={{
+              flexGrow: 3,
+              height: 0,
+              minHeight: 0,
+            }}
+          >
+            <Console logsRef={logs} onSave={() => {}} onClear={() => clear()} />
+          </div>
+          <div
+            style={{
+              flexGrow: 1,
+              height: 0,
+              minHeight: 0,
+            }}
+          >
+            <FileList
+              fileNames={fileNames}
+              onClickFileUpload={(e) => controller!.uploadFiles(e)}
+              onRemoveFile={(fileName) => controller!.removeFile(fileName)}
+            />
+          </div>
         </div>
       </div>
-      <label htmlFor="file-upload">
-        <Fab
-          color="primary"
-          component="span"
-          sx={{
-            position: 'fixed',
-            bottom: 32,
-            right: 32,
-          }}
-        >
-          <FileUpload />
-        </Fab>
-      </label>
-      <input
-        id="file-upload"
-        type="file"
-        accept=".csv"
-        // multiple={true}
-        style={{ display: 'none' }}
-        onChange={(e) => controller!.uploadFiles(e)}
-      />
     </div>
   );
 }
