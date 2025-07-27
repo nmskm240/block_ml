@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
       blocklyJson: saved.workspaceJson?.toString(),
       files: []
     };
+    // FIXME: redirectでいいのでは？
     return NextResponse.json(response, { status: 201 });
   } catch (e) {
     console.error('POST /api/blockly error:', e);

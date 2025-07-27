@@ -1,3 +1,5 @@
+import { ProjectSummary, UserProfile } from '@/types/app';
+
 export interface PostProjectRequest {}
 
 export interface PostProjectResponse {
@@ -23,5 +25,16 @@ export interface GetProjectResponse {
 }
 
 export type ProjectRouteParams = {
+  id: string;
+};
+
+export interface GetUserRequest {}
+
+export interface GetUserResponse {
+  profile: UserProfile;
+  projectSummaries: ProjectSummary[];
+}
+
+export type UserRouteParams = {
   id: string;
 };
