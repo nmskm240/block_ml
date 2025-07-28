@@ -1,7 +1,8 @@
 'use client';
 
 import { SessionProvider } from 'next-auth/react';
-import "@/styles/globals.css";
+import '@/styles/globals.css';
+import { Header } from '@/components';
 
 export default function RootLayout({
   children,
@@ -11,7 +12,18 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100vh',
+            }}
+          >
+            <Header />
+            {children}
+          </div>
+        </SessionProvider>
       </body>
     </html>
   );

@@ -1,4 +1,6 @@
 import {
+  GetUserRequest,
+  GetUserResponse,
   PostProjectRequest,
   PostProjectResponse,
   PutProjectRequest,
@@ -8,6 +10,8 @@ import {
 export interface IApiClient {
   postProject(request: PostProjectRequest): Promise<PostProjectResponse>;
   putProject(request: PutProjectRequest): Promise<PutProjectResponse>;
+
+  getUser(request: GetUserRequest): Promise<GetUserResponse>;
 }
 
 class ApiClient implements IApiClient {
@@ -18,10 +22,13 @@ class ApiClient implements IApiClient {
       data.append('files', file, file.name);
     }
 
-    const response = await fetch(`/api/projects/${request.projectId}`, {
-      method: 'PUT',
-      body: data,
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${request.projectId}`,
+      {
+        method: 'PUT',
+        body: data,
+      }
+    );
 
     if (!response.ok) {
       const error = await response.json();
@@ -32,13 +39,16 @@ class ApiClient implements IApiClient {
   }
 
   async postProject(request: PostProjectRequest): Promise<PostProjectResponse> {
-    const response = await fetch('/api/projects', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      }
+    );
 
     if (!response.ok) {
       const error = await response.json();
@@ -46,6 +56,19 @@ class ApiClient implements IApiClient {
     }
 
     return (await response.json()) as PostProjectResponse;
+  }
+
+  async getUser(request: GetUserRequest): Promise<GetUserResponse> {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${request.userId}`,
+      { method: 'GET' }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message ?? 'Failed to get user');
+    }
+    return (await response.json()) as GetUserResponse;
   }
 }
 

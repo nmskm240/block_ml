@@ -28,7 +28,9 @@ export type ProjectRouteParams = {
   id: string;
 };
 
-export interface GetUserRequest {}
+export interface GetUserRequest {
+  userId: string;
+}
 
 export interface GetUserResponse {
   profile: UserProfile;
@@ -36,5 +38,5 @@ export interface GetUserResponse {
 }
 
 export type UserRouteParams = {
-  id: string;
+  userId: string;
 };
