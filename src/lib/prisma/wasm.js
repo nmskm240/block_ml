@@ -159,19 +159,22 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProjectScalarFieldEnum = {
+exports.Prisma.ProjectEntityScalarFieldEnum = {
   id: 'id',
+  title: 'title',
   workspaceJson: 'workspaceJson',
+  status: 'status',
+  statusUpdatedAt: 'statusUpdatedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.UserProjectScalarFieldEnum = {
+exports.Prisma.UserProjectEntityScalarFieldEnum = {
   userId: 'userId',
   projectId: 'projectId'
 };
 
-exports.Prisma.ProjectAssetScalarFieldEnum = {
+exports.Prisma.ProjectAssetEntityScalarFieldEnum = {
   id: 'id',
   projectId: 'projectId',
   fileName: 'fileName',
@@ -185,8 +188,7 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -212,9 +214,9 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   VerificationToken: 'VerificationToken',
   User: 'User',
-  Project: 'Project',
-  UserProject: 'UserProject',
-  ProjectAsset: 'ProjectAsset'
+  ProjectEntity: 'ProjectEntity',
+  UserProjectEntity: 'UserProjectEntity',
+  ProjectAssetEntity: 'ProjectAssetEntity'
 };
 
 /**

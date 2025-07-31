@@ -1,8 +1,7 @@
-
 'use client';
 
-import { AppBar, Toolbar, Typography, Button } from "@mui/material";
-import { useSession, signOut } from "next-auth/react";
+import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 export const Header = () => {
@@ -13,19 +12,26 @@ export const Header = () => {
       <AppBar position="fixed" color="primary">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              サービス名
-            </Link>
+            <Link
+              href="/"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            ></Link>
           </Typography>
           {session ? (
             <>
               <Typography sx={{ mr: 2 }}>{session.user?.name}</Typography>
-              <Button color="inherit" onClick={() => signOut()}>Sign Out</Button>
+              <Button color="inherit" onClick={() => signOut()}>
+                Sign Out
+              </Button>
             </>
           ) : (
             <>
-              <Button color="inherit" component={Link} href="/auth/signin">Sign In</Button>
-              <Button color="inherit" component={Link} href="/auth/signup">Sign Up</Button>
+              <Button color="inherit" component={Link} href="/auth/signin">
+                Sign In
+              </Button>
+              <Button color="inherit" component={Link} href="/auth/signup">
+                Sign Up
+              </Button>
             </>
           )}
         </Toolbar>
