@@ -1,4 +1,5 @@
-import { Project } from "../domains";
+import { Project } from '../domains';
+import { ProjectSummaryDto } from '../types';
 
 export interface CreateProjectRequest {}
 
@@ -12,3 +13,11 @@ export interface SaveProjectRequest {
 }
 
 export interface SaveProjectResponse {}
+
+export interface GetProjectsRequest {
+  userId?: string;
+}
+
+export interface GetProjectsResponse {
+  projects: ProjectSummaryDto[];
+}

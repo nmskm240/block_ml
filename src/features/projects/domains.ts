@@ -12,7 +12,8 @@ export class Project {
     readonly status: ProjectStatus,
 
     id?: string,
-    ownerUserId?: string
+    ownerUserId?: string,
+    readonly updatedAt?: Date
   ) {
     this._id = id ? new ProjectId(id) : undefined;
     this._title = new ProjectTitle(title);
@@ -46,19 +47,14 @@ export class Project {
     return this._ownerUserId?.value;
   }
 
-  copyWith(params: {
-    id?: string;
-    title?: string;
-    blocklyJson?: string;
-    status?: ProjectStatus;
-    ownerUserId?: string;
-  }): Project {
+  copyWith(params: Partial<Project>): Project {
     return new Project(
       params.title ?? this.title,
       params.blocklyJson ?? this.blocklyJson,
       params.status ?? this.status,
       params.id ?? this.id,
-      params.ownerUserId ?? this.ownerUserId
+      params.ownerUserId ?? this.ownerUserId,
+      params.updatedAt ?? this.updatedAt
     );
   }
 }

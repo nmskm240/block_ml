@@ -1,16 +1,17 @@
 import { Suspense } from 'react';
-import { UserProjectList } from '@/features/profile/components/UserProjectList';
+import { ProjectSummaryList } from '@/features/projects/components/ProjectSummaryList';
+import { UserPageController } from './controller';
 
 export default async function UserPage(props: {
   params: Promise<{ userId: string }>;
 }) {
   const { userId } = await props.params;
+  const controller = new UserPageController(userId);
 
   return (
     <div>
-      <h1>{userId} のプロジェクト</h1>
       <Suspense fallback={<div>読み込み中...</div>}>
-        <UserProjectList userId={userId} />
+        <ProjectSummaryList fetchSummaries={() => controller.fetchProjectSummaries()} />
       </Suspense>
     </div>
   );

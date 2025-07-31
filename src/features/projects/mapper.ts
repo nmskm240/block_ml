@@ -8,6 +8,7 @@ export function toDomain(entity: ProjectEntity & UserProjectEntity): Project {
     title: entity.title,
     blocklyJson: JSON.stringify(entity.workspaceJson),
     ownerUserId: entity.userId,
+    updatedAt: entity.updatedAt,
   });
 }
 
@@ -19,7 +20,7 @@ export function toEntity(model: Project): {
     project: {
       id: model.id ?? '',
       title: model.title,
-      workspaceJson: model.blocklyJson ,
+      workspaceJson: model.blocklyJson,
       status: model.status,
     },
     userProject: {

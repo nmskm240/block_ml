@@ -1,17 +1,14 @@
-import { apiClient, IApiClient } from '@/lib/api';
-import { PostProjectRequest } from '@/lib/api/types/api';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { IProjectApiClient, ProjectApiClient } from '@/features/projects/api/client';
+import { CreateProjectRequest } from '@/features/projects/api/types';
 
 export class NewProjectRedirectPageController {
   constructor(
-    private readonly router: AppRouterInstance,
-    private readonly api: IApiClient = apiClient
+    private readonly api: IProjectApiClient = new ProjectApiClient()
   ) {}
 
-  async createAndRedirect() {
-    const request: PostProjectRequest = {};
-    const response = await this.api.postProject(request);
-
-    this.router.replace(`/projects/${response.projectId}/edit`);
+  async createNewProject(): Promise<string | undefined> {
+    const request: CreateProjectRequest = {};
+    const response = await this.api.createProject(request);
+    return response.project.id;
   }
 }

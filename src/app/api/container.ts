@@ -4,7 +4,7 @@ import { PrismaClient } from '@/lib/prisma';
 import {
   IProjectRepository,
   ProjectRepository,
-} from '@/repositories/ProjectRepository';
+} from '@/features/projects/repositories';
 import {
   AuthService,
   IAuthService,
@@ -12,6 +12,29 @@ import {
 import { IStorageService, StorageService } from '@/services/StorageService';
 
 const prisma = new PrismaClient();
+prisma.$extends({
+  query: {
+    projectEntity: {
+      async update({ model, operation, args, query }) {
+        const id = args.where.id;
+        const incomingStatus = args.data.status;
+
+        if (incomingStatus !== undefined && id !== undefined) {
+          const current = await prisma.projectEntity.findUnique({
+            where: { id },
+            select: { status: true },
+          });
+
+          if (current && current.status !== incomingStatus) {
+            args.data.statusUpdatedAt = new Date();
+          }
+        }
+
+        return query(args);
+      },
+    },
+  },
+});
 
 container.registerSingleton<IAuthService>(AuthService);
 container.registerInstance(PrismaClient, prisma);

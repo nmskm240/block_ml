@@ -1,7 +1,5 @@
 import { EditorHandle } from '@/features/coding/components';
 import { usePyodide, useUploadFile } from '@/features/coding/providers';
-import { apiClient, IApiClient } from '@/lib/api';
-import { PutProjectRequest } from '@/lib/api/types/api';
 import { useParams } from 'next/navigation';
 import { PyodideInterface } from 'pyodide';
 import React from 'react';
@@ -13,23 +11,7 @@ class ProjectEditPageController {
     private readonly _editorHandler: EditorHandle | null,
     private readonly _addFile: (file: File) => Promise<void>,
     public readonly removeFile: (fileName: string) => Promise<void>,
-    private readonly _api: IApiClient = apiClient
   ) {}
-
-  // TODO: projectはクライアント側専用の型があってもいいかもしれない
-  async saveProject(
-    json: {
-      [key: string]: any;
-    },
-    files: File[]
-  ) {
-    const request: PutProjectRequest = {
-      projectId: this._projectId,
-      blocklyJson: JSON.stringify(json),
-      files: files,
-    };
-    await this._api.putProject(request);
-  }
 
   async uploadFiles(e: React.ChangeEvent<HTMLInputElement>) {
     for (const file of e.target.files ?? []) {

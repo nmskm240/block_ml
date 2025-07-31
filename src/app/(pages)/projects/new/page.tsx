@@ -1,19 +1,8 @@
-"use client";
-
-import React from 'react';
-import { useRouter } from 'next/navigation';
 import { NewProjectRedirectPageController } from './controller';
+import { redirect } from 'next/navigation';
 
-export default function NewProjectRedirectPage() {
-  const router = useRouter();
-  const controller = React.useMemo(
-    () => new NewProjectRedirectPageController(router),
-    [router]
-  );
-
-  React.useEffect(() => {
-    controller.createAndRedirect();
-  }, [router, controller]);
-
-  return <p>新しいプロジェクトを作成中...</p>;
+export default async function NewProjectRedirectPage() {
+  const controller = new NewProjectRedirectPageController();
+  const projectId = await controller.createNewProject();
+  redirect(`/projects/${projectId}/edit`);
 }
