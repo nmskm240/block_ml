@@ -1,13 +1,19 @@
+'use client';
+
 import { Header } from '@/components';
+import { useCreateProjectAndRedirect } from '@/features/projects/hooks/useCreateAndRedirectProject';
 
 import '@/styles/globals.css';
-import Link from 'next/link';
+import { Button } from '@mui/material';
 
 export default function IndexPage() {
+  const createProjectAndRedirect = useCreateProjectAndRedirect();
   return (
     <div>
       <Header />
-      <Link href="/projects/new">新しいプロジェクトを作成</Link>
+      <Button onClick={() => createProjectAndRedirect()}>
+        新しいプロジェクトを作成
+      </Button>
     </div>
   );
 }

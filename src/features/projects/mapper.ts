@@ -18,7 +18,7 @@ export function toEntity(model: Project): {
 } {
   return {
     project: {
-      id: model.id ?? '',
+      id: model.id,
       title: model.title,
       workspaceJson: model.blocklyJson,
       status: model.status,

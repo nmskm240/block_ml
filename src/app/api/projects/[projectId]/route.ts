@@ -1,27 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import container from '@/app/api/container';
+import container from '@/lib/container';
 import { IStorageService, StorageService } from '@/services/StorageService';
 import {
   IProjectRepository,
   ProjectRepository,
 } from '@/features/projects/repositories';
 import {
-  AuthService,
-  IAuthService,
-} from '@/features/auth/services/AuthService';
-import { SaveProjectRequest, SaveProjectResponse } from '@/features/projects/api/types';
+  SaveProjectRequest,
+  SaveProjectResponse,
+} from '@/features/projects/api/types';
+import { auth } from '@/lib/nextAuth/auth';
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { projectId: string } }
-) {
+export const PUT = auth(async (request) => {
   const body = (await request.json()) as SaveProjectRequest;
   const storage = container.resolve<IStorageService>(StorageService);
   const repository = container.resolve<IProjectRepository>(ProjectRepository);
-  const service = container.resolve<IAuthService>(AuthService);
 
-  const user = await service.getUser();
-  if (!user) {
+  const session = request.auth;
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -34,4 +30,4 @@ export async function PUT(
   return NextResponse.json(response, {
     status: 200,
   });
-}
+});

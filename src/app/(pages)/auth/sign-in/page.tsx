@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { signIn } from 'next-auth/react';
+import signIn from '@/app/api/(actions)/signIn';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -61,16 +61,10 @@ export default function SignInPage() {
     event.preventDefault();
     setError('');
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    });
+    const result = await signIn({ email, password });
 
-    if (result?.error) {
+    if (!result.isSuccess) {
       setError('Invalid email or password');
-    } else {
-      window.location.href = '/';
     }
   };
 
@@ -116,11 +110,7 @@ export default function SignInPage() {
               {error}
             </Typography>
           )}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-          >
+          <Button type="submit" fullWidth variant="contained">
             Sign In
           </Button>
         </Box>

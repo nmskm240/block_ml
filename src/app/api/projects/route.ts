@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import container from '@/app/api/container';
-import { AuthService } from '@/features/auth/services/AuthService';
+import container from '@/lib/container';
 import { ProjectRepository } from '@/features/projects/repositories';
 import {
   CreateProjectRequest,
@@ -9,32 +8,32 @@ import {
   GetProjectsResponse,
 } from '@/features/projects/api/types';
 import { Project } from '@/features/projects/domains';
+import { auth } from '@/lib/nextAuth/auth';
 
 // プロジェクトを新規作成する
-export async function POST(request: NextRequest) {
-  const authService = container.resolve(AuthService);
+export const POST = auth(async (request) => {
   const projectRepository = container.resolve(ProjectRepository);
-  const session = await authService.getSession();
   const body = (await request.json()) as CreateProjectRequest;
   if (!body) {
     return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
   }
 
+  const session = request.auth;
   if (session?.user.id) {
     let project = Project.empty(session.user.id);
     project = await projectRepository.createProject(project);
     const response: CreateProjectResponse = {
-      project: project,
+      projectId: project.id!,
     };
     return NextResponse.json(response, { status: 201 });
   } else {
     const project = Project.empty();
     const response: CreateProjectResponse = {
-      project,
+      projectId: undefined,
     };
     return NextResponse.json(response, { status: 200 });
   }
-}
+});
 
 // プロジェクトをフィルタリングする
 export async function GET(request: NextRequest) {

@@ -1,17 +1,11 @@
-import 'reflect-metadata';
-import { container } from 'tsyringe';
 import { PrismaClient } from '@/lib/prisma';
-import {
-  IProjectRepository,
-  ProjectRepository,
-} from '@/features/projects/repositories';
-import {
-  AuthService,
-  IAuthService,
-} from '@/features/auth/services/AuthService';
-import { IStorageService, StorageService } from '@/services/StorageService';
 
-const prisma = new PrismaClient();
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
 prisma.$extends({
   query: {
     projectEntity: {
@@ -35,10 +29,3 @@ prisma.$extends({
     },
   },
 });
-
-container.registerSingleton<IAuthService>(AuthService);
-container.registerInstance(PrismaClient, prisma);
-container.registerSingleton<IProjectRepository>(ProjectRepository);
-container.registerSingleton<IStorageService>(StorageService);
-
-export default container;

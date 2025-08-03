@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import { Project, ProjectStatus } from './domains';
-import { PrismaClient } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 import { toDomain, toEntity } from './mapper';
 import { InputJsonValue } from '@/lib/prisma/runtime/library';
 
@@ -13,10 +13,8 @@ export interface IProjectRepository {
 
 @injectable()
 export class ProjectRepository implements IProjectRepository {
-  constructor(private readonly _prisma: PrismaClient) {}
-
   async getProjectById(projectId: string): Promise<Project> {
-    const entity = await this._prisma.userProjectEntity.findFirstOrThrow({
+    const entity = await prisma.userProjectEntity.findFirstOrThrow({
       where: { projectId: projectId },
       include: { project: true },
     });
@@ -28,7 +26,7 @@ export class ProjectRepository implements IProjectRepository {
   }
 
   async getProjectsByUserId(userId: string): Promise<Project[]> {
-    const entities = await this._prisma.userProjectEntity.findMany({
+    const entities = await prisma.userProjectEntity.findMany({
       where: { userId: userId },
       include: { project: true },
     });
@@ -47,11 +45,12 @@ export class ProjectRepository implements IProjectRepository {
     }
 
     const entity = toEntity(project);
-    const saved = await this._prisma.$transaction(async (tran) => {
+    const saved = await prisma.$transaction(async (tran) => {
       const projectEntity = await tran.projectEntity.create({
         data: {
-          ...entity.project,
+          title: entity.project.title,
           workspaceJson: entity.project.workspaceJson as InputJsonValue,
+          status: entity.project.status!,
         },
       });
 
@@ -75,7 +74,7 @@ export class ProjectRepository implements IProjectRepository {
     }
 
     const entity = toEntity(project);
-    const updated = await this._prisma.projectEntity.update({
+    const updated = await prisma.projectEntity.update({
       where: { id: project.id },
       data: {
         ...entity.project,

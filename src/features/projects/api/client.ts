@@ -50,6 +50,7 @@ export class ProjectApiClient implements IProjectApiClient {
         },
         body: JSON.stringify(request),
         cache: 'no-cache',
+        credentials: 'include',
       }
     );
 
@@ -67,6 +68,7 @@ export class ProjectApiClient implements IProjectApiClient {
       {
         method: 'PUT',
         body: JSON.stringify(request),
+        credentials: 'include',
       }
     );
 

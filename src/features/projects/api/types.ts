@@ -4,7 +4,7 @@ import { ProjectSummaryDto } from '../types';
 export interface CreateProjectRequest {}
 
 export interface CreateProjectResponse {
-  project: Project;
+  projectId?: string;
 }
 
 export interface SaveProjectRequest {
