@@ -19,5 +19,5 @@ export interface GetProjectsRequest {
 }
 
 export interface GetProjectsResponse {
-  projects: ProjectSummaryDto[];
+  projectSummaries: ProjectSummaryDto[];
 }

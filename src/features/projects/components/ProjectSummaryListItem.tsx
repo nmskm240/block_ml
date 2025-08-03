@@ -13,7 +13,7 @@ export function ProjectSummaryListItem({
         primary={
           <Link href={`/projects/${project.id}`} passHref>
             <Typography
-              component="a"
+              component="div"
               variant="h6"
               sx={{ textDecoration: 'none', cursor: 'pointer' }}
             >
@@ -32,7 +32,7 @@ export function ProjectSummaryListItem({
             </Stack>
             <Typography variant="body2" color="text.secondary">
               Created by:{' '}
-              <Link href={`/users/${project}`} passHref>
+              <Link href={`/users/12345`} passHref>
                 <Typography
                   component="a"
                   sx={{ cursor: 'pointer' }}

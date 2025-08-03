@@ -1,14 +1,14 @@
 'use client';
 
+import { Editor, FileList, PlotlyViewer } from '@/features/coding/components';
 import React from 'react';
-import { Editor, PlotlyViewer, FileList } from '@/features/coding/components';
 
-import { useProjectEditController } from './controller';
-import { TabContext, TabList } from '@mui/lab';
-import { Box, IconButton, Tab } from '@mui/material';
-import { PlayArrow } from '@mui/icons-material';
 import { Console } from '@/features/coding/components/Console';
 import { useConsoleLog } from '@/features/coding/hooks/ConsoleLog';
+import { PlayArrow } from '@mui/icons-material';
+import { TabContext, TabList } from '@mui/lab';
+import { Box, IconButton, Tab } from '@mui/material';
+import { useProjectEditController } from './controller';
 
 const ProjectEditPageTab = {
   CODING: 1,

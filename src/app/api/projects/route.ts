@@ -1,6 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
-import container from '@/lib/container';
-import { ProjectRepository } from '@/features/projects/repositories';
+import 'reflect-metadata';
 import {
   CreateProjectRequest,
   CreateProjectResponse,
@@ -8,7 +6,10 @@ import {
   GetProjectsResponse,
 } from '@/features/projects/api/types';
 import { Project } from '@/features/projects/domains';
+import { ProjectRepository } from '@/features/projects/repositories';
+import container from '@/lib/container';
 import { auth } from '@/lib/nextAuth/auth';
+import { NextRequest, NextResponse } from 'next/server';
 
 // プロジェクトを新規作成する
 export const POST = auth(async (request) => {
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest) {
   const projects = await projectRepository.getProjectsByUserId(params.userId);
 
   const response: GetProjectsResponse = {
-    projects: projects.map((p) => {
+    projectSummaries: projects.map((p) => {
       return {
         id: p.id!,
         title: p.title,

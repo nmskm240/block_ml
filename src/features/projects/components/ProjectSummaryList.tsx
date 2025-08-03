@@ -1,21 +1,23 @@
-import { List, ListItem } from '@mui/material';
+import { List } from '@mui/material';
 import { ProjectSummaryDto } from '../types';
 import { ProjectSummaryListItem } from './ProjectSummaryListItem';
 
 type Props = {
-  fetchSummaries: () => Promise<ProjectSummaryDto[]>;
+  summaries: ProjectSummaryDto[];
 };
 
-export async function ProjectSummaryList({ fetchSummaries }: Props) {
-  const summaries = await fetchSummaries();
-
+export function ProjectSummaryList({ summaries }: Props) {
   return (
     <div>
-      <List>
-        {summaries.map((project) => (
-          <ProjectSummaryListItem key={project.id} project={project} />
-        ))}
-      </List>
+      {summaries.length === 0 ? (
+        <div>No projects found.</div>
+      ) : (
+        <List>
+          {summaries.map((project) => (
+            <ProjectSummaryListItem key={project.id} project={project} />
+          ))}
+        </List>
+      )}
     </div>
   );
 }

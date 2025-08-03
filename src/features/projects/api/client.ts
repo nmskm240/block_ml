@@ -10,11 +10,15 @@ import {
 export interface IProjectApiClient {
   createProject(request: CreateProjectRequest): Promise<CreateProjectResponse>;
   saveProject(request: SaveProjectRequest): Promise<SaveProjectResponse>;
-  getProjects(request: GetProjectsRequest): Promise<GetProjectsResponse>;
+  getProjectSummaries(
+    request: GetProjectsRequest,
+  ): Promise<GetProjectsResponse>;
 }
 
 export class ProjectApiClient implements IProjectApiClient {
-  async getProjects(request: GetProjectsRequest): Promise<GetProjectsResponse> {
+  async getProjectSummaries(
+    request: GetProjectsRequest,
+  ): Promise<GetProjectsResponse> {
     const params = new URLSearchParams();
 
     if (request.userId) {
@@ -39,7 +43,7 @@ export class ProjectApiClient implements IProjectApiClient {
   }
 
   async createProject(
-    request: CreateProjectRequest
+    request: CreateProjectRequest,
   ): Promise<CreateProjectResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects`,
@@ -51,7 +55,7 @@ export class ProjectApiClient implements IProjectApiClient {
         body: JSON.stringify(request),
         cache: 'no-cache',
         credentials: 'include',
-      }
+      },
     );
 
     if (!response.ok) {
@@ -69,7 +73,7 @@ export class ProjectApiClient implements IProjectApiClient {
         method: 'PUT',
         body: JSON.stringify(request),
         credentials: 'include',
-      }
+      },
     );
 
     if (!response.ok) {

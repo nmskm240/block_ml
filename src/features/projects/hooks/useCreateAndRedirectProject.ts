@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation';
 import { useProjectApiClient } from '../providers/apiClientProvider';
 
-export function useCreateProjectAndRedirect() {
+export default function useCreateProjectAndRedirect() {
   const router = useRouter();
   const client = useProjectApiClient();
 
