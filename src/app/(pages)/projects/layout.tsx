@@ -11,14 +11,12 @@ export default function ProjectsRootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
-      <body>
-        <PlotlyProvider>
-          <PyodideProvider>
-            <UploadFileProvider>{children}</UploadFileProvider>
-          </PyodideProvider>
-        </PlotlyProvider>
-      </body>
-    </html>
+    <>
+      <PlotlyProvider>
+        <PyodideProvider>
+          <UploadFileProvider>{children}</UploadFileProvider>
+        </PyodideProvider>
+      </PlotlyProvider>
+    </>
   );
 }

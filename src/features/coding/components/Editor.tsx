@@ -26,6 +26,7 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
     React.useEffect(() => {
       if (blocklyDivRef.current && !workspace) {
         Blockly.setLocale(require('blockly/msg/ja'));
+        // FIXME: クライアントのコンポーネントにしないとCSSが2回適用されるらしい？
         registerContinuousToolbox();
         const ws = Blockly.inject(blocklyDivRef.current, {
           toolbox: toolbox,

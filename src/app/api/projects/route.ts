@@ -1,37 +1,65 @@
+import 'reflect-metadata';
+import {
+  CreateProjectRequest,
+  CreateProjectResponse,
+  GetProjectsRequest,
+  GetProjectsResponse,
+} from '@/features/projects/api/types';
+import { Project } from '@/features/projects/domains';
+import { ProjectRepository } from '@/features/projects/repositories';
+import container from '@/lib/container';
+import { auth } from '@/lib/nextAuth/auth';
 import { NextRequest, NextResponse } from 'next/server';
-import container from '@/app/api/container';
-import { AuthService } from '@/features/auth/services/AuthService';
-import { ProjectRepository } from '@/repositories/ProjectRepository';
-import { PostProjectRequest, PostProjectResponse } from '@/lib/api/types/api';
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = (await request.json()) as PostProjectRequest;
-    if (!body) {
-      return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
-    }
+// プロジェクトを新規作成する
+export const POST = auth(async (request) => {
+  const projectRepository = container.resolve(ProjectRepository);
+  const body = (await request.json()) as CreateProjectRequest;
+  if (!body) {
+    return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+  }
 
-    const authService = container.resolve(AuthService);
-    const projectRepository = container.resolve(ProjectRepository);
-
-    const user = await authService.getUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // MEMO: 空プロジェクト作成のAPIになる場合はユースケースも切り分ける
-    const saved = await projectRepository.save({ userId: user.id, projectId: "" });
-    const response: PostProjectResponse = {
-      projectId: saved.id,
-      blocklyJson: saved.workspaceJson?.toString(),
-      files: []
+  const session = request.auth;
+  if (session?.user.id) {
+    let project = Project.empty(session.user.id);
+    project = await projectRepository.createProject(project);
+    const response: CreateProjectResponse = {
+      projectId: project.id!,
     };
     return NextResponse.json(response, { status: 201 });
-  } catch (e) {
-    console.error('POST /api/blockly error:', e);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+  } else {
+    const project = Project.empty();
+    const response: CreateProjectResponse = {
+      projectId: undefined,
+    };
+    return NextResponse.json(response, { status: 200 });
   }
+});
+
+// プロジェクトをフィルタリングする
+export async function GET(request: NextRequest) {
+  const { searchParams } = request.nextUrl;
+  const params: GetProjectsRequest = {
+    userId: searchParams.get('userId') ?? undefined,
+  };
+
+  // NOTE: 現時点ではuserId指定必須とする
+  if (!params.userId) {
+    return NextResponse.json('Coming soon..', { status: 400 });
+  }
+
+  const projectRepository = container.resolve(ProjectRepository);
+  const projects = await projectRepository.getProjectsByUserId(params.userId);
+
+  const response: GetProjectsResponse = {
+    projectSummaries: projects.map((p) => {
+      return {
+        id: p.id!,
+        title: p.title,
+        updatedAt: p.updatedAt!,
+      };
+    }),
+  };
+
+  return NextResponse.json(response, { status: 200 });
 }

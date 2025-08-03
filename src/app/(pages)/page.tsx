@@ -1,13 +1,22 @@
-import { Header } from '@/components';
+'use client';
+
+import useCreateProjectAndRedirect from '@/features/projects/hooks/useCreateAndRedirectProject';
+import useNavigateToMyPage from '@/features/users/profile/hooks/useNavvigateToMyPage';
 
 import '@/styles/globals.css';
-import Link from 'next/link';
+import { Button } from '@mui/material';
 
 export default function IndexPage() {
+  const createProjectAndRedirect = useCreateProjectAndRedirect();
+  const navigateToMyPage = useNavigateToMyPage();
   return (
     <div>
-      <Header />
-      <Link href="/projects/new">新しいプロジェクトを作成</Link>
+      <Button onClick={() => createProjectAndRedirect()}>
+        新しいプロジェクトを作成
+      </Button>
+      <Button onClick={() => navigateToMyPage()} >
+        マイページに移動
+      </Button>
     </div>
   );
 }

@@ -31,7 +31,7 @@ pythonGenerator.forBlock[SK_LEARN_PREDICT_AND_EVALUATE] = (
   generator
 ) => {
   const modelName = block.getField('model')?.getText() || 'model';
-  const xDf = generator.valueToCode(block, 'X', Order.NONE) || 'df';
+  const xDf = block.getField('X')?.getText() || 'df';
   const yCol = generator.valueToCode(block, 'Y', Order.NONE) || 'target';
 
   (generator as any).definitions_['import_sklearn_metrics'] =

@@ -8,7 +8,7 @@ Blockly.Blocks[DATA_FRAME_SELECT_COLUMN] = {
   init: function () {
     this.appendDummyInput('')
       .appendField('DataFrame')
-      .appendField(new Blockly.FieldVariable('df'));
+      .appendField(new Blockly.FieldVariable('df'), 'df');
     this.appendValueInput('column')
       .appendField('の列')
       .setCheck(VariableTypes.String);

@@ -27,7 +27,7 @@ Blockly.Blocks[SK_LEARN_FIT_MODEL] = {
 
 pythonGenerator.forBlock[SK_LEARN_FIT_MODEL] = (block, generator) => {
   const varName = block.getField('model')?.getText() || 'model';
-  const xCode = generator.valueToCode(block, 'X', Order.NONE) || 'X';
-  const yCode = generator.valueToCode(block, 'Y', Order.NONE) || 'y';
+  const xCode = block.getField('X')?.getText() || 'X';
+  const yCode = block.getField('Y')?.getText() || 'y';
   return `${varName}.fit(${xCode}, ${yCode})\n`;
 };
