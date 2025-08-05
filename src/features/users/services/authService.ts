@@ -1,5 +1,5 @@
-import { inject, injectable } from 'tsyringe';
-import { UserRepository, type IUserRepository } from '../repositories';
+import { injectable } from 'tsyringe';
+import { type IUserRepository } from '../repositories';
 import User from '../domains';
 import bcrypt from 'bcrypt';
 
@@ -10,7 +10,7 @@ export interface IAuthService {
 @injectable()
 export class AuthService implements IAuthService {
   constructor(
-    @inject(UserRepository) private readonly _userRepository: IUserRepository
+    private readonly _userRepository: IUserRepository
   ) {}
 
   async verify(email: string, password: string): Promise<User | null> {

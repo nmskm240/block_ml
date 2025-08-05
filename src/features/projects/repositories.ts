@@ -13,7 +13,12 @@ export interface IProjectRepository {
 
 @injectable()
 export class ProjectRepository implements IProjectRepository {
-  async getProjectById(projectId: string): Promise<Project> {
+  constructor(
+    @inject(Token.PrismaClient)
+    private readonly _client: PrismaClient | Prisma.TransactionClient,
+  ) {}
+
+  async findProjectById(projectId: string): Promise<Project> {
     const entity = await prisma.userProjectEntity.findFirstOrThrow({
       where: { projectId: projectId },
       include: { project: true },

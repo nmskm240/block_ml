@@ -7,9 +7,10 @@ import {
 } from '@/features/projects/api/types';
 import { Project } from '@/features/projects/domains';
 import { ProjectRepository } from '@/features/projects/repositories';
-import container from '@/lib/container';
+import container from '@/lib/di/container';
 import { auth } from '@/lib/nextAuth/auth';
 import { NextRequest, NextResponse } from 'next/server';
+import 'reflect-metadata';
 
 // プロジェクトを新規作成する
 export const POST = auth(async (request) => {
