@@ -1,12 +1,13 @@
-import { injectable } from 'tsyringe';
-import { Project, ProjectStatus } from './domains';
-import { prisma } from '@/lib/prisma/prisma';
-import { toDomain, toEntity } from './mapper';
+import { Token } from '@/lib/di/types';
+import { Prisma, PrismaClient } from '@/lib/prisma';
 import { InputJsonValue } from '@/lib/prisma/runtime/library';
+import { inject, injectable } from 'tsyringe';
+import Project from './domains';
+import { toDomain, toEntity } from './mapper';
 
 export interface IProjectRepository {
-  getProjectById(projectId: string): Promise<Project>;
-  getProjectsByUserId(userId: string): Promise<Project[]>;
+  findProjectById(projectId: string): Promise<Project | undefined>;
+  findProjectsByUserId(userId: string): Promise<Project[]>;
   createProject(project: Project): Promise<Project>;
   updateProject(project: Project): Promise<Project>;
 }
@@ -18,68 +19,111 @@ export class ProjectRepository implements IProjectRepository {
     private readonly _client: PrismaClient | Prisma.TransactionClient,
   ) {}
 
-  async findProjectById(projectId: string): Promise<Project> {
-    const entity = await prisma.userProjectEntity.findFirstOrThrow({
-      where: { projectId: projectId },
-      include: { project: true },
+  async findProjectById(projectId: string): Promise<Project | undefined> {
+    const entity = await this._client.project.findFirst({
+      where: { id: projectId },
+      include: {
+        userProjects: true,
+        projectAssets: {
+          include: { asset: true },
+          where: { deleteFlag: false },
+        },
+      },
     });
+
+    if (!entity) {
+      return undefined;
+    }
+
+    if (entity.userProjects.length == 0) {
+      // 紐づけされていないプロジェクト（存在しないはず）
+      console.warn('Project has no associated userProject');
+      return undefined;
+    }
+
     return toDomain({
-      ...entity.project,
-      userId: entity.userId,
-      projectId: entity.projectId,
+      project: {
+        id: entity.id,
+        title: entity.title,
+        status: entity.status,
+        workspaceJson: entity.workspaceJson,
+        createdAt: entity.createdAt,
+        updatedAt: entity.updatedAt,
+        statusUpdatedAt: entity.statusUpdatedAt,
+      },
+      userProject: entity.userProjects[0],
+      projectAssets: entity.projectAssets.map((e) => e),
     });
   }
 
-  async getProjectsByUserId(userId: string): Promise<Project[]> {
-    const entities = await prisma.userProjectEntity.findMany({
+  async findProjectsByUserId(userId: string): Promise<Project[]> {
+    const entities = await this._client.userProject.findMany({
       where: { userId: userId },
-      include: { project: true },
+      include: {
+        project: {
+          include: {
+            projectAssets: {
+              include: { asset: true },
+              where: { deleteFlag: false },
+            },
+          },
+        },
+      },
     });
+
     return entities.map((entity) =>
       toDomain({
-        ...entity.project,
-        userId: entity.userId,
-        projectId: entity.projectId,
-      })
+        project: entity.project,
+        userProject: {
+          userId: entity.userId,
+          projectId: entity.projectId,
+        },
+        projectAssets: entity.project.projectAssets.map((e) => e),
+      }),
     );
   }
 
   async createProject(project: Project): Promise<Project> {
     if (!project.ownerUserId) {
-      throw new Error();
+      throw new Error('Project must have an ownerUserId');
     }
 
     const entity = toEntity(project);
-    const saved = await prisma.$transaction(async (tran) => {
-      const projectEntity = await tran.projectEntity.create({
-        data: {
-          title: entity.project.title,
-          workspaceJson: entity.project.workspaceJson as InputJsonValue,
-          status: entity.project.status!,
-        },
-      });
-
-      const userProjectEntity = await tran.userProjectEntity.create({
-        data: { userId: project.ownerUserId!, projectId: projectEntity.id },
-      });
-
-      return { projectEntity, userProjectEntity };
+    const projectEntity = await this._client.project.create({
+      data: {
+        title: entity.project.title,
+        workspaceJson: entity.project.workspaceJson as InputJsonValue,
+        status: entity.project.status,
+      },
     });
 
+    entity.userProject.projectId = projectEntity.id;
+    entity.projectAssets.forEach((e) => (e.projectId = projectEntity.id));
+
+    await this._client.userProject.create({
+      data: { userId: project.ownerUserId!, projectId: projectEntity.id },
+    });
+
+    if (entity.projectAssets.length > 0) {
+      await this._client.projectAsset.createMany({
+        data: [...entity.projectAssets],
+      });
+    }
+
     return toDomain({
-      ...saved.projectEntity,
-      userId: saved.userProjectEntity.userId,
-      projectId: saved.projectEntity.id,
+      project: projectEntity,
+      userProject: entity.userProject,
+      projectAssets: entity.projectAssets,
     });
   }
 
   async updateProject(project: Project): Promise<Project> {
-    if(!project.ownerUserId) {
-      throw new Error();
+    if (!project.ownerUserId) {
+      throw new Error('Project must have an ownerUserId');
     }
 
     const entity = toEntity(project);
-    const updated = await prisma.projectEntity.update({
+    const updatedProjectEntity = await this._client.project.update({
       where: { id: project.id },
       data: {
         ...entity.project,
@@ -87,10 +131,48 @@ export class ProjectRepository implements IProjectRepository {
       },
     });
 
+    const existingLinks = await this._client.projectAsset.findMany({
+      where: { projectId: project.id },
+    });
+    const existingIds = new Set(existingLinks.map((e) => e.assetId));
+    const incomingIds = new Set(project.assetIds.map((a) => a.value));
+
+    const existings = [...existingIds].filter((id) => !incomingIds.has(id));
+    const incomings = [...incomingIds].filter((id) => !existingIds.has(id));
+
+    if (existings.length > 0) {
+      await this._client.projectAsset.updateMany({
+        where: {
+          projectId: project.id,
+          assetId: { in: existings },
+        },
+        data: { deleteFlag: true },
+      });
+    }
+
+    if (incomings.length > 0) {
+      await this._client.projectAsset.createMany({
+        data: incomings.map((id) => ({
+          projectId: project.id!,
+          assetId: id,
+          deleteFlag: false,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    const updatedAssets = await this._client.projectAsset.findMany({
+      where: { projectId: project.id, deleteFlag: false },
+      include: { asset: true },
+    });
+
     return toDomain({
-      ...updated,
-      userId: project.ownerUserId!,
-      projectId: updated.id,
+      project: updatedProjectEntity,
+      userProject: {
+        userId: project.ownerUserId,
+        projectId: updatedProjectEntity.id,
+      },
+      projectAssets: updatedAssets.map((e) => e),
     });
   }
 }

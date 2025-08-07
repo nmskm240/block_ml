@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.12.0
- * Query Engine version: 8047c96bbd92db98a2abc7c9323ce77c02c89dbc
+ * Prisma Client JS version: 6.13.0
+ * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
  */
 Prisma.prismaVersion = {
-  client: "6.12.0",
-  engine: "8047c96bbd92db98a2abc7c9323ce77c02c89dbc"
+  client: "6.13.0",
+  engine: "361e86d0ea4987e9f53a565309b3eed797a6bcbd"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -142,12 +142,6 @@ exports.Prisma.SessionScalarFieldEnum = {
   expires: 'expires'
 };
 
-exports.Prisma.VerificationTokenScalarFieldEnum = {
-  identifier: 'identifier',
-  token: 'token',
-  expires: 'expires'
-};
-
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -159,7 +153,13 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProjectEntityScalarFieldEnum = {
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires'
+};
+
+exports.Prisma.ProjectScalarFieldEnum = {
   id: 'id',
   title: 'title',
   workspaceJson: 'workspaceJson',
@@ -169,18 +169,21 @@ exports.Prisma.ProjectEntityScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.UserProjectEntityScalarFieldEnum = {
+exports.Prisma.AssetScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  filePath: 'filePath'
+};
+
+exports.Prisma.UserProjectScalarFieldEnum = {
   userId: 'userId',
   projectId: 'projectId'
 };
 
-exports.Prisma.ProjectAssetEntityScalarFieldEnum = {
-  id: 'id',
+exports.Prisma.ProjectAssetScalarFieldEnum = {
   projectId: 'projectId',
-  fileName: 'fileName',
-  filePath: 'filePath',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  assetId: 'assetId',
+  deleteFlag: 'deleteFlag'
 };
 
 exports.Prisma.SortOrder = {
@@ -212,11 +215,12 @@ exports.Prisma.JsonNullValueFilter = {
 exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
-  VerificationToken: 'VerificationToken',
   User: 'User',
-  ProjectEntity: 'ProjectEntity',
-  UserProjectEntity: 'UserProjectEntity',
-  ProjectAssetEntity: 'ProjectAssetEntity'
+  VerificationToken: 'VerificationToken',
+  Project: 'Project',
+  Asset: 'Asset',
+  UserProject: 'UserProject',
+  ProjectAsset: 'ProjectAsset'
 };
 
 /**

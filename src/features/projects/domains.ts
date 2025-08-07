@@ -1,34 +1,47 @@
-import { ProjectId, UserId } from '@/lib/domain/vo/Id';
+import Id from '@/lib/domain/vo/Id';
+import { AssetId } from '../assets/domains';
+import { UserId } from '../users/domains';
 
-export class Project {
+type ProjectParams = {
+  id?: string;
+  title: string;
+  workspaceJson: string;
+  status: ProjectStatus;
+  assetIds?: string[];
+  ownerUserId?: string;
+  updatedAt?: Date;
+};
+
+export default class Project {
   private _id?: ProjectId;
   private _title: ProjectTitle;
-  private _blocklyJson: BlocklyJson;
+  private _workspaceJson: BlocklyJson;
   private _ownerUserId?: UserId;
+  private _assetIds: AssetId[];
+  public readonly status: ProjectStatus;
+  public readonly updatedAt?: Date;
 
-  private constructor(
-    title: string,
-    workspaceJson: string,
-    readonly status: ProjectStatus,
-
-    id?: string,
-    ownerUserId?: string,
-    readonly updatedAt?: Date
-  ) {
-    this._id = id ? new ProjectId(id) : undefined;
-    this._title = new ProjectTitle(title);
-    this._blocklyJson = new BlocklyJson(workspaceJson);
-    this._ownerUserId = ownerUserId ? new UserId(ownerUserId) : undefined;
+  private constructor(params: ProjectParams) {
+    this._id = params.id ? new ProjectId(params.id) : undefined;
+    this._title = new ProjectTitle(params.title);
+    this._workspaceJson = new BlocklyJson(params.workspaceJson);
+    this._ownerUserId = params.ownerUserId
+      ? new UserId(params.ownerUserId)
+      : undefined;
+    this._assetIds = params.assetIds?.map((e) => new AssetId(e)) ?? [];
+    this.status = params.status;
+    this.updatedAt = params.updatedAt;
   }
 
   static empty(ownerUserId?: string): Project {
-    return new Project(
-      process.env.DEFAULT_PROJECT_TITLE!,
-      process.env.DEFAULT_PROJECT_WORKSPACE_JSON!,
-      ProjectStatus.Active,
-      undefined,
-      ownerUserId
-    );
+    return new Project({
+      title: process.env.DEFAULT_PROJECT_TITLE!,
+      workspaceJson: process.env.DEFAULT_PROJECT_WORKSPACE_JSON!,
+      ownerUserId: ownerUserId,
+      assetIds: [],
+      // FIXME: Draftでは？
+      status: ProjectStatus.Active,
+    });
   }
 
   get id() {
@@ -39,36 +52,50 @@ export class Project {
     return this._title.value;
   }
 
-  get blocklyJson() {
-    return this._blocklyJson.value;
+  get workspaceJson() {
+    return this._workspaceJson.value;
   }
 
   get ownerUserId() {
     return this._ownerUserId?.value;
   }
 
-  copyWith(params: Partial<Project>): Project {
-    return new Project(
-      params.title ?? this.title,
-      params.blocklyJson ?? this.blocklyJson,
-      params.status ?? this.status,
-      params.id ?? this.id,
-      params.ownerUserId ?? this.ownerUserId,
-      params.updatedAt ?? this.updatedAt
-    );
+  get assetIds() {
+    return this._assetIds;
+  }
+
+  copyWith(params: Partial<ProjectParams>): Project {
+    return new Project({
+      id: params.id ?? this.id,
+      title: params.title ?? this.title,
+      workspaceJson: params.workspaceJson ?? this.workspaceJson,
+      status: params.status ?? this.status,
+      assetIds: params.assetIds ?? this.assetIds.map((x) => x.value),
+      ownerUserId: params.ownerUserId ?? this.ownerUserId,
+      updatedAt: params.updatedAt ?? this.updatedAt,
+    });
   }
 }
 
-export const ProjectStatus = {
-  None: 0,
-  Active: 1,
-  Archived: 2,
-  Trashed: 3,
-} as const;
+export enum ProjectStatus {
+  None = 0,
+  Active = 1,
+  Archived = 2,
+  Trashed = 3,
+}
 
-export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus];
+export namespace ProjectStatus {
+  export function from(value: number): ProjectStatus {
+    if (!Object.values(ProjectStatus).includes(value)) {
+      throw new Error(`Invalid ProjectStatus: ${value}`);
+    }
+    return value;
+  }
+}
 
 //#region valueObjects
+
+class ProjectId extends Id<ProjectId> {}
 
 class ProjectTitle {
   constructor(readonly value: string) {
@@ -79,6 +106,8 @@ class ProjectTitle {
     if (trimmed.length > 100) {
       throw new Error('Project title must be 100 characters or less.');
     }
+
+    this.value = trimmed;
   }
 
   equals(other: ProjectTitle): boolean {
@@ -96,6 +125,8 @@ class BlocklyJson {
     if (!trimmed) {
       throw new Error('Blockly JSON must not be empty.');
     }
+
+    this.value = trimmed;
   }
 
   equals(other: BlocklyJson): boolean {

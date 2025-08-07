@@ -15,5 +15,8 @@
         "EditorConfig.EditorConfig"
       ]
     }
+  },
+  "containerEnv": {
+    "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@host.docker.internal:54322/postgres"
   }
 }

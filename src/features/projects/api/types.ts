@@ -1,5 +1,5 @@
-import { Project } from '../domains';
 import { ProjectSummaryDto } from '../types';
+import { z } from 'zod';
 
 export interface CreateProjectRequest {}
 
@@ -7,12 +7,13 @@ export interface CreateProjectResponse {
   projectId?: string;
 }
 
-export interface SaveProjectRequest {
-  projectId: string;
-  project: Project;
-}
+export const SaveProjectRequestSchema = z.object({
+  projectJson: z.json(),
+});
 
-export interface SaveProjectResponse {}
+export type SaveProjectRequest = z.infer<typeof SaveProjectRequestSchema>;
+
+export type SaveProjectResponse = {};
 
 export interface GetProjectsRequest {
   userId?: string;

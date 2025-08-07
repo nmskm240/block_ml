@@ -1,11 +1,10 @@
-import 'reflect-metadata';
 import {
   CreateProjectRequest,
   CreateProjectResponse,
   GetProjectsRequest,
   GetProjectsResponse,
 } from '@/features/projects/api/types';
-import { Project } from '@/features/projects/domains';
+import Project from '@/features/projects/domains';
 import { ProjectRepository } from '@/features/projects/repositories';
 import container from '@/lib/di/container';
 import { auth } from '@/lib/nextAuth/auth';
@@ -50,7 +49,7 @@ export async function GET(request: NextRequest) {
   }
 
   const projectRepository = container.resolve(ProjectRepository);
-  const projects = await projectRepository.getProjectsByUserId(params.userId);
+  const projects = await projectRepository.findProjectsByUserId(params.userId);
 
   const response: GetProjectsResponse = {
     projectSummaries: projects.map((p) => {
