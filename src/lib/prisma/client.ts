@@ -2,19 +2,19 @@ import { PrismaClient } from '@/lib/prisma';
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-export const prisma = globalForPrisma.prisma || new PrismaClient();
+const prisma = globalForPrisma.prisma || new PrismaClient();
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 prisma.$extends({
   query: {
-    projectEntity: {
+    project: {
       async update({ model, operation, args, query }) {
         const id = args.where.id;
         const incomingStatus = args.data.status;
 
         if (incomingStatus !== undefined && id !== undefined) {
-          const current = await prisma.projectEntity.findUnique({
+          const current = await prisma.project.findUnique({
             where: { id },
             select: { status: true },
           });
@@ -29,3 +29,5 @@ prisma.$extends({
     },
   },
 });
+
+export default prisma;
