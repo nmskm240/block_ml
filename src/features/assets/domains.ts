@@ -9,35 +9,23 @@ type AssetParams = {
 };
 
 export default class Asset {
-  private _id: AssetId;
-  private _name: AssetName;
-  private _path: AssetPath;
+  public readonly id: AssetId;
+  public readonly name: AssetName;
+  public readonly path: AssetPath;
 
   constructor(params: AssetParams) {
-    this._id = new AssetId(params.id);
-    this._name = new AssetName(params.name);
-    this._path = new AssetPath(params.path);
+    this.id = new AssetId(params.id);
+    this.name = new AssetName(params.name);
+    this.path = new AssetPath(params.path);
   }
 
   static from(file: File): Asset {
     const id = AssetId.generate();
     return new Asset({
-      id: id.toString(),
+      id: id.value,
       name: file.name,
-      path: id.toString(),
+      path: id.value,
     });
-  }
-
-  get id() {
-    return this._id.value;
-  }
-
-  get name() {
-    return this._name.value;
-  }
-
-  get path() {
-    return this._path.value;
   }
 }
 

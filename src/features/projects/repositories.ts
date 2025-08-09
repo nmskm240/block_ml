@@ -80,12 +80,12 @@ export class ProjectRepository implements IProjectRepository {
           projectId: entity.projectId,
         },
         projectAssets: entity.project.projectAssets.map((e) => e),
-      }),
+      })
     );
   }
 
   async createProject(project: Project): Promise<Project> {
-    if (!project.ownerUserId) {
+    if (project.isTemporary) {
       throw new Error('Project must have an ownerUserId');
     }
 
@@ -102,7 +102,7 @@ export class ProjectRepository implements IProjectRepository {
     entity.projectAssets.forEach((e) => (e.projectId = projectEntity.id));
 
     await this._client.userProject.create({
-      data: { userId: project.ownerUserId!, projectId: projectEntity.id },
+      data: { userId: project.ownerUserId!.value, projectId: projectEntity.id },
     });
 
     if (entity.projectAssets.length > 0) {
@@ -125,7 +125,7 @@ export class ProjectRepository implements IProjectRepository {
 
     const entity = toEntity(project);
     const updatedProjectEntity = await this._client.project.update({
-      where: { id: project.id },
+      where: { id: project.id.value },
       data: {
         ...entity.project,
         workspaceJson: entity.project.workspaceJson as InputJsonValue,
@@ -133,7 +133,7 @@ export class ProjectRepository implements IProjectRepository {
     });
 
     const existingLinks = await this._client.projectAsset.findMany({
-      where: { projectId: project.id },
+      where: { projectId: project.id.value },
     });
     const existingIds = new Set(existingLinks.map((e) => e.assetId));
     const incomingIds = new Set(project.assetIds.map((a) => a.value));
@@ -144,7 +144,7 @@ export class ProjectRepository implements IProjectRepository {
     if (existings.length > 0) {
       await this._client.projectAsset.updateMany({
         where: {
-          projectId: project.id,
+          projectId: project.id.value,
           assetId: { in: existings },
         },
         data: { deleteFlag: true },
@@ -154,7 +154,7 @@ export class ProjectRepository implements IProjectRepository {
     if (incomings.length > 0) {
       await this._client.projectAsset.createMany({
         data: incomings.map((id) => ({
-          projectId: project.id!,
+          projectId: project.id.value,
           assetId: id,
           deleteFlag: false,
         })),
@@ -163,14 +163,14 @@ export class ProjectRepository implements IProjectRepository {
     }
 
     const updatedAssets = await this._client.projectAsset.findMany({
-      where: { projectId: project.id, deleteFlag: false },
+      where: { projectId: project.id.value, deleteFlag: false },
       include: { asset: true },
     });
 
     return toDomain({
       project: updatedProjectEntity,
       userProject: {
-        userId: project.ownerUserId,
+        userId: project.ownerUserId.value,
         projectId: updatedProjectEntity.id,
       },
       projectAssets: updatedAssets.map((e) => e),

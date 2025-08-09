@@ -1,87 +1,90 @@
 import Id from '@/lib/domain/vo/Id';
+import { createId } from '@paralleldrive/cuid2';
 import { AssetId } from '../assets/domains';
 import { UserId } from '../users/domains';
 
 type ProjectParams = {
-  id?: string;
+  id: string;
   title: string;
   workspaceJson: string;
   status: ProjectStatus;
-  assetIds?: string[];
+  assetIds: string[];
   ownerUserId?: string;
   updatedAt?: Date;
 };
 
 export default class Project {
-  private _id?: ProjectId;
+  public readonly id: ProjectId;
   private _title: ProjectTitle;
   private _workspaceJson: BlocklyJson;
-  private _ownerUserId?: UserId;
+  public readonly ownerUserId?: UserId;
   private _assetIds: AssetId[];
-  public readonly status: ProjectStatus;
-  public readonly updatedAt?: Date;
+  private _status: ProjectStatus;
+  public readonly updatedAt: Date;
 
-  private constructor(params: ProjectParams) {
-    this._id = params.id ? new ProjectId(params.id) : undefined;
+  constructor(params: ProjectParams) {
+    this.id = new ProjectId(params.id);
     this._title = new ProjectTitle(params.title);
     this._workspaceJson = new BlocklyJson(params.workspaceJson);
-    this._ownerUserId = params.ownerUserId
+    this.ownerUserId = params.ownerUserId
       ? new UserId(params.ownerUserId)
       : undefined;
     this._assetIds = params.assetIds?.map((e) => new AssetId(e)) ?? [];
-    this.status = params.status;
-    this.updatedAt = params.updatedAt;
+    this._status = params.status;
+    this.updatedAt = params.updatedAt ?? new Date();
+  }
+
+  get title() {
+    return this._title;
+  }
+
+  get status() {
+    return this._status;
+  }
+
+  get workspaceJson() {
+    return this._workspaceJson;
+  }
+
+  get assetIds(): ReadonlyArray<AssetId> {
+    return this._assetIds;
+  }
+
+  get isTemporary() {
+    return this.ownerUserId === undefined;
   }
 
   static empty(ownerUserId?: string): Project {
     return new Project({
+      id: ProjectId.generate().value,
       title: process.env.DEFAULT_PROJECT_TITLE!,
       workspaceJson: process.env.DEFAULT_PROJECT_WORKSPACE_JSON!,
       ownerUserId: ownerUserId,
       assetIds: [],
-      // FIXME: Draftでは？
-      status: ProjectStatus.Active,
+      status: ProjectStatus.Draft,
     });
   }
 
-  get id() {
-    return this._id?.value;
+  rename(title: string) {
+    this._title = new ProjectTitle(title);
   }
 
-  get title() {
-    return this._title.value;
+  changeStatus(status: ProjectStatus) {
+    this._status = status;
   }
 
-  get workspaceJson() {
-    return this._workspaceJson.value;
-  }
-
-  get ownerUserId() {
-    return this._ownerUserId?.value;
-  }
-
-  get assetIds() {
-    return this._assetIds;
-  }
-
-  copyWith(params: Partial<ProjectParams>): Project {
-    return new Project({
-      id: params.id ?? this.id,
-      title: params.title ?? this.title,
-      workspaceJson: params.workspaceJson ?? this.workspaceJson,
-      status: params.status ?? this.status,
-      assetIds: params.assetIds ?? this.assetIds.map((x) => x.value),
-      ownerUserId: params.ownerUserId ?? this.ownerUserId,
-      updatedAt: params.updatedAt ?? this.updatedAt,
-    });
+  edit(workspaceJson: string, assetIds: string[]) {
+    this._workspaceJson = new BlocklyJson(workspaceJson);
+    this._assetIds = assetIds.map((e) => new AssetId(e));
   }
 }
 
 export enum ProjectStatus {
   None = 0,
-  Active = 1,
-  Archived = 2,
-  Trashed = 3,
+  Draft = 1,
+  Active = 2,
+  Archived = 3,
+  Trashed = 4,
 }
 
 export namespace ProjectStatus {
@@ -95,7 +98,11 @@ export namespace ProjectStatus {
 
 //#region valueObjects
 
-class ProjectId extends Id<ProjectId> {}
+class ProjectId extends Id<ProjectId> {
+  static generate(): ProjectId {
+    return new ProjectId(createId());
+  }
+}
 
 class ProjectTitle {
   constructor(readonly value: string) {

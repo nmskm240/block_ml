@@ -11,7 +11,7 @@ export function toDomain(entity: {
   userProject: UserProjectEntity;
   projectAssets: ProjectAssetEntity[];
 }): Project {
-  return Project.empty().copyWith({
+  return new Project({
     id: entity.project.id,
     title: entity.project.title,
     workspaceJson: JSON.stringify(entity.project.workspaceJson),
@@ -27,23 +27,23 @@ export function toEntity(model: Project): {
   userProject: UserProjectEntity;
   projectAssets: ProjectAssetEntity[];
 } {
-  if (!model.id || !model.ownerUserId) {
+  if (model.isTemporary) {
     throw new Error();
   }
 
   return {
     project: {
-      id: model.id,
-      title: model.title,
-      workspaceJson: model.workspaceJson,
+      id: model.id.value,
+      title: model.title.value,
+      workspaceJson: model.workspaceJson.value,
       status: model.status,
     },
     userProject: {
-      projectId: model.id,
-      userId: model.ownerUserId,
+      projectId: model.id.value,
+      userId: model.ownerUserId!.value,
     },
     projectAssets: model.assetIds.map((e) => ({
-      projectId: model.id!,
+      projectId: model.id.value,
       assetId: e.value,
       deleteFlag: false,
     })),
