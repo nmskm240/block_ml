@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import { WithAdditionalWorkspace } from '../../types';
 
 export class CsvFileDropdown extends Blockly.FieldDropdown {
   constructor() {
@@ -9,7 +10,8 @@ export class CsvFileDropdown extends Blockly.FieldDropdown {
     super.init();
     this.setOptions(() => {
       const workspace = this.sourceBlock_?.workspace;
-      const fileNames: string[] = (workspace as any)?.fileNames ?? [];
+      const additional = (workspace as WithAdditionalWorkspace);
+      const fileNames = additional?.data.fileNames ?? [];
       return fileNames.length > 0
         ? fileNames.map<[string, string]>((f) => [f, f])
         : [['（ファイルなし）', '__NO_FILE__']];

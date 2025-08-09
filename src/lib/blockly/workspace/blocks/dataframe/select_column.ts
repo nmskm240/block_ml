@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
-import { pythonGenerator, Order } from 'blockly/python';
-import { VariableTypes } from '../../types/variables';
+import { Order, pythonGenerator } from 'blockly/python';
+import { VariableTypes } from '../../../types/variables';
 
 export const DATA_FRAME_SELECT_COLUMN = 'dataframe_select_column';
 

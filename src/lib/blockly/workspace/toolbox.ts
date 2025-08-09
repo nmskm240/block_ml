@@ -1,11 +1,11 @@
-import * as Blockly from 'blockly/core';
-import 'blockly/blocks';
 import '@blockly/block-plus-minus';
+import 'blockly/blocks';
+import * as Blockly from 'blockly/core';
+import * as ch from './blocks/chart';
 import * as df from './blocks/dataframe';
 import * as sk from './blocks/sklearn';
-import * as ch from './blocks/chart';
 
-export const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
+const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: 'categoryToolbox',
   contents: [
     {
@@ -174,3 +174,5 @@ export const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
     },
   ],
 };
+
+export default mlToolbox;
