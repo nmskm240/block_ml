@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { inject, injectable } from 'tsyringe';
 import User from './domains';
 import { toDomain, toEntity } from './mapper';

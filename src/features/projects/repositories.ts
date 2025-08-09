@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Token } from '@/lib/di/types';
 import { Prisma, PrismaClient } from '@/lib/prisma';
 import { InputJsonValue } from '@/lib/prisma/runtime/library';

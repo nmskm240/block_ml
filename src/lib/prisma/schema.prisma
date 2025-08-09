@@ -71,13 +71,13 @@ model VerificationToken {
 }
 
 model Project {
-  id              String        @id @default(cuid())
-  title           String        @default("") @map("title")
-  workspaceJson   Json          @default("{}") @map("workspace_json")
-  status          Int @map("status")
-  statusUpdatedAt DateTime      @default(now()) @map("status_updated_at") @db.Timestamptz()
-  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  id              String   @id @default(cuid())
+  title           String   @default("") @map("title")
+  workspaceJson   Json     @default("{}") @map("workspace_json")
+  status          Int      @map("status")
+  statusUpdatedAt DateTime @default(now()) @map("status_updated_at") @db.Timestamptz()
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
 
   userProjects  UserProject[]
   projectAssets ProjectAsset[]

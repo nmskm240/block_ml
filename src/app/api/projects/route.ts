@@ -35,6 +35,7 @@ export const POST = auth(async (request) => {
     return NextResponse.json(response, { status: 200 });
   }
 });
+});
 
 // プロジェクトをフィルタリングする
 export async function GET(request: NextRequest) {
@@ -48,8 +49,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json('Coming soon..', { status: 400 });
   }
 
+return await withTransaction(async (container) => {
   const projectRepository = container.resolve(ProjectRepository);
-  const projects = await projectRepository.findProjectsByUserId(params.userId);
+  const projects = await projectRepository.findProjectsByUserId(
+params.userId!
+);
 
   const response: GetProjectsResponse = {
     projectSummaries: projects.map((p) => {
@@ -62,4 +66,5 @@ export async function GET(request: NextRequest) {
   };
 
   return NextResponse.json(response, { status: 200 });
+});
 }

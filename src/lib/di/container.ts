@@ -21,7 +21,7 @@ import {
   IAuthService,
 } from '@/features/users/services/authService';
 import { Prisma, PrismaClient } from '@/lib/prisma';
-import prisma from '@/lib/prisma/client';
+import prisma from '@/lib/prisma/service';
 import supabase from '@/lib/supabase/client';
 import { StorageClient } from '@supabase/storage-js';
 import 'reflect-metadata';
