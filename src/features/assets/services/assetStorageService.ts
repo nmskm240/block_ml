@@ -16,6 +16,7 @@ export class AssetStorageService implements IAssetStorageService {
   constructor(
     @inject(Token.SupabaseStorageClient)
     private readonly _client: StorageClient,
+    @inject(Token.AssetRepository)
     private readonly _repository: IAssetRepository
   ) {}
 
@@ -27,7 +28,7 @@ export class AssetStorageService implements IAssetStorageService {
       const content = await file.arrayBuffer();
       const { error } = await this._client
         .from(BUCKET_NAME)
-        .upload(asset.path, content, {
+        .upload(asset.path.value, content, {
           contentType: file.type || 'application/octet-stream',
           cacheControl: '3600',
           upsert: true,
@@ -54,7 +55,7 @@ export class AssetStorageService implements IAssetStorageService {
 
       const { data, error } = await this._client
         .from(BUCKET_NAME)
-        .createSignedUrl(asset.path, 60);
+        .createSignedUrl(asset.path.value, 60);
       if (error || !data?.signedUrl) {
         throw new Error(`Failed to create signed URL for ${id}`);
       }

@@ -3,7 +3,7 @@ import {
   SaveProjectResponse,
 } from '@/features/projects/api/types';
 import UpdateProjectUsecase from '@/features/projects/usecases/updateProjectUsecase';
-import { withTransaction } from '@/lib/di/container';
+import { withTransactionScope } from '@/lib/di/container';
 import { auth } from '@/lib/nextAuth/auth';
 import { NextResponse } from 'next/server';
 
@@ -15,6 +15,7 @@ export const PUT = auth(async (request, context: { params: Params }) => {
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
   const form = await request.formData();
   const parsed = SaveProjectRequestSchema.safeParse({
     projectJson: form.get('projectJson'),
@@ -28,7 +29,9 @@ export const PUT = auth(async (request, context: { params: Params }) => {
       { status: 400 }
     );
   }
-  return withTransaction(async (container) => {
+
+  return withTransactionScope(async (container) => {
+container.register(UpdateProjectUsecase, UpdateProjectUsecase);
     const usecase = container.resolve(UpdateProjectUsecase);
 
     try {

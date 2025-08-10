@@ -1,11 +1,15 @@
-import { injectable } from 'tsyringe';
+import "reflect-metadata";
+import { inject, injectable } from 'tsyringe';
 import type { IProjectRepository } from '../repositories';
 import type { IAssetStorageService } from '@/features/assets/services/assetStorageService';
+import { Token } from "@/lib/di/types";
 
 @injectable()
 export default class UpdateProjectUsecase {
   constructor(
+@inject(Token.ProjectRepository)
     private readonly _projectRepository: IProjectRepository,
+@inject(Token.AssetStorageService)
     private readonly _storageService: IAssetStorageService
   ) {}
 

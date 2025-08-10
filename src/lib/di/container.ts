@@ -14,7 +14,6 @@ import {
   IProjectService,
   ProjectService,
 } from '@/features/projects/services/projectService';
-import UpdateProjectUsecase from '@/features/projects/usecases/updateProjectUsecase';
 import { IUserRepository, UserRepository } from '@/features/users/repositories';
 import {
   AuthService,
@@ -34,28 +33,26 @@ container.registerInstance<StorageClient>(
 );
 container.registerInstance<PrismaClient>(Token.PrismaClient, prisma);
 
-container.registerType<IAssetRepository>(
+container.register<IAssetRepository>(
   Token.AssetRepository,
   AssetRepository
 );
-container.registerType<IProjectRepository>(
+container.register<IProjectRepository>(
   Token.ProjectRepository,
   ProjectRepository
 );
-container.registerType<IUserRepository>(Token.UserRepository, UserRepository);
+container.register<IUserRepository>(Token.UserRepository, UserRepository);
 
-container.registerType<IProjectService>(Token.ProjectService, ProjectService);
-container.registerType<IAssetStorageService>(
+container.register<IProjectService>(Token.ProjectService, ProjectService);
+container.register<IAssetStorageService>(
   Token.AssetStorageService,
   AssetStorageService
 );
-container.registerType<IAuthService>(Token.AuthService, AuthService);
-
-container.register(UpdateProjectUsecase, UpdateProjectUsecase);
+container.register<IAuthService>(Token.AuthService, AuthService);
 
 export default container;
 
-export async function withTransaction<T>(
+export async function withTransactionScope<T>(
   process: (child: DependencyContainer) => Promise<T>
 ) {
   const client = container.resolve<PrismaClient>(Token.PrismaClient);

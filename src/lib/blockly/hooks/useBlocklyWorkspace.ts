@@ -1,11 +1,11 @@
 import { registerContinuousToolbox } from '@blockly/continuous-toolbox';
 import * as Blockly from 'blockly';
 import React from 'react';
-import mlToolbox from '../workspace/toolbox';
 import {
   BlocklyWorkspaceAdditionalParams,
   WithAdditionalWorkspace,
 } from '../types';
+import mlToolbox from '../workspace/toolbox';
 
 type Params = {
   locale?: string;
@@ -22,14 +22,19 @@ export default function useBlocklyWorkspace({
   const [workspace, setWorkspace] = React.useState<Blockly.WorkspaceSvg | null>(
     null
   );
+  const initialized = React.useRef(false);
 
   React.useEffect(() => {
     if (!blocklyDivRef.current) {
       return;
     }
 
-    registerContinuousToolbox();
-    Blockly.setLocale(require(`blockly/msg/${locale}`));
+    if (!initialized.current) {
+      registerContinuousToolbox();
+      initialized.current = true;
+    }
+
+    Blockly.setLocale(require(`blockly/msg/ja`));
     const ws = Blockly.inject(blocklyDivRef.current, {
       toolbox: toolbox,
       trashcan: false,

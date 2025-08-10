@@ -6,14 +6,14 @@ import {
 } from '@/features/projects/api/types';
 import Project from '@/features/projects/domains';
 import { ProjectRepository } from '@/features/projects/repositories';
-import { withTransaction } from '@/lib/di/container';
+import { withTransactionScope } from '@/lib/di/container';
 import { auth } from '@/lib/nextAuth/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import 'reflect-metadata';
 
 // プロジェクトを新規作成する
 export const POST = auth(async (request) => {
-  return await withTransaction(async (container) => {
+  return await withTransactionScope(async (container) => {
     const projectRepository = container.resolve(ProjectRepository);
     const body = (await request.json()) as CreateProjectRequest;
     if (!body) {
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json('Coming soon..', { status: 400 });
   }
 
-  return await withTransaction(async (container) => {
+  return await withTransactionScope(async (container) => {
     const projectRepository = container.resolve(ProjectRepository);
     const projects = await projectRepository.findProjectsByUserId(
       params.userId!
