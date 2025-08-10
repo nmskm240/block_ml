@@ -1,7 +1,9 @@
 import {
+  type GetEditingProjectResponse,
   SaveProjectRequestSchema,
   SaveProjectResponse,
 } from '@/features/projects/api/types';
+import FetchEditableProjectUsecase from '@/features/projects/usecases/fetchEditableProjectUsecase';
 import UpdateProjectUsecase from '@/features/projects/usecases/updateProjectUsecase';
 import { withTransactionScope } from '@/lib/di/container';
 import { auth } from '@/lib/nextAuth/auth';
@@ -31,7 +33,7 @@ export const PUT = auth(async (request, context: { params: Params }) => {
   }
 
   return withTransactionScope(async (container) => {
-container.register(UpdateProjectUsecase, UpdateProjectUsecase);
+    container.register(UpdateProjectUsecase, UpdateProjectUsecase);
     const usecase = container.resolve(UpdateProjectUsecase);
 
     try {
@@ -46,6 +48,35 @@ container.register(UpdateProjectUsecase, UpdateProjectUsecase);
           status: 200,
         }
       );
+    } catch (e) {
+      return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+    }
+  });
+});
+
+export const GET = auth(async (request, context: { params: Params }) => {
+  const session = request.auth;
+  const { projectId } = await context.params;
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  return withTransactionScope(async (container) => {
+    container.register(
+      FetchEditableProjectUsecase,
+      FetchEditableProjectUsecase
+    );
+    const usecase = container.resolve(FetchEditableProjectUsecase);
+    try {
+      const { projectJson, projectAssetUrls } = await usecase.execute(
+        projectId,
+        session.user.id
+      );
+      const project = JSON.parse(projectJson);
+      return NextResponse.json<GetEditingProjectResponse>({
+        projectJson: project,
+        assetUrls: projectAssetUrls,
+      });
     } catch (e) {
       return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
     }

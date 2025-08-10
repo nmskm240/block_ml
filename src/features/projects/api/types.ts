@@ -9,6 +9,7 @@ export interface CreateProjectResponse {
 
 export const SaveProjectRequestSchema = z.object({
   projectJson: z.json(),
+  assets: z.array(z.instanceof(File)).optional(),
 });
 
 export type SaveProjectRequest = z.infer<typeof SaveProjectRequestSchema>;
@@ -22,3 +23,10 @@ export interface GetProjectsRequest {
 export interface GetProjectsResponse {
   projectSummaries: ProjectSummaryDto[];
 }
+
+export const GetEditingProjectResponseSchema = z.object({
+  projectJson: z.json(),
+  assetUrls: z.array(z.url())
+});
+
+export type GetEditingProjectResponse = z.infer<typeof GetEditingProjectResponseSchema>;

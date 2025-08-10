@@ -74,8 +74,19 @@ export default class Project {
   }
 
   edit(workspaceJson: string, assetIds: string[]) {
+    if (this.isTemporary || !this.isEdittable(this.ownerUserId!.value)) {
+      throw new Error();
+    }
     this._workspaceJson = new BlocklyJson(workspaceJson);
     this._assetIds = assetIds.map((e) => new AssetId(e));
+  }
+
+  isEdittable(userId: string) {
+    return (
+      (this.ownerUserId?.value === userId &&
+        this.status === ProjectStatus.Active) ||
+      this.status === ProjectStatus.Draft
+    );
   }
 }
 

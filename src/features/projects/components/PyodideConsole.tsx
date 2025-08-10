@@ -1,5 +1,4 @@
-import React from 'react';
-import { LogEntry, LogType } from '../types/ConsoleLog';
+import { Delete, SaveAlt } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -9,29 +8,70 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Delete, SaveAlt } from '@mui/icons-material';
+import React from 'react';
+import { usePyodide } from '@/features/coding/providers';
 
-type ConsoleProps = {
-  logsRef: LogEntry[];
-  onClear: () => void;
-  onSave: () => void;
+enum LogType {
+  None,
+  Out,
+  Error
 };
 
-export const Console: React.FC<ConsoleProps> = ({
-  logsRef,
-  onClear,
-  onSave,
-}) => {
+type LogEntry = {
+  type: LogType;
+  message: string;
+  timestamp: Date;
+};
+
+
+export default function PyodideConsole() {
+  const { pyodideRef, isLoading } = usePyodide();
+  const [logs, setLogs] = React.useState<LogEntry[]>([]);
   const bottomRef = React.useRef<HTMLDivElement>(null);
+
+  const append = (log: LogEntry) => {
+    setLogs((prev) => {
+      const maxLines = Number.parseInt(process.env.NEXT_PUBLIC_MAX_LOG_LINES!);
+      const trimmed = prev.length >= maxLines ? prev.slice(1) : prev;
+      return [...trimmed, log];
+    });
+  };
+
+  const clear = () => {
+    setLogs([]);
+  };
 
   React.useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [logsRef.length]);
+  }, [logs.length]);
+
+  React.useEffect(() => {
+    if (!pyodideRef.current || isLoading) return;
+
+    pyodideRef.current.setStdout({
+      batched: (message: string) => {
+        append({
+          type: LogType.Out,
+          message: message.trim(),
+          timestamp: new Date(),
+        });
+      },
+    });
+
+    pyodideRef.current.setStderr({
+      batched: (message: string) => {
+        append({
+          type: LogType.Error,
+          message: message.trim(),
+          timestamp: new Date(),
+        });
+      },
+    });
+  }, [pyodideRef, isLoading]);
 
   return (
     <Card
@@ -48,13 +88,16 @@ export const Console: React.FC<ConsoleProps> = ({
         title="実行ログ"
         action={
           <Box>
+            {/*
+            TODO
             <Tooltip title="ログを保存">
               <IconButton onClick={onSave}>
                 <SaveAlt />
               </IconButton>
             </Tooltip>
+            */}
             <Tooltip title="ログをクリア">
-              <IconButton onClick={onClear}>
+              <IconButton onClick={clear}>
                 <Delete />
               </IconButton>
             </Tooltip>
@@ -72,7 +115,7 @@ export const Console: React.FC<ConsoleProps> = ({
         }}
       >
         <List dense>
-          {logsRef.map((log, idx) => (
+          {logs.map((log, idx) => (
             <ListItem
               key={idx}
               alignItems="flex-start"
@@ -116,4 +159,4 @@ export const Console: React.FC<ConsoleProps> = ({
       </CardContent>
     </Card>
   );
-};
+}

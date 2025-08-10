@@ -1,14 +1,18 @@
 'use client';
 
-import { Editor, FileList, PlotlyViewer } from '@/features/coding/components';
-import React from 'react';
-
-import { Console } from '@/features/coding/components/Console';
-import { useConsoleLog } from '@/features/coding/hooks/ConsoleLog';
-import { PlayArrow } from '@mui/icons-material';
+import {
+  Editor,
+  EditorHandle,
+  PlotlyViewer,
+} from '@/features/coding/components';
+import { usePyodide } from '@/features/coding/providers';
+import PyodideConsole from '@/features/projects/components/PyodideConsole';
+import useEditProject from '@/features/projects/hooks/useEditProject';
+import { PlayArrow, Save } from '@mui/icons-material';
 import { TabContext, TabList } from '@mui/lab';
-import { Box, IconButton, Tab } from '@mui/material';
-import { useProjectEditController } from './controller';
+import { Box, CircularProgress, IconButton, Tab } from '@mui/material';
+import { useParams } from 'next/navigation';
+import React from 'react';
 
 const ProjectEditPageTab = {
   CODING: 1,
@@ -17,9 +21,45 @@ const ProjectEditPageTab = {
 
 export default function ProjectEditPage() {
   const [tabValue, setTab] = React.useState<number>(ProjectEditPageTab.CODING);
-  const { logs, clear } = useConsoleLog();
-  const { controller, editorRef, fileNames, loading } =
-    useProjectEditController();
+  const { projectId } = useParams();
+  const {
+    projectJson,
+    assetUrls,
+    error,
+    loading: isProjectLoading,
+    saveProject,
+  } = useEditProject(projectId?.toString() ?? '');
+  const editorRef = React.useRef<EditorHandle>(null);
+  const { pyodideRef, isLoading: isPyodideLoading } = usePyodide();
+
+  const run = async () => {
+    const code = editorRef.current?.toScript();
+    if (!code) {
+      throw new Error();
+    }
+    await pyodideRef.current?.runPythonAsync(code);
+  };
+
+  const save = async () => {
+    const projectJson = editorRef.current!.toWorkspaceJson();
+    await saveProject({ projectJson: projectJson, assets: [] });
+  };
+
+  if (isProjectLoading || isPyodideLoading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50 }}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ color: 'red', padding: 20 }}>
+        Error loading project: {error.message}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -52,8 +92,15 @@ export default function ProjectEditPage() {
               <Tab label="Coding" value={ProjectEditPageTab.CODING} />
               <Tab label="Plot" value={ProjectEditPageTab.PLOT} />
             </TabList>
-            <IconButton onClick={() => controller!.run()} color="success">
+            <IconButton
+              onClick={run}
+              color="success"
+              disabled={isPyodideLoading}
+            >
               <PlayArrow />
+            </IconButton>
+            <IconButton onClick={save}>
+              <Save />
             </IconButton>
           </Box>
         </TabContext>
@@ -62,7 +109,7 @@ export default function ProjectEditPage() {
             hidden={tabValue !== ProjectEditPageTab.CODING}
             style={{ height: '100%' }}
           >
-            <Editor ref={editorRef} fileNames={fileNames} />
+            <Editor ref={editorRef} initialProjectJson={projectJson} fileNames={[]} />
           </div>
           <div
             hidden={tabValue !== ProjectEditPageTab.PLOT}
@@ -92,7 +139,7 @@ export default function ProjectEditPage() {
             minHeight: 0,
           }}
         >
-          <Console logsRef={logs} onSave={() => {}} onClear={() => clear()} />
+          <PyodideConsole />
         </div>
         <div
           style={{
@@ -101,11 +148,11 @@ export default function ProjectEditPage() {
             minHeight: 0,
           }}
         >
-          <FileList
+          {/* <FileList
             fileNames={fileNames}
             onClickFileUpload={(e) => controller!.uploadFiles(e)}
             onRemoveFile={(fileName) => controller!.removeFile(fileName)}
-          />
+          /> */}
         </div>
       </div>
     </div>

@@ -1,78 +1,32 @@
 'use client';
 
-import React from 'react';
-import * as Blockly from 'blockly';
-import { registerContinuousToolbox } from '@blockly/continuous-toolbox';
-import { mlToolbox } from '@/lib/blockly';
+import useResizeObserver from '@/hooks/useResizeObserver';
+import useBlocklyWorkspace from '@/lib/blockly/hooks/useBlocklyWorkspace';
+import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
+import React from 'react';
 
 type EditorProps = {
-  toolbox?: Blockly.utils.toolbox.ToolboxDefinition;
+  initialProjectJson: string;
   fileNames: string[];
 };
 
 export type EditorHandle = {
   toWorkspaceJson: () => string;
-  toPython: () => string;
+  toScript: () => string;
 };
 
 export const Editor = React.forwardRef<EditorHandle, EditorProps>(
-  ({ toolbox = mlToolbox, fileNames }, ref) => {
-    const blocklyDivRef = React.useRef<HTMLDivElement | null>(null);
-    const [workspace, setWorkspace] =
-      React.useState<Blockly.WorkspaceSvg | null>(null);
-    const containerRef = React.useRef<HTMLDivElement | null>(null);
-
-    React.useEffect(() => {
-      if (blocklyDivRef.current && !workspace) {
-        Blockly.setLocale(require('blockly/msg/ja'));
-        // FIXME: クライアントのコンポーネントにしないとCSSが2回適用されるらしい？
-        registerContinuousToolbox();
-        const ws = Blockly.inject(blocklyDivRef.current, {
-          toolbox: toolbox,
-          trashcan: false,
-          grid: {
-            spacing: 20,
-            length: 3,
-            colour: '#ccc',
-          },
-          move: {
-            scrollbars: true,
-            drag: true,
-            wheel: true,
-          },
-          zoom: {
-            controls: true,
-            wheel: false,
-            startScale: 0.7,
-            maxScale: 1.0,
-            minScale: 0.3,
-            scaleSpeed: 1.2,
-          },
-        });
-
-        setWorkspace(ws);
-      }
-    }, []);
-
-    React.useEffect(() => {
-      if (!containerRef.current || !workspace) return;
-
-      const observer = new ResizeObserver(() => {
-        Blockly.svgResize(workspace);
-      });
-      observer.observe(containerRef.current);
-
-      return () => {
-        observer.disconnect();
-      };
-    }, [workspace]);
-
-    React.useEffect(() => {
+  ({ initialProjectJson, fileNames }, ref) => {
+    const { blocklyDivRef, workspace } = useBlocklyWorkspace({
+      data: { fileNames: fileNames },
+    });
+    const { ref: containerRef } = useResizeObserver(() => {
       if (workspace) {
-        (workspace as any).fileNames = fileNames;
+        Blockly.svgResize(workspace);
       }
-    }, [workspace, fileNames]);
+    });
+    const projectInitialized = React.useRef(false);
 
     React.useImperativeHandle(ref, () => ({
       toWorkspaceJson: () => {
@@ -81,13 +35,21 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
         console.log('Generated workspace JSON:', json);
         return JSON.stringify(json);
       },
-      toPython: () => {
+      toScript: () => {
         if (!workspace) return '';
         const code = pythonGenerator.workspaceToCode(workspace);
         console.log('Generated Python code:', code);
         return code;
       },
     }));
+
+    React.useEffect(() => {
+      if (!projectInitialized.current && initialProjectJson && workspace) {
+        const workspaceJson = JSON.parse(initialProjectJson);
+        Blockly.serialization.workspaces.load(workspaceJson, workspace);
+        projectInitialized.current = true;
+      }
+    }, [initialProjectJson, workspace]);
 
     return (
       <div
@@ -100,6 +62,7 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
         }}
       >
         <div
+          id="blockly-div"
           ref={blocklyDivRef}
           style={{
             flexGrow: 1,
