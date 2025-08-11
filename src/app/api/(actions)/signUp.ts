@@ -2,8 +2,8 @@
 
 import User from '@/features/users/domains';
 import { IUserRepository, UserRepository } from '@/features/users/repositories';
-import type { SignUpParams } from '@/features/users/schemas';
-import { SignUpSchema } from '@/features/users/schemas';
+import type { SignUpParams } from '@/features/users/types';
+import { SignUpSchema } from '@/features/users/types';
 import { withTransactionScope } from '@/lib/di/container';
 import { ServerActionResult } from '@/types';
 import bcrypt from 'bcrypt';

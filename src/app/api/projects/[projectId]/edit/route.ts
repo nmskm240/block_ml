@@ -68,14 +68,14 @@ export const GET = auth(async (request, context: { params: Params }) => {
     );
     const usecase = container.resolve(FetchEditableProjectUsecase);
     try {
-      const { projectJson, projectAssetUrls } = await usecase.execute(
+      const { projectJson, projectAssets } = await usecase.execute(
         projectId,
         session.user.id
       );
       const project = JSON.parse(projectJson);
       return NextResponse.json<GetEditingProjectResponse>({
         projectJson: project,
-        assetUrls: projectAssetUrls,
+        assets: projectAssets,
       });
     } catch (e) {
       return NextResponse.json({ error: 'Internal Error' }, { status: 500 });

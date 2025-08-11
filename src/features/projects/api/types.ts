@@ -1,3 +1,4 @@
+import { AssetSchema } from '@/features/assets/types';
 import { ProjectSummaryDto } from '../types';
 import { z } from 'zod';
 
@@ -26,7 +27,7 @@ export interface GetProjectsResponse {
 
 export const GetEditingProjectResponseSchema = z.object({
   projectJson: z.json(),
-  assetUrls: z.array(z.url())
+  assets: z.array(AssetSchema)
 });
 
 export type GetEditingProjectResponse = z.infer<typeof GetEditingProjectResponseSchema>;

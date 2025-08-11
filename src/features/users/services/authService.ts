@@ -1,7 +1,9 @@
-import { injectable } from 'tsyringe';
+import "reflect-metadata";
+import { inject, injectable } from 'tsyringe';
 import { type IUserRepository } from '../repositories';
 import User from '../domains';
 import bcrypt from 'bcrypt';
+import { Token } from '@/lib/di/types';
 
 export interface IAuthService {
   verify(email: string, password: string): Promise<User | null>;
@@ -10,6 +12,7 @@ export interface IAuthService {
 @injectable()
 export class AuthService implements IAuthService {
   constructor(
+    @inject(Token.UserRepository)
     private readonly _userRepository: IUserRepository
   ) {}
 

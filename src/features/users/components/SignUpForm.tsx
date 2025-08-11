@@ -1,12 +1,12 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, TextField, Typography, Box, Alert, Card } from '@mui/material';
-import { useState } from 'react';
 import { signUp } from '@/app/api/(actions)/signUp';
-import { SignUpSchema } from '../schemas';
-import type { SignUpParams } from '../schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Alert, Box, Button, Card, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import type { SignUpParams } from '../types';
+import { SignUpSchema } from '../types';
 
 export default function SignUpForm() {
   const {
@@ -36,7 +36,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <Card variant='outlined'>
+    <Card variant="outlined">
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}

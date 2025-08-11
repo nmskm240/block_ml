@@ -1,4 +1,5 @@
-import { Delete, SaveAlt } from '@mui/icons-material';
+import { usePyodide } from '@/lib/pyodide/providers/PyodideProvider';
+import { Delete } from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -13,20 +14,18 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { usePyodide } from '@/features/coding/providers';
 
 enum LogType {
   None,
   Out,
-  Error
-};
+  Error,
+}
 
 type LogEntry = {
   type: LogType;
   message: string;
   timestamp: Date;
 };
-
 
 export default function PyodideConsole() {
   const { pyodideRef, isLoading } = usePyodide();

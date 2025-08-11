@@ -3,6 +3,7 @@ import { inject, injectable } from 'tsyringe';
 import type { IAssetRepository } from '@/features/assets/repositories';
 import type { IProjectRepository } from '../repositories';
 import { Token } from '@/lib/di/types';
+import { Asset } from '@/features/assets/types';
 
 @injectable()
 export default class FetchEditableProjectUsecase {
@@ -16,7 +17,7 @@ export default class FetchEditableProjectUsecase {
   async execute(
     projectId: string,
     userId: string
-  ): Promise<{ projectJson: string; projectAssetUrls: string[] }> {
+  ): Promise<{ projectJson: string; projectAssets: Asset[] }> {
     const project = await this._projectRepository.findProjectById(projectId);
     if (!project || !project.isEdittable(userId)) {
       throw new Error('Project not found or not editable');
@@ -28,9 +29,13 @@ export default class FetchEditableProjectUsecase {
 
     return {
       projectJson: project.workspaceJson.value,
-      projectAssetUrls: assets
-        .filter((asset) => asset)
-        .map((asset) => asset!.path.value),
+      projectAssets: assets
+        .filter((asset) => asset !== undefined)
+        .map((asset) => ({
+          id: asset?.id.value,
+          name: asset?.name.value,
+          path: asset?.path.value,
+        })),
     };
   }
 }

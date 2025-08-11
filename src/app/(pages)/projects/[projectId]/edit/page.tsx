@@ -1,12 +1,9 @@
 'use client';
 
-import {
-  Editor,
-  EditorHandle,
-  PlotlyViewer,
-} from '@/features/coding/components';
-import { usePyodide } from '@/features/coding/providers';
+import { PlotlyViewer } from '@/features/coding/components';
+import { EditorHandle, Editor } from '@/features/projects/components/Editor';
 import PyodideConsole from '@/features/projects/components/PyodideConsole';
+import PyodideFileExplore from '@/features/projects/components/PyodideFileExplore';
 import useEditProject from '@/features/projects/hooks/useEditProject';
 import { PlayArrow, Save } from '@mui/icons-material';
 import { TabContext, TabList } from '@mui/lab';
@@ -21,23 +18,15 @@ const ProjectEditPageTab = {
 
 export default function ProjectEditPage() {
   const [tabValue, setTab] = React.useState<number>(ProjectEditPageTab.CODING);
-  const { projectId } = useParams();
-  const {
-    projectJson,
-    assetUrls,
-    error,
-    loading: isProjectLoading,
-    saveProject,
-  } = useEditProject(projectId?.toString() ?? '');
+  const { projectId } = useParams<{ projectId: string }>();
+  const { projectJson, assets, isLoading, saveProject } =
+    useEditProject(projectId);
   const editorRef = React.useRef<EditorHandle>(null);
-  const { pyodideRef, isLoading: isPyodideLoading } = usePyodide();
 
   const run = async () => {
-    const code = editorRef.current?.toScript();
-    if (!code) {
-      throw new Error();
-    }
-    await pyodideRef.current?.runPythonAsync(code);
+    try {
+      await editorRef.current?.run();
+    } catch (e) {}
   };
 
   const save = async () => {
@@ -45,18 +34,10 @@ export default function ProjectEditPage() {
     await saveProject({ projectJson: projectJson, assets: [] });
   };
 
-  if (isProjectLoading || isPyodideLoading) {
+  if (isLoading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: 50 }}>
         <CircularProgress />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ color: 'red', padding: 20 }}>
-        Error loading project: {error.message}
       </div>
     );
   }
@@ -92,11 +73,7 @@ export default function ProjectEditPage() {
               <Tab label="Coding" value={ProjectEditPageTab.CODING} />
               <Tab label="Plot" value={ProjectEditPageTab.PLOT} />
             </TabList>
-            <IconButton
-              onClick={run}
-              color="success"
-              disabled={isPyodideLoading}
-            >
+            <IconButton onClick={run} color="success" disabled={isLoading}>
               <PlayArrow />
             </IconButton>
             <IconButton onClick={save}>
@@ -109,7 +86,11 @@ export default function ProjectEditPage() {
             hidden={tabValue !== ProjectEditPageTab.CODING}
             style={{ height: '100%' }}
           >
-            <Editor ref={editorRef} initialProjectJson={projectJson} fileNames={[]} />
+            <Editor
+              ref={editorRef}
+              initialProjectJson={projectJson}
+              fileNames={[]}
+            />
           </div>
           <div
             hidden={tabValue !== ProjectEditPageTab.PLOT}
@@ -148,11 +129,7 @@ export default function ProjectEditPage() {
             minHeight: 0,
           }}
         >
-          {/* <FileList
-            fileNames={fileNames}
-            onClickFileUpload={(e) => controller!.uploadFiles(e)}
-            onRemoveFile={(fileName) => controller!.removeFile(fileName)}
-          /> */}
+          <PyodideFileExplore />
         </div>
       </div>
     </div>

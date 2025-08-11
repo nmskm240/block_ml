@@ -1,84 +1,55 @@
 'use client';
 
+import fetchAssetFromSignedUrl from '@/features/assets/functions/fetchAssetFromSignedUrl';
+import { Asset } from '@/features/assets/types';
 import React from 'react';
-import { useProjectApiClient } from '../providers/ApiClientProvider';
 import { SaveProjectRequest } from '../api/types';
+import { useProjectApiClient } from '../providers/ApiClientProvider';
+import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 
 type EditProjectData = {
   projectJson: string;
-  assetUrls: string[];
-  loading: boolean;
-  error: Error | null;
+  assets: Asset[];
+  isLoading: boolean;
   saveProject: (params: SaveProjectRequest) => Promise<void>;
 };
 
-export default function useEditProject(projectId?: string): EditProjectData {
+export default function useEditProject(projectId: string): EditProjectData {
   const client = useProjectApiClient();
-  const [state, setState] = React.useState<{
-    projectJson: string;
-    assetUrls: string[];
-    loading: boolean;
-    error: Error | null;
-  }>({
-    projectJson: '',
-    assetUrls: [],
-    loading: !!projectId,
-    error: null,
-  });
+  const service = usePyodideFileService();
+  const [projectJson, setProjectJson] = React.useState('');
+  const [assets, setAssets] = React.useState<Asset[]>([]);
+  const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (!projectId) {
-      setState({
-        projectJson: '',
-        assetUrls: [],
-        loading: false,
-        error: null,
-      });
+    if (!service) {
       return;
     }
 
-    let cancelled = false;
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
     const init = async () => {
-      try {
-        const { projectJson, assetUrls } = await client.getEditingProject(
-          projectId
-        );
-        if (!cancelled) {
-          setState({
-            projectJson: projectJson?.toString() ?? '',
-            assetUrls,
-            loading: false,
-            error: null,
-          });
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setState({
-            projectJson: '',
-            assetUrls: [],
-            loading: false,
-            error: err instanceof Error ? err : new Error('Unknown error'),
-          });
-        }
-      }
+      setLoading(true);
+      const { projectJson, assets } = await client.getEditingProject(projectId);
+      const assetFiles = await Promise.all(
+        assets.map((asset) =>
+          fetchAssetFromSignedUrl({ url: asset.path, fileName: asset.name })
+        )
+      );
+
+      await service?.uploads(assetFiles);
+
+      setProjectJson(projectJson?.toString() ?? '');
+      setAssets(assets);
+      setLoading(false);
     };
     init();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [client, projectId]);
+  }, [projectId, service]);
 
   const saveProject = async (params: SaveProjectRequest) => {
-    if (!projectId) return;
-    try {
-      await client.saveProject(projectId, params);
-    } catch (error) {
-      console.error('Failed to save project', error);
+    if (!projectId) {
+      throw new Error();
     }
+    await client.saveProject(projectId, params);
   };
 
-  return { ...state, saveProject };
+  return { projectJson, assets, isLoading, saveProject };
 }

@@ -2,6 +2,7 @@
 
 import useResizeObserver from '@/hooks/useResizeObserver';
 import useBlocklyWorkspace from '@/lib/blockly/hooks/useBlocklyWorkspace';
+import { usePyodide } from '@/lib/pyodide/providers/PyodideProvider';
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
 import React from 'react';
@@ -13,7 +14,7 @@ type EditorProps = {
 
 export type EditorHandle = {
   toWorkspaceJson: () => string;
-  toScript: () => string;
+  run: () => Promise<void>;
 };
 
 export const Editor = React.forwardRef<EditorHandle, EditorProps>(
@@ -26,6 +27,7 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
         Blockly.svgResize(workspace);
       }
     });
+    const { pyodideRef, isLoading } = usePyodide();
     const projectInitialized = React.useRef(false);
 
     React.useImperativeHandle(ref, () => ({
@@ -35,18 +37,22 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
         console.log('Generated workspace JSON:', json);
         return JSON.stringify(json);
       },
-      toScript: () => {
-        if (!workspace) return '';
+      run: async () => {
+        if (!workspace) return;
+
         const code = pythonGenerator.workspaceToCode(workspace);
         console.log('Generated Python code:', code);
-        return code;
+
+        await pyodideRef.current?.runPythonAsync(code);
       },
     }));
 
     React.useEffect(() => {
       if (!projectInitialized.current && initialProjectJson && workspace) {
-        const workspaceJson = JSON.parse(initialProjectJson);
-        Blockly.serialization.workspaces.load(workspaceJson, workspace);
+        Blockly.serialization.workspaces.load(
+          JSON.parse(initialProjectJson),
+          workspace
+        );
         projectInitialized.current = true;
       }
     }, [initialProjectJson, workspace]);
