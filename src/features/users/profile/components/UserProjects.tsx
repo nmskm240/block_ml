@@ -1,7 +1,7 @@
 'use client';
 
 import { ProjectSummaryList } from '@/features/projects/components/ProjectSummaryList';
-import { useProjectApiClient } from '@/features/projects/providers/apiClientProvider';
+import { useProjectApiClient } from '@/features/projects/providers/ApiClientProvider';
 import { ProjectSummaryDto } from '@/features/projects/types';
 import { CircularProgress } from '@mui/material';
 import React from 'react';

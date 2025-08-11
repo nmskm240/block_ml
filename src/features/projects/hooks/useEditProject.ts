@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useProjectApiClient } from '../providers/apiClientProvider';
+import { useProjectApiClient } from '../providers/ApiClientProvider';
 import { SaveProjectRequest } from '../api/types';
 
 type EditProjectData = {
