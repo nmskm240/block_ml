@@ -2,7 +2,9 @@
   "name": "block_ml",
   "image": "node:20-bookworm",
   "features": {
-    "ghcr.io/devcontainers/features/git:1": {}
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker": {},
+    "ghcr.io/devcontainers-extra/features/supabase-cli": {}
   },
   "customizations": {
     "vscode": {
@@ -12,11 +14,12 @@
         "dsznajder.es7-react-js-snippets",
         "xabikos.ReactSnippets",
         "Prisma.prisma",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "Supabase.vscode-supabase-extension"
       ]
     }
   },
   "containerEnv": {
-    "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@host.docker.internal:54322/postgres"
+    "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@localhost:54322/postgres"
   }
 }

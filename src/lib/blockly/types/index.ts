@@ -1,7 +1,7 @@
 import * as Blockly from 'blockly/core';
 
 export type BlocklyWorkspaceAdditionalParams = {
-  fileNames: string[];
+  fileNames: () => string[];
 };
 
 export type WithAdditionalWorkspace = Blockly.WorkspaceSvg & {

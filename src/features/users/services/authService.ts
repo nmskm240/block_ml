@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { inject, injectable } from 'tsyringe';
+import { Token } from '@/lib/di/types';
 import { type IUserRepository } from '../repositories';
 import User from '../domains';
 import bcrypt from 'bcrypt';
-import { Token } from '@/lib/di/types';
 
 export interface IAuthService {
   verify(email: string, password: string): Promise<User | null>;

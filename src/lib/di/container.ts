@@ -21,22 +21,32 @@ import {
 } from '@/features/users/services/authService';
 import { Prisma, PrismaClient } from '@/lib/prisma';
 import prisma from '@/lib/prisma/service';
-import supabase from '@/lib/supabase/client';
 import { StorageClient } from '@supabase/storage-js';
 import 'reflect-metadata';
-import { container, DependencyContainer } from 'tsyringe';
-import { Token } from './types';
+import {
+  container,
+  DependencyContainer,
+  instanceCachingFactory,
+} from 'tsyringe';
+import { Token } from '@/lib/di/types';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-container.registerInstance<StorageClient>(
-  Token.SupabaseStorageClient,
-  supabase.storage
+container.registerInstance<SupabaseClient>(
+  Token.SupabaseClient,
+  createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 );
+container.register<StorageClient>(Token.SupabaseStorageClient, {
+  useFactory: instanceCachingFactory((c) => {
+    const client = c.resolve<SupabaseClient>(Token.SupabaseClient);
+    return client.storage;
+  }),
+});
 container.registerInstance<PrismaClient>(Token.PrismaClient, prisma);
 
-container.register<IAssetRepository>(
-  Token.AssetRepository,
-  AssetRepository
-);
+container.register<IAssetRepository>(Token.AssetRepository, AssetRepository);
 container.register<IProjectRepository>(
   Token.ProjectRepository,
   ProjectRepository

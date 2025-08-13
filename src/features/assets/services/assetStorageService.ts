@@ -3,6 +3,7 @@ import { StorageClient } from '@supabase/storage-js';
 import { inject, injectable } from 'tsyringe';
 import Asset from '../domains';
 import type { IAssetRepository } from '../repositories';
+import 'reflect-metadata';
 
 const BUCKET_NAME: string = 'assets';
 
@@ -25,10 +26,9 @@ export class AssetStorageService implements IAssetStorageService {
 
     for (const file of files) {
       const asset = Asset.from(file);
-      const content = await file.arrayBuffer();
       const { error } = await this._client
         .from(BUCKET_NAME)
-        .upload(asset.path.value, content, {
+        .upload(asset.path.value, file, {
           contentType: file.type || 'application/octet-stream',
           cacheControl: '3600',
           upsert: true,

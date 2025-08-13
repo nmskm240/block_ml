@@ -2,6 +2,7 @@
 
 import useResizeObserver from '@/hooks/useResizeObserver';
 import useBlocklyWorkspace from '@/lib/blockly/hooks/useBlocklyWorkspace';
+import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 import { usePyodide } from '@/lib/pyodide/providers/PyodideProvider';
 import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
@@ -9,7 +10,6 @@ import React from 'react';
 
 type EditorProps = {
   initialProjectJson: string;
-  fileNames: string[];
 };
 
 export type EditorHandle = {
@@ -18,16 +18,17 @@ export type EditorHandle = {
 };
 
 export const Editor = React.forwardRef<EditorHandle, EditorProps>(
-  ({ initialProjectJson, fileNames }, ref) => {
+  ({ initialProjectJson }, ref) => {
+    const { pyodideRef, isLoading } = usePyodide();
+    const fileService = usePyodideFileService();
     const { blocklyDivRef, workspace } = useBlocklyWorkspace({
-      data: { fileNames: fileNames },
+      workspaceParams: { fileNames: () => fileService?.list() ?? [] },
     });
     const { ref: containerRef } = useResizeObserver(() => {
       if (workspace) {
         Blockly.svgResize(workspace);
       }
     });
-    const { pyodideRef, isLoading } = usePyodide();
     const projectInitialized = React.useRef(false);
 
     React.useImperativeHandle(ref, () => ({

@@ -1,5 +1,6 @@
 export const Token = {
-  SupabaseStorageClient: Symbol('SupabaseClient'),
+  SupabaseClient: Symbol('SupabaseClient'),
+  SupabaseStorageClient: Symbol('SupabaseStorageClient'),
   PrismaClient: Symbol('PrismaClient'),
 
   AssetRepository: Symbol('AssetRepository'),

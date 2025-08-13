@@ -21,10 +21,8 @@ export const PUT = auth(async (request, context: { params: Params }) => {
   const form = await request.formData();
   const parsed = SaveProjectRequestSchema.safeParse({
     projectJson: form.get('projectJson'),
+    assets: form.getAll('assets').filter((f): f is File => f instanceof File),
   });
-  const assets = form
-    .getAll('assets')
-    .filter((f): f is File => f instanceof File);
   if (!parsed.success) {
     return NextResponse.json(
       { error: 'Invalid data', details: parsed.error.message },
@@ -40,7 +38,7 @@ export const PUT = auth(async (request, context: { params: Params }) => {
       await usecase.execute(session.user.id, {
         id: projectId,
         json: parsed.data.projectJson!.toString(),
-        assets: assets,
+        assets: parsed.data.assets!.filter((f) => f !== undefined),
       });
       return NextResponse.json<SaveProjectResponse>(
         {},
@@ -49,7 +47,10 @@ export const PUT = auth(async (request, context: { params: Params }) => {
         }
       );
     } catch (e) {
-      return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+      return NextResponse.json(
+        { error: (e as Error).message },
+        { status: 500 }
+      );
     }
   });
 });

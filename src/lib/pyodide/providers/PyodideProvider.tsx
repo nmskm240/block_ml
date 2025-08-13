@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { PyodideAPI } from 'pyodide';
+import type { PyodideInterface } from 'pyodide';
 import Script from 'next/script';
 
 const PYODIDE_VERSION = process.env.NEXT_PUBLIC_PYODIDE_VERSION!;
@@ -16,7 +16,7 @@ const PYPI_PACKAGES = process.env
   .map((p) => p.trim());
 
 type PyodideContextType = {
-  pyodideRef: React.RefObject<PyodideAPI | null>;
+  pyodideRef: React.RefObject<PyodideInterface | null>;
   isLoading: boolean;
 };
 
@@ -29,7 +29,7 @@ const PyodideContext = React.createContext<PyodideContextType | undefined>(
 );
 
 export function PyodideProvider({ children }: PyodideProviderProps) {
-  const pyodideRef = React.useRef<PyodideAPI>(null);
+  const pyodideRef = React.useRef<PyodideInterface>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const loadPyodideEnv = React.useCallback(async () => {
     setIsLoading(true);

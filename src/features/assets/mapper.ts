@@ -11,8 +11,8 @@ export function toDomain(entity: AssetEntity): Asset {
 
 export function toEntity(model: Asset): AssetEntity {
   return {
-    id: model.id,
-    fileName: model.name,
-    filePath: model.path,
+    id: model.id.value,
+    fileName: model.name.value,
+    filePath: model.path.value,
   };
 }

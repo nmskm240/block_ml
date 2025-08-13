@@ -6,7 +6,7 @@ import { SignInSchema } from '@/features/users/types';
 import { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import 'reflect-metadata';
-import { container } from 'tsyringe';
+import container from '@/lib/di/container';
 
 export default {
   providers: [

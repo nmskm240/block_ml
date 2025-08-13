@@ -3,7 +3,6 @@
 import fetchAssetFromSignedUrl from '@/features/assets/functions/fetchAssetFromSignedUrl';
 import { Asset } from '@/features/assets/types';
 import React from 'react';
-import { SaveProjectRequest } from '../api/types';
 import { useProjectApiClient } from '../providers/ApiClientProvider';
 import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 
@@ -11,7 +10,6 @@ type EditProjectData = {
   projectJson: string;
   assets: Asset[];
   isLoading: boolean;
-  saveProject: (params: SaveProjectRequest) => Promise<void>;
 };
 
 export default function useEditProject(projectId: string): EditProjectData {
@@ -44,12 +42,5 @@ export default function useEditProject(projectId: string): EditProjectData {
     init();
   }, [projectId, service]);
 
-  const saveProject = async (params: SaveProjectRequest) => {
-    if (!projectId) {
-      throw new Error();
-    }
-    await client.saveProject(projectId, params);
-  };
-
-  return { projectJson, assets, isLoading, saveProject };
+  return { projectJson, assets, isLoading };
 }

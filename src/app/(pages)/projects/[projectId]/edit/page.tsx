@@ -5,6 +5,8 @@ import { EditorHandle, Editor } from '@/features/projects/components/Editor';
 import PyodideConsole from '@/features/projects/components/PyodideConsole';
 import PyodideFileExplore from '@/features/projects/components/PyodideFileExplore';
 import useEditProject from '@/features/projects/hooks/useEditProject';
+import { useProjectApiClient } from '@/features/projects/providers/ApiClientProvider';
+import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 import { PlayArrow, Save } from '@mui/icons-material';
 import { TabContext, TabList } from '@mui/lab';
 import { Box, CircularProgress, IconButton, Tab } from '@mui/material';
@@ -19,9 +21,10 @@ const ProjectEditPageTab = {
 export default function ProjectEditPage() {
   const [tabValue, setTab] = React.useState<number>(ProjectEditPageTab.CODING);
   const { projectId } = useParams<{ projectId: string }>();
-  const { projectJson, assets, isLoading, saveProject } =
-    useEditProject(projectId);
+  const { projectJson, isLoading } = useEditProject(projectId);
   const editorRef = React.useRef<EditorHandle>(null);
+  const projectApi = useProjectApiClient();
+  const fileService = usePyodideFileService();
 
   const run = async () => {
     try {
@@ -31,7 +34,10 @@ export default function ProjectEditPage() {
 
   const save = async () => {
     const projectJson = editorRef.current!.toWorkspaceJson();
-    await saveProject({ projectJson: projectJson, assets: [] });
+    await projectApi.saveProject(projectId, {
+      projectJson: projectJson,
+      assets: await fileService?.listFiles(),
+    });
   };
 
   if (isLoading) {
@@ -86,11 +92,7 @@ export default function ProjectEditPage() {
             hidden={tabValue !== ProjectEditPageTab.CODING}
             style={{ height: '100%' }}
           >
-            <Editor
-              ref={editorRef}
-              initialProjectJson={projectJson}
-              fileNames={[]}
-            />
+            <Editor ref={editorRef} initialProjectJson={projectJson} />
           </div>
           <div
             hidden={tabValue !== ProjectEditPageTab.PLOT}

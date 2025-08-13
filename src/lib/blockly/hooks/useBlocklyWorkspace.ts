@@ -8,15 +8,15 @@ import {
 import mlToolbox from '../workspace/toolbox';
 
 type Params = {
+  workspaceParams: BlocklyWorkspaceAdditionalParams;
   locale?: string;
   toolbox?: Blockly.utils.toolbox.ToolboxDefinition;
-  data?: BlocklyWorkspaceAdditionalParams;
 };
 
 export default function useBlocklyWorkspace({
+  workspaceParams,
   locale = 'ja',
   toolbox = mlToolbox,
-  data = { fileNames: [] },
 }: Params) {
   const blocklyDivRef = React.useRef<HTMLDivElement>(null);
   const [workspace, setWorkspace] = React.useState<Blockly.WorkspaceSvg | null>(
@@ -29,10 +29,10 @@ export default function useBlocklyWorkspace({
       return;
     }
 
-    if (!initialized.current) {
-      registerContinuousToolbox();
-      initialized.current = true;
-    }
+    // if (!initialized.current) {
+    //   registerContinuousToolbox();
+    //   initialized.current = true;
+    // }
 
     Blockly.setLocale(require(`blockly/msg/ja`));
     const ws = Blockly.inject(blocklyDivRef.current, {
@@ -67,9 +67,9 @@ export default function useBlocklyWorkspace({
 
   React.useEffect(() => {
     if (workspace) {
-      (workspace as WithAdditionalWorkspace).data = data;
+      (workspace as WithAdditionalWorkspace).data = workspaceParams;
     }
-  }, [workspace, data]);
+  }, [workspace, workspaceParams]);
 
   return { blocklyDivRef, workspace };
 }
