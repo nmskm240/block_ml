@@ -1,23 +1,30 @@
 import {
   CreateProjectRequest,
   CreateProjectResponse,
+  GetEditingProjectResponse,
   GetProjectsRequest,
   GetProjectsResponse,
   SaveProjectRequest,
+  SaveProjectRequestSchema,
   SaveProjectResponse,
 } from './types';
 
 export interface IProjectApiClient {
   createProject(request: CreateProjectRequest): Promise<CreateProjectResponse>;
-  saveProject(request: SaveProjectRequest): Promise<SaveProjectResponse>;
+  saveProject(
+    projectId: string,
+    request: SaveProjectRequest
+  ): Promise<SaveProjectResponse>;
+  // FIXME: searchでは?
   getProjectSummaries(
-    request: GetProjectsRequest,
+    request: GetProjectsRequest
   ): Promise<GetProjectsResponse>;
+  getEditingProject(projectId: string): Promise<GetEditingProjectResponse>;
 }
 
 export class ProjectApiClient implements IProjectApiClient {
   async getProjectSummaries(
-    request: GetProjectsRequest,
+    request: GetProjectsRequest
   ): Promise<GetProjectsResponse> {
     const params = new URLSearchParams();
 
@@ -43,7 +50,7 @@ export class ProjectApiClient implements IProjectApiClient {
   }
 
   async createProject(
-    request: CreateProjectRequest,
+    request: CreateProjectRequest
   ): Promise<CreateProjectResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects`,
@@ -55,7 +62,7 @@ export class ProjectApiClient implements IProjectApiClient {
         body: JSON.stringify(request),
         cache: 'no-cache',
         credentials: 'include',
-      },
+      }
     );
 
     if (!response.ok) {
@@ -66,14 +73,26 @@ export class ProjectApiClient implements IProjectApiClient {
     return (await response.json()) as CreateProjectResponse;
   }
 
-  async saveProject(request: SaveProjectRequest): Promise<SaveProjectResponse> {
+  async saveProject(
+    projectId: string,
+    request: SaveProjectRequest
+  ): Promise<SaveProjectResponse> {
+    const parsed = await SaveProjectRequestSchema.safeParseAsync(request);
+    if (!parsed.success) {
+      throw new Error();
+    }
+    const data = new FormData();
+    data.append('projectJson', parsed.data.projectJson!.toString());
+    for (const file of parsed.data.assets ?? []) {
+      data.append('assets', file);
+    }
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${request.projectId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${projectId}/edit`,
       {
         method: 'PUT',
-        body: JSON.stringify(request),
+        body: data,
         credentials: 'include',
-      },
+      }
     );
 
     if (!response.ok) {
@@ -82,5 +101,21 @@ export class ProjectApiClient implements IProjectApiClient {
     }
 
     return (await response.json()) as SaveProjectResponse;
+  }
+
+  async getEditingProject(
+    projectId: string
+  ): Promise<GetEditingProjectResponse> {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${projectId}/edit`,
+      { method: 'GET', credentials: 'include' }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+
+    return (await response.json()) as GetEditingProjectResponse;
   }
 }

@@ -1,6 +1,6 @@
 import { Email } from '@/lib/domain/vo/email';
 import { HashedPassword } from '@/lib/domain/vo/hashedPassword';
-import { UserId } from '@/lib/domain/vo/Id';
+import Id from '@/lib/domain/vo/Id';
 
 export default class User {
   private _id?: UserId;
@@ -13,7 +13,7 @@ export default class User {
     email: string,
     password: string,
     readonly status: UserStatus,
-    id?: string
+    id?: string,
   ) {
     this._id = id ? new UserId(id) : undefined;
     this._name = new UserName(name);
@@ -47,7 +47,7 @@ export default class User {
       params.email ?? this.email,
       params.password ?? this.password,
       params.status ?? this.status,
-      params.id ?? this.id
+      params.id ?? this.id,
     );
   }
 }
@@ -61,6 +61,8 @@ export const UserStatus = {
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
 
 //#region valueObjects
+
+export class UserId extends Id<UserId> {}
 
 class UserName {
   constructor(readonly value: string) {

@@ -1,13 +1,13 @@
 'use server';
 
-import 'reflect-metadata';
 import User from '@/features/users/domains';
 import { IUserRepository, UserRepository } from '@/features/users/repositories';
-import container from '@/lib/container';
+import type { SignUpParams } from '@/features/users/types';
+import { SignUpSchema } from '@/features/users/types';
+import { withTransactionScope } from '@/lib/di/container';
 import { ServerActionResult } from '@/types';
 import bcrypt from 'bcrypt';
-import type { SignUpParams } from '@/features/users/schemas';
-import { SignUpSchema } from '@/features/users/schemas';
+import 'reflect-metadata';
 
 export async function signUp(
   values: SignUpParams
@@ -22,25 +22,26 @@ export async function signUp(
     };
   }
   const { name, email, password } = parsed.data;
-  const repository = container.resolve<IUserRepository>(UserRepository);
-  const exists = await repository.existsByEmail(email);
+  return await withTransactionScope(async (container) => {
+    const repository = container.resolve<IUserRepository>(UserRepository);
+    const exists = await repository.existsByEmail(email);
 
-  if (exists) {
+    if (exists) {
+      return {
+        isSuccess: false,
+        error: {
+          message: 'User already exists',
+        },
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = User.new(name, email, hashedPassword);
+
+    await repository.create(user);
     return {
-      isSuccess: false,
-      error: {
-        message: 'User already exists',
-      },
+      isSuccess: true,
+      message: 'User created successfully',
     };
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = User.new(name, email, hashedPassword);
-
-  await repository.create(user);
-
-  return {
-    isSuccess: true,
-    message: 'User created successfully',
-  };
+  });
 }

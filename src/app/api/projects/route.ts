@@ -1,39 +1,40 @@
-import 'reflect-metadata';
 import {
   CreateProjectRequest,
   CreateProjectResponse,
   GetProjectsRequest,
   GetProjectsResponse,
 } from '@/features/projects/api/types';
-import { Project } from '@/features/projects/domains';
+import Project from '@/features/projects/domains';
 import { ProjectRepository } from '@/features/projects/repositories';
-import container from '@/lib/container';
+import { withTransactionScope } from '@/lib/di/container';
 import { auth } from '@/lib/nextAuth/auth';
 import { NextRequest, NextResponse } from 'next/server';
+import 'reflect-metadata';
 
 // プロジェクトを新規作成する
 export const POST = auth(async (request) => {
-  const projectRepository = container.resolve(ProjectRepository);
-  const body = (await request.json()) as CreateProjectRequest;
-  if (!body) {
-    return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
-  }
+  return await withTransactionScope(async (container) => {
+    const projectRepository = container.resolve(ProjectRepository);
+    const body = (await request.json()) as CreateProjectRequest;
+    if (!body) {
+      return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+    }
 
-  const session = request.auth;
-  if (session?.user.id) {
-    let project = Project.empty(session.user.id);
-    project = await projectRepository.createProject(project);
-    const response: CreateProjectResponse = {
-      projectId: project.id!,
-    };
-    return NextResponse.json(response, { status: 201 });
-  } else {
-    const project = Project.empty();
-    const response: CreateProjectResponse = {
-      projectId: undefined,
-    };
-    return NextResponse.json(response, { status: 200 });
-  }
+    const session = request.auth;
+    if (session?.user.id) {
+      let project = Project.empty(session.user.id);
+      project = await projectRepository.createProject(project);
+      const response: CreateProjectResponse = {
+        projectId: project.id.value,
+      };
+      return NextResponse.json(response, { status: 201 });
+    } else {
+      const response: CreateProjectResponse = {
+        projectId: undefined,
+      };
+      return NextResponse.json(response, { status: 200 });
+    }
+  });
 });
 
 // プロジェクトをフィルタリングする
@@ -48,18 +49,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.json('Coming soon..', { status: 400 });
   }
 
-  const projectRepository = container.resolve(ProjectRepository);
-  const projects = await projectRepository.getProjectsByUserId(params.userId);
+  return await withTransactionScope(async (container) => {
+    const projectRepository = container.resolve(ProjectRepository);
+    const projects = await projectRepository.findProjectsByUserId(
+      params.userId!
+    );
 
-  const response: GetProjectsResponse = {
-    projectSummaries: projects.map((p) => {
-      return {
-        id: p.id!,
-        title: p.title,
-        updatedAt: p.updatedAt!,
-      };
-    }),
-  };
+    const response: GetProjectsResponse = {
+      projectSummaries: projects.map((p) => {
+        return {
+          id: p.id.value,
+          title: p.title.value,
+          updatedAt: p.updatedAt,
+        };
+      }),
+    };
 
-  return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(response, { status: 200 });
+  });
 }

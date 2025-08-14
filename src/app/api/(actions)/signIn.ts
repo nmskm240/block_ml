@@ -1,11 +1,11 @@
 'use server';
 
-import 'reflect-metadata';
+import type { SignInParams } from '@/features/users/types';
+import { SignInSchema } from '@/features/users/types';
 import { signIn as NextAuthSignIn } from '@/lib/nextAuth/auth';
-import { SignInSchema } from '@/features/users/schemas';
-import type { SignInParams } from '@/features/users/schemas';
 import { ServerActionResult } from '@/types';
 import { AuthError } from 'next-auth';
+import 'reflect-metadata';
 
 export default async function signIn(
   values: SignInParams

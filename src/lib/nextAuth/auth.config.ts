@@ -1,12 +1,12 @@
-import 'reflect-metadata';
-import { SignInSchema } from '@/features/users/schemas';
 import {
   AuthService,
   IAuthService,
 } from '@/features/users/services/authService';
+import { SignInSchema } from '@/features/users/types';
 import { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { container } from 'tsyringe';
+import 'reflect-metadata';
+import container from '@/lib/di/container';
 
 export default {
   providers: [

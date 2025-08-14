@@ -1,9 +1,6 @@
+import { PlotlyProvider } from '@/features/coding/providers';
+import { PyodideProvider } from '@/lib/pyodide/providers/PyodideProvider';
 import '@/styles/globals.css';
-import {
-  PlotlyProvider,
-  PyodideProvider,
-  UploadFileProvider,
-} from '@/features/coding/providers';
 
 export default function ProjectsRootLayout({
   children,
@@ -13,9 +10,7 @@ export default function ProjectsRootLayout({
   return (
     <>
       <PlotlyProvider>
-        <PyodideProvider>
-          <UploadFileProvider>{children}</UploadFileProvider>
-        </PyodideProvider>
+        <PyodideProvider>{children}</PyodideProvider>
       </PlotlyProvider>
     </>
   );

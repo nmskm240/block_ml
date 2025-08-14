@@ -1,6 +1,8 @@
-export class Id {
+import { createId, isCuid } from '@paralleldrive/cuid2';
+
+export default abstract class Id<T extends Id<any>> {
   constructor(readonly value: string) {
-    if (!value.match(/^c[a-z0-9]{24}$/)) {
+    if (!isCuid(value)) {
       throw new Error('Invalid CUID');
     }
   }
@@ -9,10 +11,11 @@ export class Id {
     return this.value;
   }
 
-  equals(other: Id): boolean {
-    return this.value === other.value;
+  equals(other: T): boolean {
+    return (
+      other instanceof Id &&
+      this.constructor === other.constructor &&
+      this.value === other.value
+    );
   }
 }
-
-export class ProjectId extends Id {}
-export class UserId extends Id {}

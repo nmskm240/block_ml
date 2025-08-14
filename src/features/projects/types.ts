@@ -1,7 +1,8 @@
-import { ProjectEntity } from '@/lib/prisma/client';
+import { Project as ProjectEntity } from '@/lib/prisma/client';
 
-export type ProjectEntityInput = Partial<
-  Omit<ProjectEntity, 'createdAt' | 'updatedAt' | 'statusUpdatedAt'>
+export type ProjectEntityInput = Omit<
+  ProjectEntity,
+  'createdAt' | 'updatedAt' | 'statusUpdatedAt'
 >;
 
 export interface ProjectSummaryDto {
