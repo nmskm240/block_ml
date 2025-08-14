@@ -29,7 +29,7 @@ export default class UpdateProjectUsecase {
     const uploadedAssets = await this._storageService.upload(input.assets);
     project.edit(
       input.json,
-      uploadedAssets.map((asset) => asset.path.value)
+      uploadedAssets.map((asset) => asset.id.value)
     );
     await this._projectRepository.updateProject(project);
   }

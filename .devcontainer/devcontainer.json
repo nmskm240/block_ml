@@ -15,7 +15,8 @@
         "xabikos.ReactSnippets",
         "Prisma.prisma",
         "EditorConfig.EditorConfig",
-        "Supabase.vscode-supabase-extension"
+        "Supabase.vscode-supabase-extension",
+        "Gruntfuggly.todo-tree"
       ]
     }
   },

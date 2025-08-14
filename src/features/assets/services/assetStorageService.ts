@@ -21,6 +21,7 @@ export class AssetStorageService implements IAssetStorageService {
     private readonly _repository: IAssetRepository
   ) {}
 
+  // FIXME: アップロードしたファイルに毎回新しいIDが割り当てられるためゴミが溜まりやすい
   async upload(files: File[]): Promise<Asset[]> {
     const uploaded: Asset[] = [];
 
