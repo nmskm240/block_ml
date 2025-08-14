@@ -25,4 +25,22 @@ export default class PyodideFileService {
       (name) => name !== '.' && name !== '..'
     );
   }
+
+  async listFiles(): Promise<File[]> {
+    const fileNames: string[] = this._api.FS.readdir(BASE_PATH).filter(
+      (name) => name !== '.' && name !== '..'
+    );
+
+    const files: File[] = [];
+    for (const name of fileNames) {
+      const uint8 = await this._api.runPythonAsync(`
+import js
+with open("${BASE_PATH}/${name}", "rb") as f:
+    data = f.read()
+js.Uint8Array.new(data)
+    `);
+      files.push(new File([uint8], name));
+    }
+    return files;
+  }
 }

@@ -1,15 +1,15 @@
 import { Token } from '@/lib/di/types';
 import { StorageClient } from '@supabase/storage-js';
+import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
 import Asset from '../domains';
 import type { IAssetRepository } from '../repositories';
-import 'reflect-metadata';
 
 const BUCKET_NAME: string = 'assets';
 
 export interface IAssetStorageService {
   upload(files: File[]): Promise<Asset[]>;
-  downloadUrls(ids: string[]): Promise<string[]>;
+  downloads(ids: string[]): Promise<Asset[]>;
 }
 
 @injectable()
@@ -26,7 +26,7 @@ export class AssetStorageService implements IAssetStorageService {
 
     for (const file of files) {
       const asset = Asset.from(file);
-      const { error } = await this._client
+      const { data, error } = await this._client
         .from(BUCKET_NAME)
         .upload(asset.path.value, file, {
           contentType: file.type || 'application/octet-stream',
@@ -45,8 +45,8 @@ export class AssetStorageService implements IAssetStorageService {
     return uploaded;
   }
 
-  async downloadUrls(ids: string[]): Promise<string[]> {
-    const urls: string[] = [];
+  async downloads(ids: string[]): Promise<Asset[]> {
+    const assets: Asset[] = [];
     for (const id of ids) {
       const asset = await this._repository.findById(id);
       if (!asset) {
@@ -60,9 +60,10 @@ export class AssetStorageService implements IAssetStorageService {
         throw new Error(`Failed to create signed URL for ${id}`);
       }
 
-      urls.push(data.signedUrl);
+      asset.move(data.signedUrl);
+      assets.push(asset);
     }
 
-    return urls;
+    return assets;
   }
 }

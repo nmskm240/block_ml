@@ -1,17 +1,17 @@
+import type { IAssetStorageService } from '@/features/assets/services/assetStorageService';
+import { Asset } from '@/features/assets/types';
+import { Token } from '@/lib/di/types';
 import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
-import type { IAssetRepository } from '@/features/assets/repositories';
 import type { IProjectRepository } from '../repositories';
-import { Token } from '@/lib/di/types';
-import { Asset } from '@/features/assets/types';
 
 @injectable()
 export default class FetchEditableProjectUsecase {
   constructor(
     @inject(Token.ProjectRepository)
     private readonly _projectRepository: IProjectRepository,
-    @inject(Token.AssetRepository)
-    private readonly _assetRepository: IAssetRepository
+    @inject(Token.AssetStorageService)
+    private readonly _storageService: IAssetStorageService
   ) {}
 
   async execute(
@@ -23,8 +23,8 @@ export default class FetchEditableProjectUsecase {
       throw new Error('Project not found or not editable');
     }
 
-    const assets = await Promise.all(
-      project.assetIds.map((id) => this._assetRepository.findById(id.value))
+    const assets = await this._storageService.downloads(
+      project.assetIds.map((e) => e.value)
     );
 
     return {
