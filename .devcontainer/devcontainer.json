@@ -16,11 +16,14 @@
         "Prisma.prisma",
         "EditorConfig.EditorConfig",
         "Supabase.vscode-supabase-extension",
-        "Gruntfuggly.todo-tree"
+        "Gruntfuggly.todo-tree",
+        "Orta.vscode-jest"
       ]
     }
   },
+  "postCreateCommand": "npm install -g @google/gemini-cli",
   "containerEnv": {
-    "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@localhost:54322/postgres"
+    "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@localhost:54322/postgres",
+    "WATCHPACK_POLLING": "true"
   }
 }

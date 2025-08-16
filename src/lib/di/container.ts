@@ -19,8 +19,7 @@ import {
   AuthService,
   IAuthService,
 } from '@/features/users/services/authService';
-import { Prisma, PrismaClient } from '@/lib/prisma';
-import prisma from '@/lib/prisma/service';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { StorageClient } from '@supabase/storage-js';
 import 'reflect-metadata';
 import {
@@ -30,6 +29,7 @@ import {
 } from 'tsyringe';
 import { Token } from '@/lib/di/types';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import prisma from '@/lib/prisma/client';
 
 container.registerInstance<SupabaseClient>(
   Token.SupabaseClient,

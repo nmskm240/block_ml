@@ -13,12 +13,12 @@ export default class User {
     email: string,
     password: string,
     readonly status: UserStatus,
-    id?: string,
+    id?: string
   ) {
     this._id = id ? new UserId(id) : undefined;
     this._name = new UserName(name);
     this._email = new Email(email);
-    this._password = new HashedPassword(password);
+    this._password = HashedPassword.fromRaw(password);
   }
 
   static new(name: string, email: string, password: string): User {
@@ -37,7 +37,7 @@ export default class User {
     return this._email.value;
   }
 
-  get password() {
+  get hashedPassword() {
     return this._password.value;
   }
 
@@ -45,9 +45,9 @@ export default class User {
     return new User(
       params.name ?? this.name,
       params.email ?? this.email,
-      params.password ?? this.password,
+      params.hashedPassword ?? this.hashedPassword,
       params.status ?? this.status,
-      params.id ?? this.id,
+      params.id ?? this.id
     );
   }
 }

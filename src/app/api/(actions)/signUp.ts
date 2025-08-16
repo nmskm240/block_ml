@@ -6,7 +6,7 @@ import type { SignUpParams } from '@/features/users/types';
 import { SignUpSchema } from '@/features/users/types';
 import { withTransactionScope } from '@/lib/di/container';
 import { ServerActionResult } from '@/types';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import 'reflect-metadata';
 
 export async function signUp(
