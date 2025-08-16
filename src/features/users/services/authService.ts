@@ -1,9 +1,9 @@
-import "reflect-metadata";
-import { inject, injectable } from 'tsyringe';
 import { Token } from '@/lib/di/types';
-import { type IUserRepository } from '../repositories';
+import bcrypt from 'bcryptjs';
+import 'reflect-metadata';
+import { inject, injectable } from 'tsyringe';
 import User from '../domains';
-import bcrypt from 'bcrypt';
+import { type IUserRepository } from '../repositories';
 
 export interface IAuthService {
   verify(email: string, password: string): Promise<User | null>;
@@ -18,11 +18,11 @@ export class AuthService implements IAuthService {
 
   async verify(email: string, password: string): Promise<User | null> {
     const user = await this._userRepository.findByEmail(email);
-    if (!user || !user.password) {
+    if (!user || !user.hashedPassword) {
       return null;
     }
 
-    const isValid = await bcrypt.compare(password, user.password);
+    const isValid = await bcrypt.compare(password, user.hashedPassword);
     if (!isValid) {
       return null;
     }

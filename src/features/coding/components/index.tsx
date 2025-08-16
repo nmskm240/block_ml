@@ -1,1 +1,0 @@
-export { PlotlyViewer } from './PlotlyViewer';

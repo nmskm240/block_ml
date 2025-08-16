@@ -1,4 +1,4 @@
-import { User as UserEntity } from '@/lib/prisma';
+import { User as UserEntity } from '@prisma/client';
 import User from './domains';
 
 export function toDomain(entity: UserEntity): User {
@@ -15,7 +15,7 @@ export function toEntity(
     name: model.name,
     email: model.email,
     emailVerified: null,
-    password: model.password,
+    password: model.hashedPassword,
     image: null,
   };
 }

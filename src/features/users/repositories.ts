@@ -2,13 +2,13 @@ import "reflect-metadata";
 import { inject, injectable } from 'tsyringe';
 import User from './domains';
 import { toDomain, toEntity } from './mapper';
-import { Prisma, PrismaClient } from '@/lib/prisma';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Token } from '@/lib/di/types';
 
 export interface IUserRepository {
   create(user: User): Promise<User>;
-  findById(userId: string): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
+  findById(userId: string): Promise<User | undefined>;
+  findByEmail(email: string): Promise<User | undefined>;
   existsByEmail(email: string): Promise<boolean>;
 }
 
@@ -27,25 +27,25 @@ export class UserRepository implements IUserRepository {
     return toDomain(saved);
   }
 
-  async findById(userId: string): Promise<User | null> {
+  async findById(userId: string): Promise<User | undefined> {
     const entity = await this._client.user.findUnique({
       where: { id: userId },
     });
 
     if (!entity) {
-      return null;
+      return undefined;
     }
 
     return toDomain(entity);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<User | undefined> {
     const entity = await this._client.user.findUnique({
       where: { email: email },
     });
 
     if (!entity) {
-      return null;
+      return undefined;
     }
 
     return toDomain(entity);

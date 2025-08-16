@@ -2,7 +2,7 @@ import {
   ProjectAsset as ProjectAssetEntity,
   Project as ProjectEntity,
   UserProject as UserProjectEntity,
-} from '@/lib/prisma';
+} from '@prisma/client';
 import Project, { ProjectStatus } from './domains';
 import { ProjectEntityInput } from './types';
 
