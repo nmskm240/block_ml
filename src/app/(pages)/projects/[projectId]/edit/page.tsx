@@ -1,6 +1,5 @@
 'use client';
 
-import { PlotlyViewer } from '@/features/coding/components';
 import { EditorHandle, Editor } from '@/features/projects/components/Editor';
 import PyodideConsole from '@/features/projects/components/PyodideConsole';
 import PyodideFileExplore from '@/features/projects/components/PyodideFileExplore';
@@ -8,19 +7,16 @@ import useEditProject from '@/features/projects/hooks/useEditProject';
 import { useProjectApiClient } from '@/features/projects/providers/ApiClientProvider';
 import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 import { PlayArrow, Save } from '@mui/icons-material';
-import { TabContext, TabList } from '@mui/lab';
-import { Box, CircularProgress, IconButton, Tab } from '@mui/material';
+import { Box, CircularProgress, IconButton } from '@mui/material';
 import { useParams } from 'next/navigation';
 import React from 'react';
 
-const ProjectEditPageTab = {
-  CODING: 1,
-  PLOT: 2,
-} as const;
+type PageParams = {
+  projectId: string
+};
 
 export default function ProjectEditPage() {
-  const [tabValue, setTab] = React.useState<number>(ProjectEditPageTab.CODING);
-  const { projectId } = useParams<{ projectId: string }>();
+  const { projectId } = useParams<PageParams>();
   const { projectJson, isLoading } = useEditProject(projectId);
   const editorRef = React.useRef<EditorHandle>(null);
   const projectApi = useProjectApiClient();
@@ -65,41 +61,23 @@ export default function ProjectEditPage() {
           flexDirection: 'column',
         }}
       >
-        <TabContext value={tabValue}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              px: 2,
-              pt: 1,
-            }}
-          >
-            <TabList onChange={(e, newValue) => setTab(newValue)}>
-              <Tab label="Coding" value={ProjectEditPageTab.CODING} />
-              <Tab label="Plot" value={ProjectEditPageTab.PLOT} />
-            </TabList>
-            <IconButton onClick={run} color="success" disabled={isLoading}>
-              <PlayArrow />
-            </IconButton>
-            <IconButton onClick={save}>
-              <Save />
-            </IconButton>
-          </Box>
-        </TabContext>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            px: 2,
+            pt: 1,
+          }}
+        >
+          <IconButton onClick={run} color="success" disabled={isLoading}>
+            <PlayArrow />
+          </IconButton>
+          <IconButton onClick={save}>
+            <Save />
+          </IconButton>
+        </Box>
         <div style={{ flexGrow: 1, minHeight: 0 }}>
-          <div
-            hidden={tabValue !== ProjectEditPageTab.CODING}
-            style={{ height: '100%' }}
-          >
-            <Editor ref={editorRef} initialProjectJson={projectJson} />
-          </div>
-          <div
-            hidden={tabValue !== ProjectEditPageTab.PLOT}
-            style={{ height: '100%' }}
-          >
-            <PlotlyViewer />
-          </div>
+          <Editor ref={editorRef} initialProjectJson={projectJson} />
         </div>
       </div>
       <div
