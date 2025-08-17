@@ -1,4 +1,4 @@
-import { Project as ProjectEntity } from '@/lib/prisma/client';
+import { Project as ProjectEntity } from '@prisma/client';
 
 export type ProjectEntityInput = Omit<
   ProjectEntity,
@@ -10,3 +10,4 @@ export interface ProjectSummaryDto {
   title: string;
   updatedAt: Date;
 }
+

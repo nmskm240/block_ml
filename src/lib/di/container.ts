@@ -22,11 +22,7 @@ import {
 import { Prisma, PrismaClient } from '@prisma/client';
 import { StorageClient } from '@supabase/storage-js';
 import 'reflect-metadata';
-import {
-  container,
-  DependencyContainer,
-  instanceCachingFactory,
-} from 'tsyringe';
+import { container, DependencyContainer } from 'tsyringe';
 import { Token } from '@/lib/di/types';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import prisma from '@/lib/prisma/client';
@@ -39,10 +35,10 @@ container.registerInstance<SupabaseClient>(
   )
 );
 container.register<StorageClient>(Token.SupabaseStorageClient, {
-  useFactory: instanceCachingFactory((c) => {
+  useFactory: (c) => {
     const client = c.resolve<SupabaseClient>(Token.SupabaseClient);
     return client.storage;
-  }),
+  },
 });
 container.registerInstance<PrismaClient>(Token.PrismaClient, prisma);
 

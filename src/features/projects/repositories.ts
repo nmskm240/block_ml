@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import { Token } from '@/lib/di/types';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { InputJsonValue } from '@/lib/prisma/runtime/library';
 import { inject, injectable } from 'tsyringe';
 import Project from './domains';
 import { toDomain, toEntity } from './mapper';
+import { InputJsonValue } from "@prisma/client/runtime/library";
 
 export interface IProjectRepository {
   findProjectById(projectId: string): Promise<Project | undefined>;
@@ -92,6 +92,7 @@ export class ProjectRepository implements IProjectRepository {
     const entity = toEntity(project);
     const projectEntity = await this._client.project.create({
       data: {
+        id: project.id.value,
         title: entity.project.title,
         workspaceJson: entity.project.workspaceJson as InputJsonValue,
         status: entity.project.status,

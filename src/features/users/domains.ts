@@ -1,6 +1,7 @@
 import { Email } from '@/lib/domain/vo/email';
 import { HashedPassword } from '@/lib/domain/vo/hashedPassword';
 import Id from '@/lib/domain/vo/Id';
+import { createId } from '@paralleldrive/cuid2';
 
 export default class User {
   private _id?: UserId;
@@ -15,7 +16,7 @@ export default class User {
     readonly status: UserStatus,
     id?: string
   ) {
-    this._id = id ? new UserId(id) : undefined;
+    this._id = id ? new UserId(id) : UserId.generate();
     this._name = new UserName(name);
     this._email = new Email(email);
     this._password = HashedPassword.fromRaw(password);
@@ -62,7 +63,11 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
 
 //#region valueObjects
 
-export class UserId extends Id<UserId> {}
+export class UserId extends Id<UserId> {
+  static generate(): UserId {
+    return new UserId(createId());
+  }
+}
 
 class UserName {
   constructor(readonly value: string) {
