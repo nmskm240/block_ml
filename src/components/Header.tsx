@@ -3,9 +3,16 @@
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
+import SearchBox from './SearchBox';
+import { useRouter } from 'next/navigation';
 
 export function Header() {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleSearch = (query: string) => {
+    router.push(`/projects?q=${query}`);
+  };
 
   return (
     <AppBar position="static" color="primary">
@@ -14,11 +21,14 @@ export function Header() {
           <Link
             href="/"
             style={{ textDecoration: 'none', color: 'inherit' }}
-          ></Link>
+          >
+            Block ML
+          </Link>
         </Typography>
+        <SearchBox onSearch={handleSearch} />
         {session ? (
           <>
-            <Typography sx={{ mr: 2 }}>{session.user?.name}</Typography>
+            <Typography sx={{ ml: 2, mr: 2 }}>{session.user?.name}</Typography>
             <Button color="inherit" onClick={() => signOut()}>
               Sign Out
             </Button>

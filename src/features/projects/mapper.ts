@@ -4,7 +4,7 @@ import {
   UserProject as UserProjectEntity,
 } from '@prisma/client';
 import Project, { ProjectStatus } from './domains';
-import { ProjectEntityInput } from './types';
+import { ProjectEntityInput, ProjectSummary } from './types';
 
 export function toDomain(entity: {
   project: ProjectEntity;

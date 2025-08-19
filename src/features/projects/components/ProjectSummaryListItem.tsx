@@ -1,48 +1,37 @@
 import Link from 'next/link';
-import { ProjectSummaryDto } from '../types';
+import { ProjectSummary } from '../types';
 import { ListItem, ListItemText, Typography, Chip, Stack } from '@mui/material';
+import UserListItem from '@/features/users/components/UserListItem';
 
 export function ProjectSummaryListItem({
   project,
 }: {
-  project: ProjectSummaryDto;
+  project: ProjectSummary;
 }) {
   return (
-    <ListItem divider alignItems="flex-start">
+    <ListItem
+      component={Link}
+      href={`/projects/${project.id}`}
+      divider
+      alignItems="flex-start"
+      sx={{ textDecoration: 'none', color: 'inherit' }}
+    >
       <ListItemText
-        primary={
-          <Link href={`/projects/${project.id}`} passHref>
-            <Typography
-              component="div"
-              variant="h6"
-              sx={{ textDecoration: 'none', cursor: 'pointer' }}
-            >
-              {project.title}
-            </Typography>
-          </Link>
-        }
+        primary={<h6>{project.title}</h6>}
         secondary={
           <Stack spacing={0.5}>
             <Typography variant="body2" color="text.secondary">
               Updated at: {project.updatedAt.toLocaleString()}
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap">
-              <Chip label={`Status: ${project}`} size="small" />
-              <Chip label={`Score: ${project}`} size="small" color="success" />
+              <Chip label={`Status: ${project.status}`} size="small" />
+              {/* <Chip
+                label={`Score: ...`} // TODO: ProjectSummaryにscoreを追加する必要がある
+                size="small"
+                color="success"
+              /> */}
             </Stack>
-            <Typography variant="body2" color="text.secondary">
-              Created by:{' '}
-              <Link href={`/users/12345`} passHref>
-                <Typography
-                  component="a"
-                  sx={{ cursor: 'pointer' }}
-                  color="text.primary"
-                  variant="body2"
-                >
-                  {project.id}
-                </Typography>
-              </Link>
-            </Typography>
+            <UserListItem userInfo={project.createdBy} />
           </Stack>
         }
       />

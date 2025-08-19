@@ -1,9 +1,9 @@
 import { List } from '@mui/material';
-import { ProjectSummaryDto } from '../types';
+import { ProjectSummary } from '../types';
 import { ProjectSummaryListItem } from './ProjectSummaryListItem';
 
 type Props = {
-  summaries: ProjectSummaryDto[];
+  summaries: ProjectSummary[];
 };
 
 export function ProjectSummaryList({ summaries }: Props) {
