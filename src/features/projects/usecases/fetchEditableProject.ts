@@ -4,6 +4,7 @@ import { Token } from '@/lib/di/types';
 import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
 import type { IProjectRepository } from '../repositories';
+import { withTransactionScope } from '@/lib/di/container';
 
 @injectable()
 export default class FetchEditableProjectUsecase {
@@ -18,7 +19,7 @@ export default class FetchEditableProjectUsecase {
     projectId: string,
     userId: string
   ): Promise<{ projectJson: string; projectAssets: Asset[] }> {
-    const project = await this._projectRepository.findProjectById(projectId);
+    const project = await this._projectRepository.findById(projectId);
     if (!project || !project.isEdittable(userId)) {
       throw new Error('Project not found or not editable');
     }
@@ -39,3 +40,5 @@ export default class FetchEditableProjectUsecase {
     };
   }
 }
+
+
