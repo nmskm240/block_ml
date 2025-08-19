@@ -1,14 +1,14 @@
-import 'reflect-metadata';
-import container from '@/lib/di/container';
-import { IProjectRepository } from '@/features/projects/repositories';
-import { Token } from '@/lib/di/types';
-import Project from '@/features/projects/domains';
-import { createId } from '@paralleldrive/cuid2';
-import User from '@/features/users/domains';
-import { PrismaClient } from '@prisma/client';
-import { IAssetRepository } from '@/features/assets/repositories';
 import Asset, { AssetId } from '@/features/assets/domains';
+import { IAssetRepository } from '@/features/assets/repositories';
+import Project from '@/features/projects/domains';
+import { IProjectRepository } from '@/features/projects/repositories';
+import User from '@/features/users/domains';
+import container from '@/lib/di/container';
+import { Token } from '@/lib/di/types';
 import { generateTestUser } from '@/lib/prisma/__tests__/test-helper';
+import { createId } from '@paralleldrive/cuid2';
+import { PrismaClient } from '@prisma/client';
+import 'reflect-metadata';
 
 let user: User;
 let repository: IProjectRepository;
@@ -23,9 +23,9 @@ describe('findProjectById', () => {
     const project = Project.empty(user.id);
 
     project.rename('Find Me');
-    await repository.createProject(project);
+    await repository.create(project);
 
-    const found = await repository.findProjectById(project.id.value);
+    const found = await repository.findById(project.id.value);
     expect(found).toBeInstanceOf(Project);
     expect(found?.id.value).toBe(project.id.value);
     expect(found?.title.value).toBe('Find Me');
@@ -33,7 +33,7 @@ describe('findProjectById', () => {
   });
 
   it('should return undefined if not found', async () => {
-    const foundProject = await repository.findProjectById(createId());
+    const foundProject = await repository.findById(createId());
     expect(foundProject).toBeUndefined();
   });
 });
@@ -43,10 +43,10 @@ describe('findProjectsByUserId', () => {
     for (const i of [1, 2]) {
       const project = Project.empty(user.id);
       project.rename(`Project ${i}`);
-      await repository.createProject(project);
+      await repository.create(project);
     }
 
-    const projects = await repository.findProjectsByUserId(user.id!);
+    const projects = await repository.findByUserId(user.id!);
 
     expect(projects).toHaveLength(2);
     expect(projects.map((p) => p.title.value)).toContain('Project 1');
@@ -59,7 +59,7 @@ describe('createProject', () => {
     const project = Project.empty(user.id);
     project.rename('New Project');
 
-    await repository.createProject(project);
+    await repository.create(project);
 
     const prisma = container.resolve<PrismaClient>(Token.PrismaClient);
     const entity = await prisma.project.findUnique({
@@ -82,7 +82,7 @@ describe('updateProject', () => {
         const asset = new Asset({
           id: AssetId.generate().value,
           name: file,
-          path: file,
+          path: `${createId()}-${file}`,
         });
         return assetRepository.save(asset);
       })
@@ -93,7 +93,7 @@ describe('updateProject', () => {
       '{}',
       assets.map((asset) => asset.id.value)
     );
-    await repository.createProject(project);
+    await repository.create(project);
 
     project.rename('Updated Title');
     project.edit(
@@ -101,7 +101,7 @@ describe('updateProject', () => {
       assets.slice(1).map((asset) => asset.id.value)
     );
 
-    await repository.updateProject(project);
+    await repository.update(project);
 
     const prisma = container.resolve<PrismaClient>(Token.PrismaClient);
     const updatedDbProject = await prisma.project.findUnique({
@@ -124,3 +124,5 @@ describe('updateProject', () => {
     expect(deletedAssetLink?.deleteFlag).toBe(true);
   });
 });
+
+

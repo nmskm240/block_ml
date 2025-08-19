@@ -1,14 +1,14 @@
 import Asset from '@/features/assets/domains';
+import { IAssetRepository } from '@/features/assets/repositories';
+import User, { UserId } from '@/features/users/domains';
+import container from '@/lib/di/container';
 import { Token } from '@/lib/di/types';
+import { generateTestUser } from '@/lib/prisma/__tests__/test-helper';
 import { createId } from '@paralleldrive/cuid2';
 import 'reflect-metadata';
-import container from '@/lib/di/container';
 import Project from '../domains';
-import { updateProject } from '../usecases';
 import { IProjectRepository } from '../repositories';
-import User, { UserId } from '@/features/users/domains';
-import { generateTestUser } from '@/lib/prisma/__tests__/test-helper';
-import { IAssetRepository } from '@/features/assets/repositories';
+import { updateProject } from '../usecases';
 
 let user: User;
 
@@ -31,7 +31,7 @@ it('should update a project successfully', async () => {
   );
 
   await assetRepository.save(asset);
-  await projectRepository.createProject(project);
+  await projectRepository.create(project);
   await updateProject(user.id!, {
     id: project.id.value,
     json: '{"updated": true}',
@@ -39,9 +39,7 @@ it('should update a project successfully', async () => {
   });
 
   // project.edit が呼ばれた後の状態で updateProject が呼ばれることを確認
-  const updatedProject = await projectRepository.findProjectById(
-    project.id.value
-  );
+  const updatedProject = await projectRepository.findById(project.id.value);
   expect(updatedProject?.workspaceJson.value).toBe('{"updated": true}');
   expect(updatedProject?.assetIds.map((a) => a.value)).toEqual([
     asset.id.value,
@@ -64,7 +62,7 @@ it('should throw an error if user is not the owner', async () => {
   const requesterId = UserId.generate(); // 別のユーザー
 
   const project = Project.empty(user.id);
-  await projectRepository.createProject(project);
+  await projectRepository.create(project);
 
   const input = { id: project.id.value, json: '{}', assets: [] };
   await expect(updateProject(requesterId.value, input)).rejects.toThrow(

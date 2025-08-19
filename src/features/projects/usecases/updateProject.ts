@@ -1,7 +1,7 @@
-import type { IProjectRepository } from '../repositories';
 import type { IAssetStorageService } from '@/features/assets/services/assetStorageService';
-import { Token } from '@/lib/di/types';
 import { withTransactionScope } from '@/lib/di/container';
+import { Token } from '@/lib/di/types';
+import type { IProjectRepository } from '../repositories';
 
 export async function updateProject(
   userId: string,
@@ -15,7 +15,7 @@ export async function updateProject(
       Token.AssetStorageService
     );
 
-    const project = await repository.findProjectById(input.id);
+    const project = await repository.findById(input.id);
     if (!project) {
       throw new Error('Project not found');
     }
@@ -29,6 +29,6 @@ export async function updateProject(
       input.json,
       uploadedAssets.map((asset) => asset.id.value)
     );
-    await repository.updateProject(project);
+    await repository.update(project);
   });
 }
