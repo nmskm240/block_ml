@@ -9,22 +9,20 @@ export default class InMemoryUserRepository implements IUserRepository {
   }
 
   async create(user: User): Promise<User> {
-    // IDが設定されていない場合は生成
-    const newUser = user.copyWith({ id: user.id ?? 'new-id-' + (this.users.length + 1) });
-    this.users.push(newUser);
-    return newUser;
+    this.users.push(user);
+    return user;
   }
 
   async findById(userId: string): Promise<User | undefined> {
-    return this.users.find((u) => u.id === userId);
+    return this.users.find((u) => u.id.value === userId);
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find((u) => u.email === email);
+    return this.users.find((u) => u.email.value === email);
   }
 
   async existsByEmail(email: string): Promise<boolean> {
-    return this.users.some((u) => u.email === email);
+    return this.users.some((u) => u.email.value === email);
   }
 
   // テスト用のヘルパーメソッド

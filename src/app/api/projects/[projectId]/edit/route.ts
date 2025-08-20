@@ -3,8 +3,8 @@ import {
   SaveProjectRequestSchema,
   SaveProjectResponse,
 } from '@/features/projects/api/types';
-import FetchEditableProjectUsecase from '@/features/projects/usecases/fetchEditableProjectUsecase';
-import UpdateProjectUsecase from '@/features/projects/usecases/updateProjectUsecase';
+import { updateProject } from '@/features/projects/usecases';
+import FetchEditableProjectUsecase from '@/features/projects/usecases/fetchEditableProject';
 import { withTransactionScope } from '@/lib/di/container';
 import { auth } from '@/lib/nextAuth/auth';
 import { NextResponse } from 'next/server';
@@ -30,35 +30,29 @@ export const PUT = auth(async (request, context: { params: Params }) => {
     );
   }
 
-  return withTransactionScope(async (container) => {
-    container.register(UpdateProjectUsecase, UpdateProjectUsecase);
-    const usecase = container.resolve(UpdateProjectUsecase);
+  try {
+    await updateProject(session.user.id, {
+      id: projectId,
+      json: parsed.data.projectJson!.toString(),
+      assets: parsed.data.assets!.filter((f) => f !== undefined),
+    });
 
-    try {
-      await usecase.execute(session.user.id, {
-        id: projectId,
-        json: parsed.data.projectJson!.toString(),
-        assets: parsed.data.assets!.filter((f) => f !== undefined),
-      });
-      return NextResponse.json<SaveProjectResponse>(
-        {},
-        {
-          status: 200,
-        }
-      );
-    } catch (e) {
-      return NextResponse.json(
-        { error: (e as Error).message },
-        { status: 500 }
-      );
-    }
-  });
+    return NextResponse.json<SaveProjectResponse>(
+      {},
+      {
+        status: 200,
+      }
+    );
+  } catch (e) {
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+  }
 });
 
 export const GET = auth(async (request, context: { params: Params }) => {
   const session = request.auth;
   const { projectId } = await context.params;
-  if (!session) {
+
+  if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -68,18 +62,15 @@ export const GET = auth(async (request, context: { params: Params }) => {
       FetchEditableProjectUsecase
     );
     const usecase = container.resolve(FetchEditableProjectUsecase);
+
     try {
-      const { projectJson, projectAssets } = await usecase.execute(
-        projectId,
-        session.user.id
-      );
-      const project = JSON.parse(projectJson);
-      return NextResponse.json<GetEditingProjectResponse>({
-        projectJson: project,
-        assets: projectAssets,
-      });
+      const response = await usecase.execute(projectId, session.user.id);
+      return NextResponse.json(response, { status: 200 });
     } catch (e) {
-      return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+      return NextResponse.json(
+        { error: (e as Error).message },
+        { status: 404 }
+      );
     }
   });
 });

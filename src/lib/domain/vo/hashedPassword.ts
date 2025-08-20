@@ -1,4 +1,4 @@
-import { hashSync } from 'bcryptjs';
+import { compareSync, hashSync } from 'bcryptjs';
 
 export class HashedPassword {
   constructor(readonly value: string) {
@@ -18,7 +18,7 @@ export class HashedPassword {
     return new HashedPassword(hashed);
   }
 
-  equals(other: HashedPassword): boolean {
-    return this.value === other.value;
+  compare(raw: string): boolean {
+    return compareSync(raw, this.value);
   }
 }

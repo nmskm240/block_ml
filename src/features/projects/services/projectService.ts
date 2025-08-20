@@ -1,6 +1,6 @@
-import { injectable, inject } from 'tsyringe';
-import type { IProjectRepository } from '../repositories';
 import { Token } from '@/lib/di/types';
+import { inject, injectable } from 'tsyringe';
+import type { IProjectRepository } from '../repositories';
 
 export interface IProjectService {
   isExist(id: string): Promise<boolean>;
@@ -14,7 +14,7 @@ export class ProjectService implements IProjectService {
   ) {}
 
   async isExist(id: string): Promise<boolean> {
-    const project = await this._repository.findProjectById(id);
+    const project = await this._repository.findById(id);
 
     return project !== undefined;
   }

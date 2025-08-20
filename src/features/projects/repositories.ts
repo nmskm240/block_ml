@@ -1,26 +1,56 @@
-import "reflect-metadata";
 import { Token } from '@/lib/di/types';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { InputJsonValue } from '@/lib/prisma/runtime/library';
+import { InputJsonValue } from '@prisma/client/runtime/library';
+import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
 import Project from './domains';
 import { toDomain, toEntity } from './mapper';
+import { ProjectSearchQuery } from './types';
 
 export interface IProjectRepository {
-  findProjectById(projectId: string): Promise<Project | undefined>;
-  findProjectsByUserId(userId: string): Promise<Project[]>;
-  createProject(project: Project): Promise<Project>;
-  updateProject(project: Project): Promise<Project>;
+  findById(projectId: string): Promise<Project | undefined>;
+  findByUserId(userId: string): Promise<Project[]>;
+  create(project: Project): Promise<Project>;
+  update(project: Project): Promise<Project>;
+  search(query: ProjectSearchQuery): Promise<Project[]>;
 }
 
 @injectable()
 export class ProjectRepository implements IProjectRepository {
   constructor(
     @inject(Token.PrismaClient)
-    private readonly _client: PrismaClient | Prisma.TransactionClient,
+    private readonly _client: PrismaClient | Prisma.TransactionClient
   ) {}
 
-  async findProjectById(projectId: string): Promise<Project | undefined> {
+  async search(query: ProjectSearchQuery): Promise<Project[]> {
+    const entities = await this._client.project.findMany({
+      where: {
+        title: { contains: query.keyword, mode: 'insensitive' },
+        userProjects: {
+          some: { userId: query.userId },
+        },
+      },
+      include: {
+        userProjects: true,
+        projectAssets: {
+          include: { asset: true },
+          where: { deleteFlag: false },
+        },
+      },
+      skip: query.offset,
+      take: query.limit,
+    });
+
+    return entities.map((entity) =>
+      toDomain({
+        project: entity,
+        userProject: entity.userProjects[0],
+        projectAssets: entity.projectAssets.map((a) => a),
+      })
+    );
+  }
+
+  async findById(projectId: string): Promise<Project | undefined> {
     const entity = await this._client.project.findFirst({
       where: { id: projectId },
       include: {
@@ -57,7 +87,7 @@ export class ProjectRepository implements IProjectRepository {
     });
   }
 
-  async findProjectsByUserId(userId: string): Promise<Project[]> {
+  async findByUserId(userId: string): Promise<Project[]> {
     const entities = await this._client.userProject.findMany({
       where: { userId: userId },
       include: {
@@ -84,7 +114,7 @@ export class ProjectRepository implements IProjectRepository {
     );
   }
 
-  async createProject(project: Project): Promise<Project> {
+  async create(project: Project): Promise<Project> {
     if (project.isTemporary) {
       throw new Error('Project must have an ownerUserId');
     }
@@ -92,6 +122,7 @@ export class ProjectRepository implements IProjectRepository {
     const entity = toEntity(project);
     const projectEntity = await this._client.project.create({
       data: {
+        id: project.id.value,
         title: entity.project.title,
         workspaceJson: entity.project.workspaceJson as InputJsonValue,
         status: entity.project.status,
@@ -118,7 +149,7 @@ export class ProjectRepository implements IProjectRepository {
     });
   }
 
-  async updateProject(project: Project): Promise<Project> {
+  async update(project: Project): Promise<Project> {
     if (!project.ownerUserId) {
       throw new Error('Project must have an ownerUserId');
     }

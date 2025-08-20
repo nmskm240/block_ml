@@ -23,7 +23,7 @@ export const POST = auth(async (request) => {
     const session = request.auth;
     if (session?.user.id) {
       let project = Project.empty(session.user.id);
-      project = await projectRepository.createProject(project);
+      project = await projectRepository.create(project);
       const response: CreateProjectResponse = {
         projectId: project.id.value,
       };
@@ -51,9 +51,7 @@ export async function GET(request: NextRequest) {
 
   return await withTransactionScope(async (container) => {
     const projectRepository = container.resolve(ProjectRepository);
-    const projects = await projectRepository.findProjectsByUserId(
-      params.userId!
-    );
+    const projects = await projectRepository.findByUserId(params.userId!);
 
     const response: GetProjectsResponse = {
       projectSummaries: projects.map((p) => {

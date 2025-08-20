@@ -4,7 +4,8 @@
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker": {},
-    "ghcr.io/devcontainers-extra/features/supabase-cli": {}
+    "ghcr.io/devcontainers-extra/features/supabase-cli": {},
+    "ghcr.io/devcontainers-extra/features/tailscale": {}
   },
   "customizations": {
     "vscode": {
@@ -21,9 +22,11 @@
       ]
     }
   },
-  "postCreateCommand": "npm install -g @google/gemini-cli",
+  "postCreateCommand": ".devcontainer/on-post-create.sh",
+  "postAttachCommand": ".devcontainer/on-post-attach.sh",
   "containerEnv": {
     "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@localhost:54322/postgres",
-    "WATCHPACK_POLLING": "true"
+    "WATCHPACK_POLLING": "true",
+    "TAILSCALE_DEVICE_NAME": "block-ml-dev"
   }
 }

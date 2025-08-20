@@ -1,4 +1,4 @@
-import Id from '@/lib/domain/vo/Id';
+import { Id } from '@/lib/domain/vo';
 import { createId } from '@paralleldrive/cuid2';
 import path from 'path';
 

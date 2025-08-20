@@ -1,12 +1,17 @@
-import { UserProjects } from '@/features/users/profile/components/UserProjects';
+import 'reflect-metadata';
+import { ProjectSummaryList } from '@/features/projects/components/ProjectSummaryList';
+import { searchProjectSumamries } from '@/features/projects/usecases/searchProjectSummaries';
 
-export default async function UserPage(props: {
-  params: Promise<{ userId: string }>;
-}) {
-  const { userId } = await props.params;
+type Params = {
+  userId: string;
+};
+
+export default async function UserPage(props: { params: Params }) {
+  const { userId } = props.params;
+  const summaries = await searchProjectSumamries({ userId: userId });
   return (
     <div>
-      <UserProjects userId={userId} />
+      <ProjectSummaryList summaries={summaries} />
     </div>
   );
 }

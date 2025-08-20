@@ -6,7 +6,6 @@ import type { SignUpParams } from '@/features/users/types';
 import { SignUpSchema } from '@/features/users/types';
 import { withTransactionScope } from '@/lib/di/container';
 import { ServerActionResult } from '@/types';
-import bcrypt from 'bcryptjs';
 import 'reflect-metadata';
 
 export async function signUp(
@@ -21,6 +20,7 @@ export async function signUp(
       },
     };
   }
+  // TODO: Usecaseとしてまとめる
   const { name, email, password } = parsed.data;
   return await withTransactionScope(async (container) => {
     const repository = container.resolve<IUserRepository>(UserRepository);
@@ -35,8 +35,7 @@ export async function signUp(
       };
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = User.new(name, email, hashedPassword);
+    const user = User.new({ name, email, password });
 
     await repository.create(user);
     return {

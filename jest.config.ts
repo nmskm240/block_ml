@@ -9,17 +9,18 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const config: Config = {
   coverageProvider: 'v8',
+  preset: 'ts-jest',
   testEnvironment: '@quramy/jest-prisma/environment',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/lib/prisma/client$': '<rootDir>/src/lib/prisma/__mocks__/client.ts',
   },
-  preset: 'ts-jest',
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/__mocks__/',
+  testPathIgnorePatterns: ['/node_modules/', '/__mocks__/'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@supabase/supabase-js|@supabase/realtime-js|isows|@blockly|blockly|react-plotly.js|plotly.js)/)',
+    '^.+\\.module\\.(css|sass|scss)$',
   ],
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config);

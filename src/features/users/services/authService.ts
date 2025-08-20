@@ -18,11 +18,11 @@ export class AuthService implements IAuthService {
 
   async verify(email: string, password: string): Promise<User | null> {
     const user = await this._userRepository.findByEmail(email);
-    if (!user || !user.hashedPassword) {
+    if (!user || !user.hashedPassword.value) {
       return null;
     }
 
-    const isValid = await bcrypt.compare(password, user.hashedPassword);
+    const isValid = user.hashedPassword.compare(password);
     if (!isValid) {
       return null;
     }

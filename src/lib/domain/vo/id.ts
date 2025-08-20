@@ -1,6 +1,6 @@
-import { createId, isCuid } from '@paralleldrive/cuid2';
+import { isCuid } from '@paralleldrive/cuid2';
 
-export default abstract class Id<T extends Id<any>> {
+export abstract class Id<T extends Id<any>> {
   constructor(readonly value: string) {
     if (!isCuid(value)) {
       throw new Error('Invalid CUID');

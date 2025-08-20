@@ -19,80 +19,105 @@ const mockStorageClient = {
   createSignedUrl: jest.fn(),
 };
 
-describe('AssetStorageService', () => {
-  let service: AssetStorageService;
-  let inMemoryAssetRepository: InMemoryAssetRepository;
+let service: AssetStorageService;
+let inMemoryAssetRepository: InMemoryAssetRepository;
 
-  beforeEach(() => {
-    // DIコンテナをリセットし、モックを登録
-    container.clearInstances();
-    inMemoryAssetRepository = new InMemoryAssetRepository();
-    container.register(Token.SupabaseStorageClient, { useValue: mockStorageClient as any });
-    container.register(Token.AssetRepository, { useValue: inMemoryAssetRepository });
-
-    service = container.resolve(AssetStorageService);
-
-    // 各テストの前にモックをリセット
-    jest.clearAllMocks();
-    // fromがthisを返すように再設定
-    mockStorageClient.from.mockReturnThis();
+beforeEach(() => {
+  // DIコンテナをリセットし、モックを登録
+  container.clearInstances();
+  inMemoryAssetRepository = new InMemoryAssetRepository();
+  container.register(Token.SupabaseStorageClient, {
+    useValue: mockStorageClient as any,
+  });
+  container.register(Token.AssetRepository, {
+    useValue: inMemoryAssetRepository,
   });
 
-  describe('upload', () => {
-    it('should upload files and save assets', async () => {
-      const files = [createMockFile('test1.png', 'image/png')];
-      const asset = Asset.from(files[0]);
+  service = container.resolve(AssetStorageService);
 
-      // Asset.from は内部でIDを生成するため、それをモックして固定値を返す
-      jest.spyOn(Asset, 'from').mockReturnValue(asset);
+  // 各テストの前にモックをリセット
+  jest.clearAllMocks();
+  // fromがthisを返すように再設定
+  mockStorageClient.from.mockReturnThis();
+});
 
-      mockStorageClient.upload.mockResolvedValue({ data: { path: asset.path.value }, error: null });
+describe('upload', () => {
+  it('should upload files and save assets', async () => {
+    const files = [createMockFile('test1.png', 'image/png')];
+    const asset = Asset.from(files[0]);
 
-      const result = await service.upload(files);
+    // Asset.from は内部でIDを生成するため、それをモックして固定値を返す
+    jest.spyOn(Asset, 'from').mockReturnValue(asset);
 
-      expect(mockStorageClient.from).toHaveBeenCalledWith('assets');
-      expect(mockStorageClient.upload).toHaveBeenCalledWith(asset.path.value, files[0], expect.any(Object));
-      expect(inMemoryAssetRepository.assets).toContain(asset);
-      expect(result).toEqual([asset]);
+    mockStorageClient.upload.mockResolvedValue({
+      data: { path: asset.path.value },
+      error: null,
     });
 
-    it('should throw an error if upload fails', async () => {
-        const files = [createMockFile('test1.png', 'image/png')];
-        mockStorageClient.upload.mockResolvedValue({ data: null, error: new Error('Upload failed') });
+    const result = await service.upload(files);
 
-        await expect(service.upload(files)).rejects.toThrow('Failed to upload test1.png: Upload failed');
-      });
+    expect(mockStorageClient.from).toHaveBeenCalledWith('assets');
+    expect(mockStorageClient.upload).toHaveBeenCalledWith(
+      asset.path.value,
+      files[0],
+      expect.any(Object)
+    );
+    expect(inMemoryAssetRepository.assets).toContain(asset);
+    expect(result).toEqual([asset]);
   });
 
-  describe('downloads', () => {
-    it('should create signed urls for given asset ids', async () => {
-        const assetId = createId();
-        const asset = new Asset({ id: assetId, name: 'test.txt', path: assetId });
-
-        inMemoryAssetRepository.add(asset);
-        mockStorageClient.createSignedUrl.mockResolvedValue({ data: { signedUrl: 'https://example.com/signed-url' }, error: null });
-
-        const result = await service.downloads([assetId]);
-
-        expect(mockStorageClient.from).toHaveBeenCalledWith('assets');
-        expect(mockStorageClient.createSignedUrl).toHaveBeenCalledWith(asset.id.value, 60);
-        expect(result[0].path.value).toBe('https://example.com/signed-url');
+  it('should throw an error if upload fails', async () => {
+    const files = [createMockFile('test1.png', 'image/png')];
+    mockStorageClient.upload.mockResolvedValue({
+      data: null,
+      error: new Error('Upload failed'),
     });
 
-    it('should throw an error if creating signed url fails', async () => {
-        const assetId = createId();
-        const asset = new Asset({ id: assetId, name: 'test.txt', path: assetId });
+    await expect(service.upload(files)).rejects.toThrow(
+      'Failed to upload test1.png: Upload failed'
+    );
+  });
+});
 
-        inMemoryAssetRepository.add(asset);
-        mockStorageClient.createSignedUrl.mockResolvedValue({ data: null, error: new Error('Failed') });
+describe('downloads', () => {
+  it('should create signed urls for given asset ids', async () => {
+    const assetId = createId();
+    const asset = new Asset({ id: assetId, name: 'test.txt', path: assetId });
 
-        await expect(service.downloads([assetId])).rejects.toThrow(`Failed to create signed URL for ${assetId}`);
+    inMemoryAssetRepository.add(asset);
+    mockStorageClient.createSignedUrl.mockResolvedValue({
+      data: { signedUrl: 'https://example.com/signed-url' },
+      error: null,
     });
 
-    it('should skip non-existent assets', async () => {
-        const result = await service.downloads([createId()]);
-        expect(result).toEqual([]);
-        expect(mockStorageClient.createSignedUrl).not.toHaveBeenCalled();
+    const result = await service.downloads([assetId]);
+
+    expect(mockStorageClient.from).toHaveBeenCalledWith('assets');
+    expect(mockStorageClient.createSignedUrl).toHaveBeenCalledWith(
+      asset.id.value,
+      60
+    );
+    expect(result[0].path.value).toBe('https://example.com/signed-url');
+  });
+
+  it('should throw an error if creating signed url fails', async () => {
+    const assetId = createId();
+    const asset = new Asset({ id: assetId, name: 'test.txt', path: assetId });
+
+    inMemoryAssetRepository.add(asset);
+    mockStorageClient.createSignedUrl.mockResolvedValue({
+      data: null,
+      error: new Error('Failed'),
     });
+
+    await expect(service.downloads([assetId])).rejects.toThrow(
+      `Failed to create signed URL for ${assetId}`
+    );
+  });
+
+  it('should skip non-existent assets', async () => {
+    const result = await service.downloads([createId()]);
+    expect(result).toEqual([]);
+    expect(mockStorageClient.createSignedUrl).not.toHaveBeenCalled();
   });
 });
