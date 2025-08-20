@@ -9,9 +9,9 @@ import { IUserRepository } from '../repositories';
 let repository: IUserRepository;
 let prisma: PrismaClient;
 
-beforeAll(() => {
+beforeEach(() => {
   prisma = container.resolve(Token.PrismaClient);
-  repository = container.resolve(Token.ProjectRepository);
+  repository = container.resolve(Token.UserRepository);
 });
 
 describe('findByEmail', () => {
@@ -24,7 +24,7 @@ describe('findByEmail', () => {
       },
     });
 
-    const foundUser = await repository.findByEmail(userData.email!);
+    const foundUser = await repository.findByEmail(userData.email);
 
     expect(foundUser).toBeInstanceOf(User);
     expect(foundUser?.email).toBe(userData.email);

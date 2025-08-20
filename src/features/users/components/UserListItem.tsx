@@ -11,13 +11,16 @@ type Props = {
 
 export default function UserListItem(props: Props) {
   return (
-    <Link href={`/users/${props.userInfo.id}`}>
+    <ListItem
+      dense={props.dense}
+      component={Link}
+      href={`/users/${props.userInfo.id}`}
+      sx={{ textDecoration: 'none', color: 'inherit' }}
+    >
       <ListItemAvatar>
         <UserAvatar avatarUrl={props.userInfo.avatarUrl} />
       </ListItemAvatar>
-      <ListItem dense={props.dense}>
-        <ListItemText primary={props.userInfo.name} />
-      </ListItem>
-    </Link>
+      <ListItemText primary={props.userInfo.name} />
+    </ListItem>
   );
 }
