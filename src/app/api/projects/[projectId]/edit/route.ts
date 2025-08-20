@@ -50,7 +50,7 @@ export const PUT = auth(async (request, context: { params: Params }) => {
 
 export const GET = auth(async (request, context: { params: Params }) => {
   const session = request.auth;
-  const projectId = context.params.projectId;
+  const { projectId } = await context.params;
 
   if (!session?.user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

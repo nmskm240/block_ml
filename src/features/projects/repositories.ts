@@ -22,6 +22,34 @@ export class ProjectRepository implements IProjectRepository {
     private readonly _client: PrismaClient | Prisma.TransactionClient
   ) {}
 
+  async search(query: ProjectSearchQuery): Promise<Project[]> {
+    const entities = await this._client.project.findMany({
+      where: {
+        title: { contains: query.keyword, mode: 'insensitive' },
+        userProjects: {
+          some: { userId: query.userId },
+        },
+      },
+      include: {
+        userProjects: true,
+        projectAssets: {
+          include: { asset: true },
+          where: { deleteFlag: false },
+        },
+      },
+      skip: query.offset,
+      take: query.limit,
+    });
+
+    return entities.map((entity) =>
+      toDomain({
+        project: entity,
+        userProject: entity.userProjects[0],
+        projectAssets: entity.projectAssets.map((a) => a),
+      })
+    );
+  }
+
   async findById(projectId: string): Promise<Project | undefined> {
     const entity = await this._client.project.findFirst({
       where: { id: projectId },
@@ -179,6 +207,4 @@ export class ProjectRepository implements IProjectRepository {
       projectAssets: updatedAssets.map((e) => e),
     });
   }
-
-  
 }

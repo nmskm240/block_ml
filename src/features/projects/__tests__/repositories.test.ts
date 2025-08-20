@@ -20,7 +20,7 @@ beforeEach(async () => {
 
 describe('findProjectById', () => {
   it('should return a project if found', async () => {
-    const project = Project.empty(user.id);
+    const project = Project.empty(user.id.value);
 
     project.rename('Find Me');
     await repository.create(project);
@@ -29,7 +29,7 @@ describe('findProjectById', () => {
     expect(found).toBeInstanceOf(Project);
     expect(found?.id.value).toBe(project.id.value);
     expect(found?.title.value).toBe('Find Me');
-    expect(found?.ownerUserId?.value).toBe(user.id);
+    expect(found?.ownerUserId?.value).toBe(user.id.value);
   });
 
   it('should return undefined if not found', async () => {
@@ -41,12 +41,12 @@ describe('findProjectById', () => {
 describe('findProjectsByUserId', () => {
   it('should return all projects for a user', async () => {
     for (const i of [1, 2]) {
-      const project = Project.empty(user.id);
+      const project = Project.empty(user.id.value);
       project.rename(`Project ${i}`);
       await repository.create(project);
     }
 
-    const projects = await repository.findByUserId(user.id!);
+    const projects = await repository.findByUserId(user.id.value);
 
     expect(projects).toHaveLength(2);
     expect(projects.map((p) => p.title.value)).toContain('Project 1');
@@ -56,7 +56,7 @@ describe('findProjectsByUserId', () => {
 
 describe('createProject', () => {
   it('should create a new project and link it to the user', async () => {
-    const project = Project.empty(user.id);
+    const project = Project.empty(user.id.value);
     project.rename('New Project');
 
     await repository.create(project);
@@ -68,7 +68,7 @@ describe('createProject', () => {
     });
     expect(entity).not.toBeNull();
     expect(entity?.title).toBe('New Project');
-    expect(entity?.userProjects[0]?.userId).toBe(user.id);
+    expect(entity?.userProjects[0]?.userId).toBe(user.id.value);
   });
 });
 
@@ -88,7 +88,7 @@ describe('updateProject', () => {
       })
     );
 
-    const project = Project.empty(user.id);
+    const project = Project.empty(user.id.value);
     project.edit(
       '{}',
       assets.map((asset) => asset.id.value)

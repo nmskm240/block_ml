@@ -15,88 +15,86 @@ const mockAssetStorageService: IAssetStorageService = {
   downloads: jest.fn(),
 };
 
-describe('FetchEditableProjectUsecase', () => {
-  let usecase: FetchEditableProjectUsecase;
-  let inMemoryProjectRepository: InMemoryProjectRepository;
-  let inMemoryAssetRepository: InMemoryAssetRepository;
+let usecase: FetchEditableProjectUsecase;
+let inMemoryProjectRepository: InMemoryProjectRepository;
+let inMemoryAssetRepository: InMemoryAssetRepository;
 
-  beforeEach(() => {
-    container.clearInstances();
-    inMemoryProjectRepository = new InMemoryProjectRepository();
-    inMemoryAssetRepository = new InMemoryAssetRepository();
+beforeEach(() => {
+  container.clearInstances();
+  inMemoryProjectRepository = new InMemoryProjectRepository();
+  inMemoryAssetRepository = new InMemoryAssetRepository();
 
-    container.register(Token.ProjectRepository, {
-      useValue: inMemoryProjectRepository,
-    });
-    container.register(Token.AssetStorageService, {
-      useValue: mockAssetStorageService,
-    }); // ここはAssetStorageServiceのモックのまま
-    usecase = container.resolve(FetchEditableProjectUsecase);
+  container.register(Token.ProjectRepository, {
+    useValue: inMemoryProjectRepository,
+  });
+  container.register(Token.AssetStorageService, {
+    useValue: mockAssetStorageService,
+  }); // ここはAssetStorageServiceのモックのまま
+  usecase = container.resolve(FetchEditableProjectUsecase);
+});
+
+it('should return project data if project is editable', async () => {
+  const projectId = createId();
+  const userId = createId();
+  const assetId = createId();
+
+  const mockProject = new Project({
+    id: projectId,
+    title: 'Editable Project',
+    workspaceJson: '{"blocks":{}}',
+    status: ProjectStatus.Active,
+    assetIds: [assetId],
+    ownerUserId: userId,
   });
 
-  it('should return project data if project is editable', async () => {
-    const projectId = createId();
-    const userId = createId();
-    const assetId = createId();
-
-    const mockProject = new Project({
-      id: projectId,
-      title: 'Editable Project',
-      workspaceJson: '{"blocks":{}}',
-      status: ProjectStatus.Active,
-      assetIds: [assetId],
-      ownerUserId: userId,
-    });
-
-    const mockAsset = new Asset({
-      id: assetId,
-      name: 'asset.txt',
-      path: 'https://example.com/signed-url',
-    });
-
-    // InMemoryRepositoryにデータを追加
-    inMemoryProjectRepository.add(mockProject);
-    // AssetStorageServiceのdownloadsはAssetRepositoryのfindByIdを使うので、AssetRepositoryにAssetを追加
-    // ここはAssetStorageServiceのモックのままなので、downloadsをモックする
-    (mockAssetStorageService.downloads as jest.Mock).mockResolvedValue([
-      mockAsset,
-    ]);
-
-    const result = await usecase.execute(projectId, userId);
-
-    expect(mockAssetStorageService.downloads).toHaveBeenCalledWith([assetId]);
-    expect(result.projectJson).toBe('{"blocks":{}}');
-    expect(result.projectAssets).toHaveLength(1);
-    expect(result.projectAssets[0].id).toBe(assetId);
-    expect(result.projectAssets[0].path).toBe('https://example.com/signed-url');
+  const mockAsset = new Asset({
+    id: assetId,
+    name: 'asset.txt',
+    path: 'https://example.com/signed-url',
   });
 
-  it('should throw error if project not found', async () => {
-    // InMemoryRepositoryは空のまま
-    await expect(usecase.execute(createId(), createId())).rejects.toThrow(
-      'Project not found or not editable'
-    );
+  // InMemoryRepositoryにデータを追加
+  inMemoryProjectRepository.add(mockProject);
+  // AssetStorageServiceのdownloadsはAssetRepositoryのfindByIdを使うので、AssetRepositoryにAssetを追加
+  // ここはAssetStorageServiceのモックのままなので、downloadsをモックする
+  (mockAssetStorageService.downloads as jest.Mock).mockResolvedValue([
+    mockAsset,
+  ]);
+
+  const result = await usecase.execute(projectId, userId);
+
+  expect(mockAssetStorageService.downloads).toHaveBeenCalledWith([assetId]);
+  expect(result.projectJson).toBe('{"blocks":{}}');
+  expect(result.projectAssets).toHaveLength(1);
+  expect(result.projectAssets[0].id).toBe(assetId);
+  expect(result.projectAssets[0].path).toBe('https://example.com/signed-url');
+});
+
+it('should throw error if project not found', async () => {
+  // InMemoryRepositoryは空のまま
+  await expect(usecase.execute(createId(), createId())).rejects.toThrow(
+    'Project not found or not editable'
+  );
+});
+
+it('should throw error if project is not editable by the user', async () => {
+  const projectId = createId();
+  const ownerId = createId();
+  const requesterId = createId(); // 別のユーザー
+
+  const mockProject = new Project({
+    id: projectId,
+    title: 'Not Your Project',
+    workspaceJson: '{}',
+    status: ProjectStatus.Active,
+    assetIds: [],
+    ownerUserId: ownerId,
   });
 
-  it('should throw error if project is not editable by the user', async () => {
-    const projectId = createId();
-    const ownerId = createId();
-    const requesterId = createId(); // 別のユーザー
+  // InMemoryRepositoryにデータを追加
+  inMemoryProjectRepository.add(mockProject);
 
-    const mockProject = new Project({
-      id: projectId,
-      title: 'Not Your Project',
-      workspaceJson: '{}',
-      status: ProjectStatus.Active,
-      assetIds: [],
-      ownerUserId: ownerId,
-    });
-
-    // InMemoryRepositoryにデータを追加
-    inMemoryProjectRepository.add(mockProject);
-
-    await expect(usecase.execute(projectId, requesterId)).rejects.toThrow(
-      'Project not found or not editable'
-    );
-  });
+  await expect(usecase.execute(projectId, requesterId)).rejects.toThrow(
+    'Project not found or not editable'
+  );
 });

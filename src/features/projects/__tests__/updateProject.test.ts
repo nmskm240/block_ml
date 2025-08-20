@@ -14,12 +14,10 @@ let user: User;
 
 beforeEach(async () => {
   user = await generateTestUser(container);
-
-  jest.clearAllMocks();
 });
 
 it('should update a project successfully', async () => {
-  const project = Project.empty(user.id);
+  const project = Project.empty(user.id.value);
   const assetFile = new File(['content'], 'asset');
   const asset = Asset.from(assetFile);
 
@@ -32,7 +30,7 @@ it('should update a project successfully', async () => {
 
   await assetRepository.save(asset);
   await projectRepository.create(project);
-  await updateProject(user.id!, {
+  await updateProject(user.id.value, {
     id: project.id.value,
     json: '{"updated": true}',
     assets: [assetFile],
@@ -61,7 +59,7 @@ it('should throw an error if user is not the owner', async () => {
 
   const requesterId = UserId.generate(); // 別のユーザー
 
-  const project = Project.empty(user.id);
+  const project = Project.empty(user.id.value);
   await projectRepository.create(project);
 
   const input = { id: project.id.value, json: '{}', assets: [] };

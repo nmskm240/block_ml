@@ -1,65 +1,70 @@
-import { Email } from '@/lib/domain/vo/email';
-import { HashedPassword } from '@/lib/domain/vo/hashedPassword';
-import Id from '@/lib/domain/vo/Id';
+import { Email, HashedPassword, Id } from '@/lib/domain/vo';
 import { createId } from '@paralleldrive/cuid2';
 
+type UserParams = {
+  id: string;
+  name: string;
+  email: string;
+  hashedPassword: string;
+  status: UserStatus;
+};
+
 export default class User {
-  private _id?: UserId;
+  public readonly id: UserId;
   private _name: UserName;
   private _email: Email;
   private _password: HashedPassword;
+  private _status: UserStatus;
 
-  constructor(
-    name: string,
-    email: string,
-    password: string,
-    readonly status: UserStatus,
-    id?: string
-  ) {
-    this._id = id ? new UserId(id) : UserId.generate();
-    this._name = new UserName(name);
-    this._email = new Email(email);
-    this._password = HashedPassword.fromRaw(password);
+  constructor(params: UserParams) {
+    this.id = new UserId(params.id);
+    this._name = new UserName(params.name);
+    this._email = new Email(params.email);
+    this._password = new HashedPassword(params.hashedPassword);
+    this._status = params.status;
   }
 
-  static new(name: string, email: string, password: string): User {
-    return new User(name, email, password, UserStatus.Active);
-  }
-
-  get id() {
-    return this._id?.value;
+  static new(p: { name: string; email: string; password: string }): User {
+    return new User({
+      id: UserId.generate().value,
+      name: p.name,
+      email: p.email,
+      hashedPassword: HashedPassword.fromRaw(p.password).value,
+      status: UserStatus.Active,
+    });
   }
 
   get name() {
-    return this._name.value;
+    return this._name;
   }
 
   get email() {
-    return this._email.value;
+    return this._email;
   }
 
   get hashedPassword() {
-    return this._password.value;
+    return this._password;
   }
 
-  copyWith(params: Partial<User>): User {
-    return new User(
-      params.name ?? this.name,
-      params.email ?? this.email,
-      params.hashedPassword ?? this.hashedPassword,
-      params.status ?? this.status,
-      params.id ?? this.id
-    );
+  get status() {
+    return this._status;
+  }
+
+  changePassword(password: string) {
+    this._password = HashedPassword.fromRaw(password);
+  }
+
+  edit(editted: { name?: string; email?: string }) {
+    if (editted.name) this._name = new UserName(editted.name);
+    if (editted.email) this._email = new Email(editted.email);
   }
 }
 
-export const UserStatus = {
-  None: 0,
-  Active: 1,
-  Deleted: 2,
-} as const;
-
-export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
+export enum UserStatus {
+  None = 0,
+  Active = 1,
+  Deleted = 2,
+}
 
 //#region valueObjects
 

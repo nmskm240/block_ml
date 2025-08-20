@@ -1,12 +1,18 @@
 import { createId } from '@paralleldrive/cuid2';
 import Project from '../domains';
 import { IProjectRepository } from '../repositories';
+import { ProjectSearchQuery } from '../types';
 
 export default class InMemoryProjectRepository implements IProjectRepository {
   private projects: Project[] = [];
 
   constructor(initialProjects: Project[] = []) {
     this.projects = initialProjects;
+  }
+  search(query: ProjectSearchQuery): Promise<Project[]> {
+    return this.projects.filter((p) => {
+      p.
+    });
   }
 
   async findById(projectId: string): Promise<Project | undefined> {

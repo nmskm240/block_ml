@@ -29,11 +29,11 @@ export async function generateTestUser(container: DependencyContainer) {
     Token.UserRepository
   );
   // 各テストの前に共通のユーザーを作成
-  const user = User.new(
-    'Test user',
-    `test-${randomUUID()}@example.com`,
-    'hoge'
-  );
+  const user = User.new({
+    name: 'Test user',
+    email: `test-${randomUUID()}@example.com`,
+    password: 'hoge',
+  });
   await userRepository.create(user);
   return user;
 }

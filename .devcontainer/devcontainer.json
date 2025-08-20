@@ -23,6 +23,7 @@
     }
   },
   "postCreateCommand": ".devcontainer/on-post-create.sh",
+  "postAttachCommand": ".devcontainer/on-post-attach.sh",
   "containerEnv": {
     "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@localhost:54322/postgres",
     "WATCHPACK_POLLING": "true",

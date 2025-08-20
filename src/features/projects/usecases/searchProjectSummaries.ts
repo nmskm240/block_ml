@@ -29,16 +29,15 @@ export async function searchProjectSumamries(
   });
 
   return projects.map((project) => {
-    // FIXME: UserId.equalsで比較できるようにするべき？
-    const ownerUser = users.find((u) => u.id === project.ownerUserId!.value)!;
+    const ownerUser = users.find((u) => u.id.equals(project.ownerUserId!))!;
     return {
       id: project.id.value,
       title: project.title.value,
       description: 'comming soon', // TODO: 後でやる
       status: project.status,
       createdBy: {
-        id: ownerUser.id ?? "", // FIXME: UserIdの取り廻しは見直したほうがいいかもしれない
-        name: ownerUser.name,
+        id: ownerUser.id.value ?? "", // FIXME: UserIdの取り廻しは見直したほうがいいかもしれない
+        name: ownerUser.name.value,
         avatarUrl: '', // TODO: 後でやる
       },
       updatedAt: project.updatedAt,
