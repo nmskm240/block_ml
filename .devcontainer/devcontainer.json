@@ -1,19 +1,37 @@
 {
-    "name": "block_ml",
-    "dockerComposeFile": "compose.yaml",
-    "service": "front",
-    "workspaceFolder": "/workspace",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode",
-                "dsznajder.es7-react-js-snippets",
-                "xabikos.ReactSnippets",
-            ]
-        }
-    },
-    "mounts": [
-        "source=${localWorkspaceFolder}/data,target=/workspace/data,type=bind"
-    ]
+  "name": "block_ml",
+  "image": "node:20-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker": {},
+    "ghcr.io/devcontainers-extra/features/supabase-cli": {},
+    "ghcr.io/devcontainers-extra/features/tailscale": {},
+    "ghcr.io/devcontainers/features/java:1": {},
+    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+      "packages": "graphviz"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "dsznajder.es7-react-js-snippets",
+        "xabikos.ReactSnippets",
+        "Prisma.prisma",
+        "EditorConfig.EditorConfig",
+        "Supabase.vscode-supabase-extension",
+        "Gruntfuggly.todo-tree",
+        "Orta.vscode-jest",
+        "jebbs.plantuml"
+      ]
+    }
+  },
+  "postCreateCommand": ".devcontainer/on-post-create.sh",
+  "postAttachCommand": ".devcontainer/on-post-attach.sh",
+  "containerEnv": {
+    "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@localhost:54322/postgres",
+    "WATCHPACK_POLLING": "true",
+    "TAILSCALE_DEVICE_NAME": "block-ml-dev"
+  }
 }
