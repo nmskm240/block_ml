@@ -5,7 +5,11 @@
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker": {},
     "ghcr.io/devcontainers-extra/features/supabase-cli": {},
-    "ghcr.io/devcontainers-extra/features/tailscale": {}
+    "ghcr.io/devcontainers-extra/features/tailscale": {},
+    "ghcr.io/devcontainers/features/java:1": {},
+    "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+      "packages": "graphviz"
+    }
   },
   "customizations": {
     "vscode": {
@@ -18,7 +22,8 @@
         "EditorConfig.EditorConfig",
         "Supabase.vscode-supabase-extension",
         "Gruntfuggly.todo-tree",
-        "Orta.vscode-jest"
+        "Orta.vscode-jest",
+        "jebbs.plantuml"
       ]
     }
   },

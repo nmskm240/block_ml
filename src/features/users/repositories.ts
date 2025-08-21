@@ -9,6 +9,7 @@ export interface IUserRepository {
   findById(userId: string): Promise<User | undefined>;
   findByEmail(email: string): Promise<User | undefined>;
   existsByEmail(email: string): Promise<boolean>;
+  update(user: User): Promise<User>;
 }
 
 @injectable()
@@ -57,5 +58,19 @@ export class UserRepository implements IUserRepository {
     });
 
     return !!user;
+  }
+
+  async update(user: User): Promise<User> {
+    const entity = toEntity(user);
+    const updated = await this._client.user.update({
+      where: { id: user.id.value },
+      data: {
+        name: entity.name,
+        email: entity.email,
+        password: entity.password,
+        image: entity.image,
+      },
+    });
+    return toDomain(updated);
   }
 }

@@ -19,6 +19,10 @@ import {
   AuthService,
   IAuthService,
 } from '@/features/users/services/authService';
+import {
+  IUserStorageService,
+  UserStorageService,
+} from '@/features/users/services/userStorageService';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { StorageClient } from '@supabase/storage-js';
 import 'reflect-metadata';
@@ -55,6 +59,10 @@ container.register<IAssetStorageService>(
   AssetStorageService
 );
 container.register<IAuthService>(Token.AuthService, AuthService);
+container.register<IUserStorageService>(
+  Token.UserStorageService,
+  UserStorageService
+);
 
 export default container;
 

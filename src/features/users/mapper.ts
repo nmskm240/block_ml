@@ -20,6 +20,6 @@ export function toEntity(
     email: model.email.value,
     emailVerified: null,
     password: model.hashedPassword.value,
-    image: null,
+    image: model.image ?? null,
   };
 }

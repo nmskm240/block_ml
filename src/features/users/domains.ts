@@ -15,6 +15,7 @@ export default class User {
   private _email: Email;
   private _password: HashedPassword;
   private _status: UserStatus;
+  private _image?: string | null;
 
   constructor(params: UserParams) {
     this.id = new UserId(params.id);
@@ -22,6 +23,7 @@ export default class User {
     this._email = new Email(params.email);
     this._password = new HashedPassword(params.hashedPassword);
     this._status = params.status;
+    this._image = params.image;
   }
 
   static new(p: { name: string; email: string; password: string }): User {
@@ -50,6 +52,10 @@ export default class User {
     return this._status;
   }
 
+  get image() {
+    return this._image;
+  }
+
   changePassword(password: string) {
     this._password = HashedPassword.fromRaw(password);
   }
@@ -57,6 +63,10 @@ export default class User {
   edit(editted: { name?: string; email?: string }) {
     if (editted.name) this._name = new UserName(editted.name);
     if (editted.email) this._email = new Email(editted.email);
+  }
+
+  updateImage(imageUrl: string | null) {
+    this._image = imageUrl;
   }
 }
 

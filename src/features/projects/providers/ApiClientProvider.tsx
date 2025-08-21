@@ -1,10 +1,9 @@
 import React from 'react';
 import { IProjectApiClient, ProjectApiClient } from '../api/client';
 
-const ProjectApiClientContext = React.createContext<IProjectApiClient | null>(
-  null
-);
-type ProviderProps = {
+const Context = React.createContext<IProjectApiClient | undefined>(undefined);
+
+type Props = {
   children: React.ReactNode;
   client?: IProjectApiClient;
 };
@@ -12,16 +11,12 @@ type ProviderProps = {
 export function ProjectApiClientProvider({
   children,
   client = new ProjectApiClient(),
-}: ProviderProps) {
-  return (
-    <ProjectApiClientContext.Provider value={client}>
-      {children}
-    </ProjectApiClientContext.Provider>
-  );
+}: Props) {
+  return <Context.Provider value={client}>{children}</Context.Provider>;
 }
 
 export const useProjectApiClient = () => {
-  const ctx = React.useContext(ProjectApiClientContext);
+  const ctx = React.useContext(Context);
   if (!ctx) {
     throw new Error(
       'useProjectApiClient must be used within ProjectApiClientProvider'

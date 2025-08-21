@@ -9,6 +9,7 @@ export const Token = {
 
   AuthService: Symbol('AuthService'),
   AssetStorageService: Symbol('StorageService'),
+  UserStorageService: Symbol('UserStorageService'),
   ProjectService: Symbol('ProjectService'),
 } as const;
 
