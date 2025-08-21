@@ -8,7 +8,6 @@ export interface IUserRepository {
   create(user: User): Promise<User>;
   findById(userId: string): Promise<User | undefined>;
   findByEmail(email: string): Promise<User | undefined>;
-  existsByEmail(email: string): Promise<boolean>;
 }
 
 @injectable()
@@ -48,14 +47,5 @@ export class UserRepository implements IUserRepository {
     }
 
     return toDomain(entity);
-  }
-
-  async existsByEmail(email: string): Promise<boolean> {
-    const user = await this._client.user.findUnique({
-      where: { email },
-      select: { id: true },
-    });
-
-    return !!user;
   }
 }

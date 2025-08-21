@@ -1,46 +1,38 @@
 'use server';
 
 import User from '@/features/users/domains';
-import { IUserRepository, UserRepository } from '@/features/users/repositories';
-import type { SignUpParams } from '@/features/users/types';
-import { SignUpSchema } from '@/features/users/types';
+import { IUserRepository } from '@/features/users/repositories';
+import { IUserService } from '@/features/users/services/userService';
 import { withTransactionScope } from '@/lib/di/container';
-import { ServerActionResult } from '@/types';
-import 'reflect-metadata';
+import { Token } from '@/lib/di/types';
+import z from 'zod';
 
-export async function signUp(
-  values: SignUpParams
-): Promise<ServerActionResult> {
-  const parsed = SignUpSchema.safeParse(values);
-  if (!parsed.success) {
-    return {
-      isSuccess: false,
-      error: {
-        message: 'Invalid input',
-      },
-    };
-  }
-  // TODO: Usecaseとしてまとめる
-  const { name, email, password } = parsed.data;
-  return await withTransactionScope(async (container) => {
-    const repository = container.resolve<IUserRepository>(UserRepository);
-    const exists = await repository.existsByEmail(email);
+export default async function signUp(values: SignUpParams) {
+  const { name, email, password } = SignUpSchema.parse(values);
+  await withTransactionScope(async (container) => {
+    const service = container.resolve<IUserService>(Token.UserService);
+    const repository = container.resolve<IUserRepository>(Token.UserRepository);
+    const exists = await service.isExist(email);
 
     if (exists) {
-      return {
-        isSuccess: false,
-        error: {
-          message: 'User already exists',
-        },
-      };
+      throw new UserAlreadyExistsError(email);
     }
 
     const user = User.new({ name, email, password });
-
     await repository.create(user);
-    return {
-      isSuccess: true,
-      message: 'User created successfully',
-    };
   });
+}
+
+export const SignUpSchema = z.object({
+  name: z.string().min(1, 'User name is required'),
+  email: z.email('Email is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+export type SignUpParams = z.infer<typeof SignUpSchema>;
+
+export class UserAlreadyExistsError extends Error {
+  constructor(email: string) {
+    super(`User with email ${email} is already registered`);
+  }
 }

@@ -10,6 +10,7 @@ export const Token = {
   AuthService: Symbol('AuthService'),
   AssetStorageService: Symbol('StorageService'),
   ProjectService: Symbol('ProjectService'),
+  UserService: Symbol("UserService"),
 } as const;
 
 export type Token = (typeof Token)[keyof typeof Token];

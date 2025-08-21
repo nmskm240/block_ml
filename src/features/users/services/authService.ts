@@ -1,9 +1,8 @@
 import { Token } from '@/lib/di/types';
-import bcrypt from 'bcryptjs';
 import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
 import User from '../domains';
-import { type IUserRepository } from '../repositories';
+import type { IUserRepository } from '../repositories';
 
 export interface IAuthService {
   verify(email: string, password: string): Promise<User | null>;
