@@ -1,11 +1,15 @@
 import { z } from 'zod';
+import { UserInfoSchema } from '../types';
 
-export const UploadUserIconRequestSchema = z.object({
-  file: z.instanceof(File),
+export const EditUserInfoRequestSchema = z.object({
+  name: z.string().min(1),
+  icon: z.instanceof(File),
 });
 
-export type UploadUserIconRequest = z.infer<typeof UploadUserIconRequestSchema>;
+export type EditUserInfoRequest = z.infer<typeof EditUserInfoRequestSchema>;
 
-export interface UploadUserIconResponse {
-  imageUrl: string;
-}
+export const EditUserInfoResponseSchema = z.object({
+  updatedInfo: UserInfoSchema,
+});
+
+export type EdituserInfoResponse = z.infer<typeof EditUserInfoResponseSchema>;

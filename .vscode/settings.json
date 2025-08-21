@@ -6,5 +6,6 @@
   "editor.formatOnSave": true,
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  }
+  },
+  "plantuml.server": "https://www.plantuml.com/plantuml"
 }

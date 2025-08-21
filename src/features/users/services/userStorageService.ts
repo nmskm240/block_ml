@@ -1,5 +1,4 @@
 import { Token } from '@/lib/di/types';
-import { createId } from '@paralleldrive/cuid2';
 import { inject, injectable } from 'tsyringe';
 import { StorageClient } from '@supabase/storage-js';
 
@@ -9,7 +8,7 @@ export interface IUserStorageService {
 
 @injectable()
 export class UserStorageService implements IUserStorageService {
-  private readonly BUCKET_NAME = 'user-icons'; // バケット名
+  private readonly BUCKET_NAME = 'user';
 
   constructor(
     @inject(Token.SupabaseStorageClient)
@@ -18,20 +17,19 @@ export class UserStorageService implements IUserStorageService {
 
   async uploadUserIcon(userId: string, file: File): Promise<string> {
     const fileExtension = file.name.split('.').pop();
-    const fileName = `${userId}/${createId()}.${fileExtension}`; // createId を使用
+    const fileName = `${userId}/icon.${fileExtension}`;
 
-    const { data, error } = await this._storageClient
+    const { error } = await this._storageClient
       .from(this.BUCKET_NAME)
       .upload(fileName, file, {
         cacheControl: '3600',
-        upsert: true, // 既存のファイルを上書き
+        upsert: true,
       });
 
     if (error) {
       throw new Error(`Failed to upload user icon: ${error.message}`);
     }
 
-    // アップロードされたファイルの公開URLを取得
     const { data: publicUrlData } = this._storageClient
       .from(this.BUCKET_NAME)
       .getPublicUrl(fileName);

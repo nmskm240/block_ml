@@ -15,10 +15,7 @@ export default class User {
   private _email: Email;
   private _password: HashedPassword;
   private _status: UserStatus;
-<<<<<<< HEAD
-=======
   private _image?: string | null;
->>>>>>> 74eb9ec (feat(user): ユーザーのアイコン画像を設定可能にする)
 
   constructor(params: UserParams) {
     this.id = new UserId(params.id);
@@ -26,10 +23,7 @@ export default class User {
     this._email = new Email(params.email);
     this._password = new HashedPassword(params.hashedPassword);
     this._status = params.status;
-<<<<<<< HEAD
-=======
     this._image = params.image;
->>>>>>> 74eb9ec (feat(user): ユーザーのアイコン画像を設定可能にする)
   }
 
   static new(p: { name: string; email: string; password: string }): User {

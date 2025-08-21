@@ -1,16 +1,27 @@
-import { UploadUserIconRequest, UploadUserIconResponse } from './types';
+import {
+  EditUserInfoRequest,
+  EdituserInfoResponse,
+  EditUserInfoResponseSchema,
+} from './types';
 
 export interface IUserApiClient {
-  uploadUserIcon(userId: string, file: File): Promise<UploadUserIconResponse>;
+  editUserInfo(
+    userId: string,
+    request: EditUserInfoRequest
+  ): Promise<EdituserInfoResponse>;
 }
 
 export class UserApiClient implements IUserApiClient {
-  async uploadUserIcon(userId: string, file: File): Promise<UploadUserIconResponse> {
+  async editUserInfo(
+    userId: string,
+    request: EditUserInfoRequest
+  ): Promise<EdituserInfoResponse> {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('name', request.name);
+    formData.append('file', request.icon);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${userId}/icon`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${userId}`,
       {
         method: 'PUT',
         body: formData,
@@ -23,6 +34,6 @@ export class UserApiClient implements IUserApiClient {
       throw new Error(error.message ?? 'Failed to upload user icon');
     }
 
-    return (await response.json()) as UploadUserIconResponse;
+    return EditUserInfoResponseSchema.parse(await response.json());
   }
 }
