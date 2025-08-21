@@ -21,10 +21,6 @@ export default class InMemoryUserRepository implements IUserRepository {
     return this.users.find((u) => u.email.value === email);
   }
 
-  async existsByEmail(email: string): Promise<boolean> {
-    return this.users.some((u) => u.email.value === email);
-  }
-
   // テスト用のヘルパーメソッド
   clear() {
     this.users = [];

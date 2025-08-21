@@ -2,15 +2,18 @@
 
 import * as React from 'react';
 import signIn from '@/app/api/(actions)/signIn';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import NextLink from 'next/link';
+import { AuthError } from 'next-auth';
+import {
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Card as MuiCard,
+} from '@mui/material';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -63,10 +66,12 @@ export default function SignInPage() {
     event.preventDefault();
     setError('');
 
-    const result = await signIn({ email, password });
-
-    if (!result.isSuccess) {
-      setError('Invalid email or password');
+    try {
+      await signIn({ email, password });
+    } catch (error) {
+      if (error instanceof AuthError && error.type === 'CredentialsSignin') {
+        setError('Failed to sign in: Invalid email or password');
+      }
     }
   };
 
@@ -115,7 +120,12 @@ export default function SignInPage() {
           <Button type="submit" fullWidth variant="contained">
             Sign In
           </Button>
-          <Link component={NextLink} href="/auth/forgot-password" variant="body2" sx={{ alignSelf: 'flex-end' }}>
+          <Link
+            component={NextLink}
+            href="/auth/forgot-password"
+            variant="body2"
+            sx={{ alignSelf: 'flex-end' }}
+          >
             Forgot password?
           </Link>
         </Box>

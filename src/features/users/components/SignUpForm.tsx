@@ -1,12 +1,10 @@
 'use client';
 
-import { signUp } from '@/app/api/(actions)/signUp';
+import signUp, { SignUpParams, SignUpSchema } from '@/app/api/(actions)/signUp';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, Card, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { SignUpParams } from '../types';
-import { SignUpSchema } from '../types';
 
 export default function SignUpForm() {
   const {
@@ -25,12 +23,14 @@ export default function SignUpForm() {
     setServerError(null);
     setSuccessMessage(null);
 
-    const result = await signUp(data);
-
-    if (!result.isSuccess) {
-      setServerError(result.error?.message ?? 'サインアップに失敗しました');
-    } else {
-      setSuccessMessage(result.message ?? '登録完了しました');
+    try {
+      await signUp(data);
+      setSuccessMessage('登録完了しました');
+    } catch (error) {
+      if (error instanceof Error) {
+        setServerError(error.message);
+      }
+    } finally {
       reset();
     }
   };
