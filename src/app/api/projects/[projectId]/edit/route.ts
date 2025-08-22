@@ -1,11 +1,11 @@
+import 'reflect-metadata';
 import {
-  type GetEditingProjectResponse,
+  GetProjectEditingResponseSchema,
   SaveProjectRequestSchema,
   SaveProjectResponse,
 } from '@/features/projects/api/types';
 import { updateProject } from '@/features/projects/usecases';
-import FetchEditableProjectUsecase from '@/features/projects/usecases/fetchEditableProject';
-import { withTransactionScope } from '@/lib/di/container';
+import fetchProjectEditing from '@/features/projects/usecases/fetchProjectEditing';
 import { auth } from '@/lib/nextAuth/auth';
 import { NextResponse } from 'next/server';
 
@@ -56,21 +56,11 @@ export const GET = auth(async (request, context: { params: Params }) => {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  return withTransactionScope(async (container) => {
-    container.register(
-      FetchEditableProjectUsecase,
-      FetchEditableProjectUsecase
-    );
-    const usecase = container.resolve(FetchEditableProjectUsecase);
-
-    try {
-      const response = await usecase.execute(projectId, session.user.id);
-      return NextResponse.json(response, { status: 200 });
-    } catch (e) {
-      return NextResponse.json(
-        { error: (e as Error).message },
-        { status: 404 }
-      );
-    }
-  });
+  try {
+    const editing = await fetchProjectEditing(projectId);
+    const response = GetProjectEditingResponseSchema.parse(editing);
+    return NextResponse.json(response, { status: 200 });
+  } catch (e) {
+    return NextResponse.json({ error: (e as Error).message }, { status: 404 });
+  }
 });

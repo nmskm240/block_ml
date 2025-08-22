@@ -1,7 +1,6 @@
 import { Token } from '@/lib/di/types';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { InputJsonValue } from '@prisma/client/runtime/library';
-import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
 import Project from './domains';
 import { toDomain, toEntity } from './mapper';

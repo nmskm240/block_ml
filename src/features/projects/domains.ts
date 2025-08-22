@@ -73,6 +73,7 @@ export default class Project {
     this._status = status;
   }
 
+  // FIXME: AssetはUseAassetなど分離したほうがいいかもしれない
   edit(workspaceJson: string, assetIds: string[]) {
     if (this.isTemporary || !this.isEdittable(this.ownerUserId!.value)) {
       throw new Error();

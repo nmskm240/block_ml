@@ -1,7 +1,8 @@
 import {
   CreateProjectRequest,
   CreateProjectResponse,
-  GetEditingProjectResponse,
+  GetProjectEditingResponse,
+  GetProjectEditingResponseSchema,
   GetProjectsRequest,
   GetProjectsResponse,
   SaveProjectRequest,
@@ -19,7 +20,7 @@ export interface IProjectApiClient {
   getProjectSummaries(
     request: GetProjectsRequest
   ): Promise<GetProjectsResponse>;
-  getEditingProject(projectId: string): Promise<GetEditingProjectResponse>;
+  getProjectEditing(projectId: string): Promise<GetProjectEditingResponse>;
 }
 
 export class ProjectApiClient implements IProjectApiClient {
@@ -103,9 +104,9 @@ export class ProjectApiClient implements IProjectApiClient {
     return (await response.json()) as SaveProjectResponse;
   }
 
-  async getEditingProject(
+  async getProjectEditing(
     projectId: string
-  ): Promise<GetEditingProjectResponse> {
+  ): Promise<GetProjectEditingResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/projects/${projectId}/edit`,
       { method: 'GET', credentials: 'include' }
@@ -116,6 +117,6 @@ export class ProjectApiClient implements IProjectApiClient {
       throw new Error(error.message);
     }
 
-    return (await response.json()) as GetEditingProjectResponse;
+    return GetProjectEditingResponseSchema.parse(await response.json());
   }
 }

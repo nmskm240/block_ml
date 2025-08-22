@@ -2,9 +2,9 @@
 
 import fetchAssetFromSignedUrl from '@/features/assets/functions/fetchAssetFromSignedUrl';
 import { Asset } from '@/features/assets/types';
+import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 import React from 'react';
 import { useProjectApiClient } from '../providers/ApiClientProvider';
-import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 
 type EditProjectData = {
   projectJson: string;
@@ -26,7 +26,7 @@ export default function useEditProject(projectId: string): EditProjectData {
 
     const init = async () => {
       setLoading(true);
-      const { projectJson, assets } = await client.getEditingProject(projectId);
+      const { workspace, assets } = await client.getProjectEditing(projectId);
       const assetFiles = await Promise.all(
         assets.map((asset) =>
           fetchAssetFromSignedUrl({ url: asset.path, fileName: asset.name })
@@ -35,7 +35,7 @@ export default function useEditProject(projectId: string): EditProjectData {
 
       await service?.uploads(assetFiles);
 
-      setProjectJson(projectJson?.toString() ?? '');
+      setProjectJson(workspace?.toString() ?? '');
       setAssets(assets);
       setLoading(false);
     };

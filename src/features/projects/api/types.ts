@@ -1,6 +1,5 @@
-import { AssetSchema } from '@/features/assets/types';
-import { ProjectSummaryDto } from '../types';
 import { z } from 'zod';
+import { ProjectEditingSchema, ProjectSummary } from '../types';
 
 export interface CreateProjectRequest {}
 
@@ -22,12 +21,11 @@ export interface GetProjectsRequest {
 }
 
 export interface GetProjectsResponse {
-  projectSummaries: ProjectSummaryDto[];
+  projectSummaries: ProjectSummary[];
 }
 
-export const GetEditingProjectResponseSchema = z.object({
-  projectJson: z.json(),
-  assets: z.array(AssetSchema)
-});
+export const GetProjectEditingResponseSchema = ProjectEditingSchema;
 
-export type GetEditingProjectResponse = z.infer<typeof GetEditingProjectResponseSchema>;
+export type GetProjectEditingResponse = z.infer<
+  typeof GetProjectEditingResponseSchema
+>;
