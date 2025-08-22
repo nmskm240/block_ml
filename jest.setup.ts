@@ -1,6 +1,7 @@
+import 'reflect-metadata';
 import { Token } from '@/lib/di/types';
 import { jestPrismaClient } from '@/lib/prisma/__mocks__/jestClient';
-import 'reflect-metadata';
+import { createMockSupabaseClient } from '@/lib/supabase/__mocks__/client';
 import { container } from 'tsyringe';
 import { TextDecoder, TextEncoder } from 'util';
 
@@ -12,11 +13,7 @@ process.env.SUPABASE_SERVICE_ROLE_KEY = 'dummy-key';
 
 jest.mock('@supabase/supabase-js', () => {
   return {
-    createClient: jest.fn(() => ({
-      auth: { getUser: jest.fn() },
-      storage: { from: jest.fn() },
-    })),
-    SupabaseClient: jest.fn(),
+    createClient: createMockSupabaseClient,
   };
 });
 
@@ -27,4 +24,5 @@ jest.mock('@/lib/prisma/client', () => {
   };
 });
 
+container.registerInstance(Token.SupabaseClient, createMockSupabaseClient());
 container.registerInstance(Token.PrismaClient, jestPrismaClient);

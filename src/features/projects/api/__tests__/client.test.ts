@@ -1,5 +1,9 @@
 import { ProjectApiClient } from '../client';
-import { CreateProjectRequest, GetProjectsRequest, SaveProjectRequest } from '../types';
+import {
+  CreateProjectRequest,
+  GetProjectsRequest,
+  SaveProjectRequest,
+} from '../types';
 
 // global.fetch のモック
 global.fetch = jest.fn();
@@ -33,15 +37,21 @@ describe('ProjectApiClient', () => {
     });
 
     it('should throw error on failed response', async () => {
-        (fetch as jest.Mock).mockResolvedValueOnce({ ok: false, json: async () => ({ message: 'Error' }) });
-        await expect(client.getProjectSummaries({})).rejects.toThrow('Error');
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ message: 'Error' }),
+      });
+      await expect(client.getProjectSummaries({})).rejects.toThrow('Error');
     });
   });
 
   describe('createProject', () => {
     it('should send a POST request with project data', async () => {
       const mockResponse = { id: 'proj456' };
-      (fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => mockResponse });
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
 
       const request: CreateProjectRequest = { title: 'New Project' };
       const result = await client.createProject(request);
@@ -59,37 +69,49 @@ describe('ProjectApiClient', () => {
 
   describe('saveProject', () => {
     it('should send a PUT request with FormData', async () => {
-        const mockResponse = { success: true };
-        (fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => mockResponse });
+      const mockResponse = { success: true };
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
 
-        const request: SaveProjectRequest = {
-            projectJson: '{\"blocks\":{}}',
-            assets: [new File(['content'], 'asset.txt', { type: 'text/plain' })],
-        };
-        const projectId = 'proj123';
+      const request: SaveProjectRequest = {
+        projectJson: '{"blocks":{}}',
+        assets: [new File(['content'], 'asset.txt', { type: 'text/plain' })],
+      };
+      const projectId = 'proj123';
 
-        await client.saveProject(projectId, request);
+      await client.saveProject(projectId, request);
 
-        expect(fetch).toHaveBeenCalledWith(`${baseUrl}/api/projects/${projectId}/edit`, expect.any(Object));
-        const fetchOptions = (fetch as jest.Mock).mock.calls[0][1];
-        expect(fetchOptions.method).toBe('PUT');
-        expect(fetchOptions.body).toBeInstanceOf(FormData);
+      expect(fetch).toHaveBeenCalledWith(
+        `${baseUrl}/api/projects/${projectId}/edit`,
+        expect.any(Object)
+      );
+      const fetchOptions = (fetch as jest.Mock).mock.calls[0][1];
+      expect(fetchOptions.method).toBe('PUT');
+      expect(fetchOptions.body).toBeInstanceOf(FormData);
     });
   });
 
   describe('getEditingProject', () => {
     it('should send a GET request to the edit endpoint', async () => {
-        const mockResponse = { id: 'proj123', title: 'Editing Project' };
-        (fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => mockResponse });
+      const mockResponse = { id: 'proj123', title: 'Editing Project' };
+      (fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
 
-        const projectId = 'proj123';
-        const result = await client.getEditingProject(projectId);
+      const projectId = 'proj123';
+      const result = await client.getProjectEditing(projectId);
 
-        expect(fetch).toHaveBeenCalledWith(`${baseUrl}/api/projects/${projectId}/edit`, {
-            method: 'GET',
-            credentials: 'include',
-        });
-        expect(result).toEqual(mockResponse);
+      expect(fetch).toHaveBeenCalledWith(
+        `${baseUrl}/api/projects/${projectId}/edit`,
+        {
+          method: 'GET',
+          credentials: 'include',
+        }
+      );
+      expect(result).toEqual(mockResponse);
     });
   });
 });
