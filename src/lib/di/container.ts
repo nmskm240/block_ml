@@ -20,6 +20,9 @@ import {
 import { Token } from '@/lib/di';
 import prisma from '@/lib/prisma/client';
 import supabaseClient from '@/lib/supabase/client';
+import logger, { Logger } from '@/lib/logger';
+
+container.registerInstance<Logger>(Token.Logger, logger);
 
 container.registerInstance<SupabaseClient>(
   Token.SupabaseClient,
