@@ -1,4 +1,5 @@
 import { User as UserEntity } from '@prisma/client';
+
 import User, { UserStatus } from './domains';
 
 export function toDomain(entity: UserEntity): User {
@@ -12,7 +13,7 @@ export function toDomain(entity: UserEntity): User {
 }
 
 export function toEntity(
-  model: User
+  model: User,
 ): Omit<UserEntity, 'createdAt' | 'updatedAt'> {
   return {
     id: model.id.value,

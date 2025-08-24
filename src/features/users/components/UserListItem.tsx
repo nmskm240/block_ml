@@ -1,6 +1,9 @@
-import { ListItem, ListItemAvatar, ListItemText } from '@mui/material';
-import Link from 'next/link';
 import React from 'react';
+
+import { ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+
+import Link from 'next/link';
+
 import UserAvatar from './UserAvatar';
 import { Userinfo } from '../types';
 

@@ -1,12 +1,14 @@
 import { z } from 'zod';
 
-export const SignUpSchema = z.object({
-  name: z.string().min(1, 'User name is required'),
-  email: z.email('Email is required'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+export const UserInfoSchema = z.object({
+  id: z.cuid2(),
+  name: z.string(),
+  avatarUrl: z.url(),
 });
 
-export type SignUpParams = z.infer<typeof SignUpSchema>;
+export type Userinfo = z.infer<typeof UserInfoSchema>;
+
+//#region sing-in
 
 export const SignInSchema = z.object({
   email: z.email('Email is required'),
@@ -15,10 +17,4 @@ export const SignInSchema = z.object({
 
 export type SignInParams = z.infer<typeof SignInSchema>;
 
-export const UserInfoSchema = z.object({
-  id: z.cuid2(),
-  name: z.string(),
-  avatarUrl: z.url(),
-});
-
-export type Userinfo = z.infer<typeof UserInfoSchema>;
+//#endregion

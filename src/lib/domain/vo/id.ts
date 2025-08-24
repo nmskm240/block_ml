@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isCuid } from '@paralleldrive/cuid2';
 
 export abstract class Id<T extends Id<any>> {

@@ -3,7 +3,8 @@ import {
   Project as ProjectEntity,
   UserProject as UserProjectEntity,
 } from '@prisma/client';
-import Project, { ProjectStatus } from './domains';
+
+import Project, { fromProjectStatus } from './domains';
 import { ProjectEntityInput } from './types';
 
 export function toDomain(entity: {
@@ -16,7 +17,7 @@ export function toDomain(entity: {
     title: entity.project.title,
     workspaceJson: JSON.stringify(entity.project.workspaceJson),
     ownerUserId: entity.userProject.userId,
-    status: ProjectStatus.from(entity.project.status),
+    status: fromProjectStatus(entity.project.status),
     assetIds: entity.projectAssets.map((e) => e.assetId),
     updatedAt: entity.project.updatedAt,
   });

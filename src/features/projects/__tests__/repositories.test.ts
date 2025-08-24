@@ -1,14 +1,18 @@
-import Asset, { AssetId } from '@/features/assets/domains';
-import { IAssetRepository } from '@/features/assets/repositories';
-import Project from '@/features/projects/domains';
-import { IProjectRepository } from '@/features/projects/repositories';
-import User from '@/features/users/domains';
-import container from '@/lib/di/container';
-import { Token } from '@/lib/di/types';
-import { generateTestUser } from '@/lib/prisma/__tests__/test-helper';
+import 'reflect-metadata';
 import { createId } from '@paralleldrive/cuid2';
 import { PrismaClient } from '@prisma/client';
-import 'reflect-metadata';
+
+import Asset, { AssetId } from '@/features/assets/domains';
+import { IAssetRepository } from '@/features/assets/repositories';
+import {
+  Project,
+  IProjectRepository,
+  ProjectNotFoundError,
+} from '@/features/projects';
+import User from '@/features/users/domains';
+import { container } from '@/lib/di';
+import { Token } from '@/lib/di/types';
+import { generateTestUser } from '@/lib/jest/helper';
 
 let user: User;
 let repository: IProjectRepository;
@@ -25,7 +29,7 @@ describe('findProjectById', () => {
     project.rename('Find Me');
     await repository.create(project);
 
-    const found = await repository.findById(project.id.value);
+    const found = await repository.getById(project.id.value);
     expect(found).toBeInstanceOf(Project);
     expect(found?.id.value).toBe(project.id.value);
     expect(found?.title.value).toBe('Find Me');
@@ -33,8 +37,9 @@ describe('findProjectById', () => {
   });
 
   it('should return undefined if not found', async () => {
-    const foundProject = await repository.findById(createId());
-    expect(foundProject).toBeUndefined();
+    await expect(repository.getById(createId())).rejects.toThrow(
+      ProjectNotFoundError,
+    );
   });
 });
 
@@ -75,7 +80,7 @@ describe('createProject', () => {
 describe('updateProject', () => {
   it('should update project details and asset links', async () => {
     const assetRepository = container.resolve<IAssetRepository>(
-      Token.AssetRepository
+      Token.AssetRepository,
     );
     const assets = await Promise.all(
       ['a.txt', 'b.txt', 'c.txt'].map((file) => {
@@ -85,20 +90,20 @@ describe('updateProject', () => {
           path: `${createId()}-${file}`,
         });
         return assetRepository.save(asset);
-      })
+      }),
     );
 
     const project = Project.empty(user.id.value);
     project.edit(
       '{}',
-      assets.map((asset) => asset.id.value)
+      assets.map((asset) => asset.id.value),
     );
     await repository.create(project);
 
     project.rename('Updated Title');
     project.edit(
       '{"updated": true}',
-      assets.slice(1).map((asset) => asset.id.value)
+      assets.slice(1).map((asset) => asset.id.value),
     );
 
     await repository.update(project);
@@ -124,5 +129,3 @@ describe('updateProject', () => {
     expect(deletedAssetLink?.deleteFlag).toBe(true);
   });
 });
-
-

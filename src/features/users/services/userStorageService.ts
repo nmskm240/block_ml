@@ -1,6 +1,7 @@
-import { Token } from '@/lib/di/types';
-import { inject, injectable } from 'tsyringe';
 import { StorageClient } from '@supabase/storage-js';
+import { inject, injectable } from 'tsyringe';
+
+import { Token } from '@/lib/di';
 
 export interface IUserStorageService {
   uploadUserIcon(userId: string, file: File): Promise<string>;

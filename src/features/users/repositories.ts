@@ -1,8 +1,10 @@
+import { Prisma, PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
+
+import { Token } from '@/lib/di/types';
+
 import User from './domains';
 import { toDomain, toEntity } from './mapper';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { Token } from '@/lib/di/types';
 
 export interface IUserRepository {
   create(user: User): Promise<User>;

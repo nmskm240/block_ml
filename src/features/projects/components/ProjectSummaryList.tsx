@@ -1,4 +1,5 @@
 import { List } from '@mui/material';
+
 import { ProjectSummary } from '../types';
 import { ProjectSummaryListItem } from './ProjectSummaryListItem';
 

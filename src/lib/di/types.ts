@@ -8,9 +8,7 @@ export const Token = {
   UserRepository: Symbol('UserRepository'),
 
   AuthService: Symbol('AuthService'),
-  AssetStorageService: Symbol('StorageService'),
+  AssetStorageService: Symbol('AssetStorageService'),
   UserStorageService: Symbol('UserStorageService'),
   ProjectService: Symbol('ProjectService'),
 } as const;
-
-export type Token = (typeof Token)[keyof typeof Token];

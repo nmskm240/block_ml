@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
+
 import { VariableTypes } from '../../../types/variables';
 
 export const SK_LEARN_LABEL_ENCODING = 'sklearn_label_encoding';

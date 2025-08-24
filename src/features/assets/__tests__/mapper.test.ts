@@ -1,7 +1,8 @@
-import { Asset as AssetEntity } from '@prisma/client';
-import Asset from '../domains';
-import { toDomain, toEntity } from '../mapper';
+import 'reflect-metadata';
 import { createId } from '@paralleldrive/cuid2';
+import { Asset as AssetEntity } from '@prisma/client';
+
+import { Asset, toDomain, toEntity } from '@/features/assets';
 
 describe('toDomain', () => {
   it('should map an AssetEntity to an Asset domain object', () => {

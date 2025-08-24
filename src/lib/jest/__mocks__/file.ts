@@ -38,10 +38,12 @@ export class MockFile implements File {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   slice(start?: number, end?: number, contentType?: string): Blob {
     throw new Error('slice not implemented');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stream(): any {
     throw new Error('stream not implemented in MockFile');
   }

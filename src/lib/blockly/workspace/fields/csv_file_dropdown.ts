@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+
 import { WithAdditionalWorkspace } from '../../types';
 
 export class CsvFileDropdown extends Blockly.FieldDropdown {

@@ -1,5 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
+
 import { VariableTypes } from '../../../types/variables';
 
 export const DATA_FRAME_DROP_COLUMN_KEY = 'dataframe_column_drop';

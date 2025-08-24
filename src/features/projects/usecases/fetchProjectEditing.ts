@@ -1,27 +1,23 @@
+'use server';
+import 'reflect-metadata';
+
 import type { IAssetStorageService } from '@/features/assets/services/assetStorageService';
 import { Asset } from '@/features/assets/types';
-import { withTransactionScope } from '@/lib/di/container';
-import { Token } from '@/lib/di/types';
-import type { IProjectRepository } from '../repositories';
-import { ProjectEditing } from '../types';
+import type { IProjectRepository, ProjectEditing } from '@/features/projects';
+import { Token, withTransactionScope } from '@/lib/di';
 
-export default async function fetchProjectEditing(
-  projectId: string
+export async function fetchProjectEditing(
+  projectId: string,
 ): Promise<ProjectEditing> {
   return await withTransactionScope(async (scope) => {
     const repository = scope.resolve<IProjectRepository>(
-      Token.ProjectRepository
+      Token.ProjectRepository,
     );
     const storage = scope.resolve<IAssetStorageService>(
-      Token.AssetStorageService
+      Token.AssetStorageService,
     );
 
-    const project = await repository.findById(projectId);
-    if (!project) {
-      // FIXME: 本来はgetByIdでRepositoy側が投げるべき例外だと思う
-      throw new Error('Project not found');
-    }
-
+    const project = await repository.getById(projectId);
     const assetIds = project.assetIds.map((e) => e.value);
     const assets = await storage.downloads(assetIds);
 

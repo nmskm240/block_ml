@@ -1,5 +1,6 @@
-import { Email, HashedPassword, Id } from '@/lib/domain/vo';
 import { createId } from '@paralleldrive/cuid2';
+
+import { Email, HashedPassword, Id } from '@/lib/domain/vo';
 
 type UserParams = {
   id: string;
@@ -23,7 +24,7 @@ export default class User {
     this._email = new Email(params.email);
     this._password = new HashedPassword(params.hashedPassword);
     this._status = params.status;
-    this._image = params.image;
+    this._image = "";
   }
 
   static new(p: { name: string; email: string; password: string }): User {
@@ -84,7 +85,7 @@ export class UserId extends Id<UserId> {
   }
 }
 
-class UserName {
+export class UserName {
   constructor(readonly value: string) {
     const trimmed = value.trim();
     if (!trimmed) {

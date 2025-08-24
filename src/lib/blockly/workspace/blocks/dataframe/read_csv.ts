@@ -1,8 +1,10 @@
+import path from 'path';
+
 import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
-import path from 'path';
-import { CsvFileDropdown } from '../../fields';
+
 import { VariableTypes } from '../../../types/variables';
+import { CsvFileDropdown } from '../../fields';
 
 export const DATA_FRAME_READ_CSV_KEY = 'dataframe_read_csv';
 

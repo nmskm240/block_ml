@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React from 'react';
-import type { PyodideInterface } from 'pyodide';
+
 import Script from 'next/script';
+
+import type { PyodideInterface } from 'pyodide';
 
 const PYODIDE_VERSION = process.env.NEXT_PUBLIC_PYODIDE_VERSION!;
 const PYODIDE_CDN = process.env.NEXT_PUBLIC_PYODIDE_CDN!;
@@ -25,7 +28,7 @@ type PyodideProviderProps = {
 };
 
 const PyodideContext = React.createContext<PyodideContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function PyodideProvider({ children }: PyodideProviderProps) {
@@ -71,6 +74,7 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePyodide = () => {
   const ctx = React.useContext(PyodideContext);
   if (!ctx) throw new Error('usePyodide must be used within PyodideProvider');

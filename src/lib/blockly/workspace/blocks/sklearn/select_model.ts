@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
+
 import { VariableTypes } from '../../../types/variables';
 
 export const SK_LEARN_SELECT_MODEL = 'sklearn_select_model';

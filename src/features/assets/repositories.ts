@@ -1,7 +1,9 @@
-import { inject, injectable } from 'tsyringe';
-import Asset from './domains';
-import { Token } from '@/lib/di/types';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { inject, injectable } from 'tsyringe';
+
+import { Token } from '@/lib/di/types';
+
+import Asset from './domains';
 import { toDomain, toEntity } from './mapper';
 
 export interface IAssetRepository {

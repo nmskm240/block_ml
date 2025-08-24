@@ -1,28 +1,26 @@
-"use client";
+'use client';
 
 import React from 'react';
-import { InputBase, IconButton, Paper } from '@mui/material';
+
 import SearchIcon from '@mui/icons-material/Search';
+import { InputBase, IconButton, Paper } from '@mui/material';
+
+import { useRouter } from 'next/navigation';
 
 type Props = {
   placeholder?: string;
-  onSearch?: (query: string) => void;
 };
 
-export default function SearchBox({
-  placeholder = '検索...',
-  onSearch,
-}: Props) {
+export function SearchBox({ placeholder = '検索...' }: Props) {
   const [query, setQuery] = React.useState('');
+  const router = useRouter();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 
   const handleSearchClick = () => {
-    if (onSearch) {
-      onSearch(query);
-    }
+    router.push(`/projects?q=${query}`);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {

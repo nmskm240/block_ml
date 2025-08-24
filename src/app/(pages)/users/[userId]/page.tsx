@@ -1,7 +1,7 @@
-import 'reflect-metadata';
 import { ProjectSummaryList } from '@/features/projects/components/ProjectSummaryList';
-import { searchProjectSumamries } from '@/features/projects/usecases/searchProjectSummaries';
+import { searchProjectSumamries } from '@/features/projects/usecases';
 import UserProfile from '@/features/users/profile/components/UserProfile';
+import 'reflect-metadata';
 
 type Params = {
   userId: string;

@@ -1,7 +1,9 @@
+'use server';
+import 'reflect-metadata';
+
 import type { IAssetStorageService } from '@/features/assets/services/assetStorageService';
-import { withTransactionScope } from '@/lib/di/container';
-import { Token } from '@/lib/di/types';
-import type { IProjectRepository } from '../repositories';
+import type { IProjectRepository } from '@/features/projects';
+import { Token, withTransactionScope } from '@/lib/di';
 
 export async function updateProject(
   userId: string,
@@ -15,12 +17,8 @@ export async function updateProject(
       Token.AssetStorageService
     );
 
-    const project = await repository.findById(input.id);
-    if (!project) {
-      throw new Error('Project not found');
-    }
-
-    if (project.ownerUserId?.value !== userId) {
+    const project = await repository.getById(input.id);
+    if (!project.isEdittable(userId)) {
       throw new Error('Permission denied');
     }
 

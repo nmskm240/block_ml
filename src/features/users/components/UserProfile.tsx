@@ -1,10 +1,12 @@
 'use client';
 
+import { useRef, useState } from 'react';
+
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
-import { useRef, useState } from 'react';
+
 import UserAvatar from './UserAvatar';
-import { useUserApiClient } from '../providers/ApiClientProvider';
+import { editUserInfo } from '../usecases/editUserInfo';
 
 type Props = {
   userId: string;
@@ -23,8 +25,7 @@ export default function UserProfile(props: Props) {
 
     setIsUploading(true);
     try {
-      const userApiClient = useUserApiClient();
-      const { updatedInfo } = await userApiClient.editUserInfo(props.userId, {
+      const { updatedInfo } = await editUserInfo(props.userId, {
         name: session?.user?.name || '',
         icon: file,
       });

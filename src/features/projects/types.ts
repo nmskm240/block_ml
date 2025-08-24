@@ -1,5 +1,7 @@
 import { Project as ProjectEntity } from '@prisma/client';
-import z from 'zod';
+import { z } from 'zod';
+
+import { AssetSchema } from '../assets/types';
 import { UserInfoSchema } from '../users/types';
 
 export type ProjectEntityInput = Omit<
@@ -26,3 +28,11 @@ export const ProjectSearchQuerySchema = z.object({
 });
 
 export type ProjectSearchQuery = z.infer<typeof ProjectSearchQuerySchema>;
+
+export const ProjectEditingSchema = z.object({
+  id: z.cuid2(),
+  workspace: z.json(),
+  assets: z.array(AssetSchema),
+});
+
+export type ProjectEditing = z.infer<typeof ProjectEditingSchema>;
