@@ -1,30 +1,26 @@
-import Asset, { AssetId } from '../domains';
+import 'reflect-metadata';
 import { createId } from '@paralleldrive/cuid2';
 
-// Fileオブジェクトのモック
-const createMockFile = (name: string, content = 'test content') => {
-  const blob = new Blob([content]);
-  return new File([blob], name);
-};
-
-const baseParams = {
-  id: createId(),
-  name: 'test-asset.txt',
-  path: 'assets/test-asset.txt',
-};
+import { Asset, AssetId } from '@/features/assets';
+import { MockFile } from '@/lib/jest/__mocks__/file';
 
 describe('constructor', () => {
   it('should create an asset instance with valid params', () => {
-    const asset = new Asset(baseParams);
-    expect(asset.id.value).toBe(baseParams.id);
-    expect(asset.name.value).toBe(baseParams.name);
-    expect(asset.path.value).toBe(baseParams.path);
+    const params = {
+      id: createId(),
+      name: 'test',
+      path: 'test/hoge',
+    };
+    const asset = new Asset(params);
+    expect(asset.id.value).toBe(params.id);
+    expect(asset.name.value).toBe(params.name);
+    expect(asset.path.value).toBe(params.path);
   });
 });
 
 describe('from', () => {
   it('should create an Asset from a File object', () => {
-    const mockFile = createMockFile('new-file.csv');
+    const mockFile = new MockFile('new-file.csv', 'test');
     const asset = Asset.from(mockFile);
 
     expect(asset).toBeInstanceOf(Asset);
@@ -46,14 +42,14 @@ describe('move', () => {
 describe('AssetName (ValueObject)', () => {
   it('should throw error if name is empty', () => {
     expect(() => new Asset({ ...baseParams, name: ' ' })).toThrow(
-      'Asset name must not be empty.'
+      'Asset name must not be empty.',
     );
   });
 
   it('should throw error if name is over 100 characters', () => {
     const longName = 'a'.repeat(101);
     expect(() => new Asset({ ...baseParams, name: longName })).toThrow(
-      'Asset name must be 100 characters or less.'
+      'Asset name must be 100 characters or less.',
     );
   });
 
@@ -66,21 +62,21 @@ describe('AssetName (ValueObject)', () => {
 describe('AssetPath (ValueObject)', () => {
   it('should throw error if path is empty', () => {
     expect(() => new Asset({ ...baseParams, path: ' ' })).toThrow(
-      'Asset path must not be empty.'
+      'Asset path must not be empty.',
     );
   });
 
   it('should throw error for invalid paths containing ".."', () => {
     const invalidPath = '../some/path';
     expect(() => new Asset({ ...baseParams, path: invalidPath })).toThrow(
-      `Invalid asset path: "${invalidPath}"`
+      `Invalid asset path: "${invalidPath}"`,
     );
   });
 
   it('should throw error for absolute paths', () => {
     const invalidPath = '/absolute/path';
     expect(() => new Asset({ ...baseParams, path: invalidPath })).toThrow(
-      `Invalid asset path: "${invalidPath}"`
+      `Invalid asset path: "${invalidPath}"`,
     );
   });
 });

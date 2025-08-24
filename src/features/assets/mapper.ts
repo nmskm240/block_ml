@@ -1,4 +1,5 @@
 import { Asset as AssetEntity } from '@prisma/client';
+
 import Asset from './domains';
 
 export function toDomain(entity: AssetEntity): Asset {

@@ -1,5 +1,7 @@
-import { Id } from '@/lib/domain/vo/';
 import { createId } from '@paralleldrive/cuid2';
+
+import { Id } from '@/lib/domain/vo/';
+
 import { AssetId } from '../assets/domains';
 import { UserId } from '../users/domains';
 
@@ -73,6 +75,7 @@ export default class Project {
     this._status = status;
   }
 
+  // FIXME: AssetはUseAassetなど分離したほうがいいかもしれない
   edit(workspaceJson: string, assetIds: string[]) {
     if (this.isTemporary || !this.isEdittable(this.ownerUserId!.value)) {
       throw new Error();
@@ -98,13 +101,11 @@ export enum ProjectStatus {
   Trashed = 4,
 }
 
-export namespace ProjectStatus {
-  export function from(value: number): ProjectStatus {
-    if (!Object.values(ProjectStatus).includes(value)) {
-      throw new Error(`Invalid ProjectStatus: ${value}`);
-    }
-    return value;
+export function fromProjectStatus(value: number): ProjectStatus {
+  if (!Object.values(ProjectStatus).includes(value)) {
+    throw new Error(`Invalid ProjectStatus: ${value}`);
   }
+  return value;
 }
 
 //#region valueObjects

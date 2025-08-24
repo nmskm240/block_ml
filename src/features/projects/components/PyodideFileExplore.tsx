@@ -1,6 +1,7 @@
 'use client';
 
-import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
+import React from 'react';
+
 import { Delete, FileUpload } from '@mui/icons-material';
 import {
   Card,
@@ -14,7 +15,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React from 'react';
+
+import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 
 export default function PyodideFileExplore() {
   const service = usePyodideFileService();

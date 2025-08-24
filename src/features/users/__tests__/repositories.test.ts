@@ -1,10 +1,9 @@
 import 'reflect-metadata';
-import container from '@/lib/di/container';
-import { Token } from '@/lib/di/types';
-import User from '../domains';
 import { createId } from '@paralleldrive/cuid2';
 import { PrismaClient } from '@prisma/client';
-import { IUserRepository } from '../repositories';
+
+import { User, IUserRepository } from '@/features/users';
+import { Token, container } from '@/lib/di';
 
 let repository: IUserRepository;
 let prisma: PrismaClient;
@@ -24,10 +23,11 @@ describe('findByEmail', () => {
       },
     });
 
-    const foundUser = await repository.findByEmail(userData.email);
+    const foundUser = await repository.findByEmail(userData.email!);
 
+    expect(foundUser).not.toBeUndefined();
     expect(foundUser).toBeInstanceOf(User);
-    expect(foundUser?.email).toBe(userData.email);
+    expect(foundUser!.email.value).toBe(userData.email);
   });
 
   it('should return undefined if not found by email', async () => {

@@ -1,10 +1,11 @@
-import { IAuthService } from '@/features/users/services/authService';
-import { SignInSchema } from '@/features/users/types';
+import 'reflect-metadata';
+
 import { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import 'reflect-metadata';
-import container from '@/lib/di/container';
-import { Token } from '../di/types';
+
+import { SignInSchema } from '@/features/users';
+import { IAuthService } from '@/features/users/services/authService';
+import { container, Token } from '@/lib/di';
 
 export default {
   providers: [

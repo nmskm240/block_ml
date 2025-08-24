@@ -1,10 +1,12 @@
 'use client';
 
-import fetchAssetFromSignedUrl from '@/features/assets/functions/fetchAssetFromSignedUrl';
-import { Asset } from '@/features/assets/types';
 import React from 'react';
-import { useProjectApiClient } from '../providers/ApiClientProvider';
+
+import { Asset } from '@/features/assets/types';
+import fetchAssetFromSignedUrl from '@/features/assets/usecases/fetchAssetFromSignedUrl';
 import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
+
+import { fetchProjectEditing } from '../usecases';
 
 type EditProjectData = {
   projectJson: string;
@@ -13,7 +15,6 @@ type EditProjectData = {
 };
 
 export default function useEditProject(projectId: string): EditProjectData {
-  const client = useProjectApiClient();
   const service = usePyodideFileService();
   const [projectJson, setProjectJson] = React.useState('');
   const [assets, setAssets] = React.useState<Asset[]>([]);
@@ -26,16 +27,16 @@ export default function useEditProject(projectId: string): EditProjectData {
 
     const init = async () => {
       setLoading(true);
-      const { projectJson, assets } = await client.getEditingProject(projectId);
+      const { workspace, assets } = await fetchProjectEditing(projectId);
       const assetFiles = await Promise.all(
         assets.map((asset) =>
-          fetchAssetFromSignedUrl({ url: asset.path, fileName: asset.name })
-        )
+          fetchAssetFromSignedUrl({ url: asset.path, fileName: asset.name }),
+        ),
       );
 
       await service?.uploads(assetFiles);
 
-      setProjectJson(projectJson?.toString() ?? '');
+      setProjectJson(workspace?.toString() ?? '');
       setAssets(assets);
       setLoading(false);
     };

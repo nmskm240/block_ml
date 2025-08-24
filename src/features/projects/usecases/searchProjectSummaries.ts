@@ -1,9 +1,14 @@
+'use server';
+import 'reflect-metadata';
+
+import {
+  IProjectRepository,
+  ProjectSearchQuery,
+  ProjectSummary,
+} from '@/features/projects';
 import User from '@/features/users/domains';
 import { IUserRepository } from '@/features/users/repositories';
-import { withTransactionScope } from '@/lib/di/container';
-import { Token } from '@/lib/di/types';
-import { IProjectRepository } from '../repositories';
-import { ProjectSearchQuery, ProjectSummary } from '../types';
+import { Token, withTransactionScope } from '@/lib/di';
 
 export async function searchProjectSumamries(
   query: ProjectSearchQuery
@@ -36,7 +41,7 @@ export async function searchProjectSumamries(
       description: 'comming soon', // TODO: 後でやる
       status: project.status,
       createdBy: {
-        id: ownerUser.id.value ?? "", // FIXME: UserIdの取り廻しは見直したほうがいいかもしれない
+        id: ownerUser.id.value ?? '', // FIXME: UserIdの取り廻しは見直したほうがいいかもしれない
         name: ownerUser.name.value,
         avatarUrl: '', // TODO: 後でやる
       },

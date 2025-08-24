@@ -1,6 +1,7 @@
-import { registerContinuousToolbox } from '@blockly/continuous-toolbox';
-import * as Blockly from 'blockly';
 import React from 'react';
+
+import * as Blockly from 'blockly';
+
 import {
   BlocklyWorkspaceAdditionalParams,
   WithAdditionalWorkspace,
@@ -34,6 +35,7 @@ export default function useBlocklyWorkspace({
     //   initialized.current = true;
     // }
 
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     Blockly.setLocale(require(`blockly/msg/ja`));
     const ws = Blockly.inject(blocklyDivRef.current, {
       toolbox: toolbox,

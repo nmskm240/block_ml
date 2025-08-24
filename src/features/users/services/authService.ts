@@ -1,9 +1,7 @@
-import { Token } from '@/lib/di/types';
-import bcrypt from 'bcryptjs';
-import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
-import User from '../domains';
-import { type IUserRepository } from '../repositories';
+
+import { User, type IUserRepository } from '@/features/users';
+import { Token } from '@/lib/di/types';
 
 export interface IAuthService {
   verify(email: string, password: string): Promise<User | null>;
@@ -13,7 +11,7 @@ export interface IAuthService {
 export class AuthService implements IAuthService {
   constructor(
     @inject(Token.UserRepository)
-    private readonly _userRepository: IUserRepository
+    private readonly _userRepository: IUserRepository,
   ) {}
 
   async verify(email: string, password: string): Promise<User | null> {

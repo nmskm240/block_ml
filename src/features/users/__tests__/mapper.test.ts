@@ -1,7 +1,8 @@
+import 'reflect-metadata';
 import { createId } from '@paralleldrive/cuid2';
 import { User as UserEntity } from '@prisma/client';
-import User, { UserStatus } from '../domains';
-import { toDomain, toEntity } from '../mapper';
+
+import { User, UserStatus, toDomain, toEntity } from '@/features/users';
 
 describe('toDomain', () => {
   it('should map a UserEntity to a User domain object', () => {
@@ -19,10 +20,10 @@ describe('toDomain', () => {
     const domain = toDomain(entity);
 
     expect(domain).toBeInstanceOf(User);
-    expect(domain.id).toBe(entity.id);
-    expect(domain.name).toBe(entity.name);
-    expect(domain.email).toBe(entity.email);
-    expect(domain.hashedPassword).toMatch(/^\$2[aby]\$/); // ハッシュ形式であることを確認
+    expect(domain.id.value).toBe(entity.id);
+    expect(domain.name.value).toBe(entity.name);
+    expect(domain.email.value).toBe(entity.email);
+    expect(domain.hashedPassword.value).toMatch(/^\$2[aby]\$/); // ハッシュ形式であることを確認
     expect(domain.status).toBe(UserStatus.Active); // User.newでActiveになるため
   });
 });
@@ -47,8 +48,5 @@ describe('toEntity', () => {
     };
 
     expect(entity).toEqual(expectedEntity);
-    // createdAtとupdatedAtはOmitされているため、存在しないことを確認
-    expect((entity as any).createdAt).toBeUndefined();
-    expect((entity as any).updatedAt).toBeUndefined();
   });
 });

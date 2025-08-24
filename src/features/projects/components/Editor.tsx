@@ -1,12 +1,14 @@
 'use client';
 
+import React from 'react';
+
+import * as Blockly from 'blockly/core';
+import { pythonGenerator } from 'blockly/python';
+
 import useResizeObserver from '@/hooks/useResizeObserver';
 import useBlocklyWorkspace from '@/lib/blockly/hooks/useBlocklyWorkspace';
 import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
 import { usePyodide } from '@/lib/pyodide/providers/PyodideProvider';
-import * as Blockly from 'blockly/core';
-import { pythonGenerator } from 'blockly/python';
-import React from 'react';
 
 type EditorProps = {
   initialProjectJson: string;
@@ -52,7 +54,7 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
       if (!projectInitialized.current && initialProjectJson && workspace) {
         Blockly.serialization.workspaces.load(
           JSON.parse(initialProjectJson),
-          workspace
+          workspace,
         );
         projectInitialized.current = true;
       }
@@ -78,5 +80,5 @@ export const Editor = React.forwardRef<EditorHandle, EditorProps>(
         />
       </div>
     );
-  }
+  },
 );

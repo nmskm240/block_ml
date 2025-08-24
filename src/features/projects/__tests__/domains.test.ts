@@ -1,5 +1,6 @@
-import Project, { ProjectStatus } from '../domains';
 import { createId } from '@paralleldrive/cuid2';
+
+import { Project, ProjectStatus, fromProjectStatus } from '@/features/projects';
 
 const baseParams = {
   id: createId(),
@@ -16,14 +17,14 @@ const baseParams = {
 describe('ProjectTitle', () => {
   it('should throw error if title is empty', () => {
     expect(() => new Project({ ...baseParams, title: '' })).toThrow(
-      'Project title must not be empty.'
+      'Project title must not be empty.',
     );
   });
 
   it('should throw error if title is over 100 characters', () => {
     const longTitle = 'a'.repeat(101);
     expect(() => new Project({ ...baseParams, title: longTitle })).toThrow(
-      'Project title must be 100 characters or less.'
+      'Project title must be 100 characters or less.',
     );
   });
 
@@ -37,7 +38,7 @@ describe('ProjectTitle', () => {
 describe('BlocklyJson', () => {
   it('should throw error if workspaceJson is empty', () => {
     expect(() => new Project({ ...baseParams, workspaceJson: ' ' })).toThrow(
-      'Blockly JSON must not be empty.'
+      'Blockly JSON must not be empty.',
     );
   });
 });
@@ -181,13 +182,13 @@ describe('isEdittable', () => {
 describe('ProjectStatus', () => {
   describe('from', () => {
     it('should return the correct status for a valid number', () => {
-      expect(ProjectStatus.from(1)).toBe(ProjectStatus.Draft);
-      expect(ProjectStatus.from(2)).toBe(ProjectStatus.Active);
+      expect(fromProjectStatus(1)).toBe(ProjectStatus.Draft);
+      expect(fromProjectStatus(2)).toBe(ProjectStatus.Active);
     });
 
     it('should throw an error for an invalid number', () => {
-      expect(() => ProjectStatus.from(99)).toThrow('Invalid ProjectStatus: 99');
-      expect(() => ProjectStatus.from(-1)).toThrow('Invalid ProjectStatus: -1');
+      expect(() => fromProjectStatus(99)).toThrow('Invalid ProjectStatus: 99');
+      expect(() => fromProjectStatus(-1)).toThrow('Invalid ProjectStatus: -1');
     });
   });
 });

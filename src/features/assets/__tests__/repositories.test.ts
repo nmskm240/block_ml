@@ -1,10 +1,9 @@
 import 'reflect-metadata';
-import container from '@/lib/di/container';
-import { IAssetRepository } from '../repositories';
-import { Token } from '@/lib/di/types';
-import Asset from '../domains';
 import { createId } from '@paralleldrive/cuid2';
 import { PrismaClient } from '@prisma/client';
+
+import { Asset, IAssetRepository } from '@/features/assets';
+import { container, Token } from '@/lib/di';
 
 let repository: IAssetRepository;
 let prisma: PrismaClient;

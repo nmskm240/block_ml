@@ -1,9 +1,8 @@
-import { Token } from '@/lib/di/types';
 import { StorageClient } from '@supabase/storage-js';
-import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
-import Asset from '../domains';
-import type { IAssetRepository } from '../repositories';
+
+import { Asset, type IAssetRepository } from '@/features/assets';
+import { Token } from '@/lib/di/types';
 
 const BUCKET_NAME: string = 'assets';
 
@@ -18,7 +17,7 @@ export class AssetStorageService implements IAssetStorageService {
     @inject(Token.SupabaseStorageClient)
     private readonly _client: StorageClient,
     @inject(Token.AssetRepository)
-    private readonly _repository: IAssetRepository
+    private readonly _repository: IAssetRepository,
   ) {}
 
   // FIXME: アップロードしたファイルに毎回新しいIDが割り当てられるためゴミが溜まりやすい
@@ -27,7 +26,7 @@ export class AssetStorageService implements IAssetStorageService {
 
     for (const file of files) {
       const asset = Asset.from(file);
-      const { data, error } = await this._client
+      const { error } = await this._client
         .from(BUCKET_NAME)
         .upload(asset.path.value, file, {
           contentType: file.type || 'application/octet-stream',

@@ -1,11 +1,16 @@
-import { toDomain, toEntity } from '../mapper';
-import Project, { ProjectStatus } from '../domains';
 import { createId } from '@paralleldrive/cuid2';
 import {
   Project as ProjectEntity,
   UserProject as UserProjectEntity,
   ProjectAsset as ProjectAssetEntity,
 } from '@prisma/client';
+
+import {
+  toDomain,
+  toEntity,
+  Project,
+  ProjectStatus,
+} from '@/features/projects';
 
 const userId = createId();
 const projectId = createId();

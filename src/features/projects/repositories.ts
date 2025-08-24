@@ -1,14 +1,15 @@
-import { Token } from '@/lib/di/types';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { InputJsonValue } from '@prisma/client/runtime/library';
-import 'reflect-metadata';
 import { inject, injectable } from 'tsyringe';
+
+import { Token } from '@/lib/di';
+
 import Project from './domains';
 import { toDomain, toEntity } from './mapper';
 import { ProjectSearchQuery } from './types';
 
 export interface IProjectRepository {
-  findById(projectId: string): Promise<Project | undefined>;
+  getById(projectId: string): Promise<Project>;
   findByUserId(userId: string): Promise<Project[]>;
   create(project: Project): Promise<Project>;
   update(project: Project): Promise<Project>;
@@ -19,7 +20,7 @@ export interface IProjectRepository {
 export class ProjectRepository implements IProjectRepository {
   constructor(
     @inject(Token.PrismaClient)
-    private readonly _client: PrismaClient | Prisma.TransactionClient
+    private readonly _client: PrismaClient | Prisma.TransactionClient,
   ) {}
 
   async search(query: ProjectSearchQuery): Promise<Project[]> {
@@ -46,11 +47,11 @@ export class ProjectRepository implements IProjectRepository {
         project: entity,
         userProject: entity.userProjects[0],
         projectAssets: entity.projectAssets.map((a) => a),
-      })
+      }),
     );
   }
 
-  async findById(projectId: string): Promise<Project | undefined> {
+  async getById(projectId: string): Promise<Project> {
     const entity = await this._client.project.findFirst({
       where: { id: projectId },
       include: {
@@ -63,13 +64,11 @@ export class ProjectRepository implements IProjectRepository {
     });
 
     if (!entity) {
-      return undefined;
+      throw new ProjectNotFoundError(projectId);
     }
 
     if (entity.userProjects.length == 0) {
-      // 紐づけされていないプロジェクト（存在しないはず）
-      console.warn('Project has no associated userProject');
-      return undefined;
+      throw new Error();
     }
 
     return toDomain({
@@ -110,7 +109,7 @@ export class ProjectRepository implements IProjectRepository {
           projectId: entity.projectId,
         },
         projectAssets: entity.project.projectAssets.map((e) => e),
-      })
+      }),
     );
   }
 
@@ -208,3 +207,13 @@ export class ProjectRepository implements IProjectRepository {
     });
   }
 }
+
+// #region errors
+
+export class ProjectNotFoundError extends Error {
+  constructor(projectId: string) {
+    super(`Project not found. id: ${projectId}`);
+  }
+}
+
+// #endregion

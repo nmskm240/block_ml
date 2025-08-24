@@ -1,25 +1,27 @@
 'use client';
 
+import React from 'react';
+
+import { PlayArrow, Save } from '@mui/icons-material';
+import { Box, CircularProgress, IconButton } from '@mui/material';
+
+import { useParams } from 'next/navigation';
+
 import { EditorHandle, Editor } from '@/features/projects/components/Editor';
 import PyodideConsole from '@/features/projects/components/PyodideConsole';
 import PyodideFileExplore from '@/features/projects/components/PyodideFileExplore';
 import useEditProject from '@/features/projects/hooks/useEditProject';
-import { useProjectApiClient } from '@/features/projects/providers/ApiClientProvider';
+import { updateProject } from '@/features/projects/usecases';
 import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
-import { PlayArrow, Save } from '@mui/icons-material';
-import { Box, CircularProgress, IconButton } from '@mui/material';
-import { useParams } from 'next/navigation';
-import React from 'react';
 
 type PageParams = {
-  projectId: string
+  projectId: string;
 };
 
 export default function ProjectEditPage() {
   const { projectId } = useParams<PageParams>();
   const { projectJson, isLoading } = useEditProject(projectId);
   const editorRef = React.useRef<EditorHandle>(null);
-  const projectApi = useProjectApiClient();
   const fileService = usePyodideFileService();
 
   const run = async () => {
@@ -30,7 +32,7 @@ export default function ProjectEditPage() {
 
   const save = async () => {
     const projectJson = editorRef.current!.toWorkspaceJson();
-    await projectApi.saveProject(projectId, {
+    await updateProject(projectId, {
       projectJson: projectJson,
       assets: await fileService?.listFiles(),
     });

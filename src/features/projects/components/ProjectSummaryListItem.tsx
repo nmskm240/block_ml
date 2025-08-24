@@ -1,7 +1,10 @@
-import Link from 'next/link';
-import { ProjectSummary } from '../types';
 import { ListItem, ListItemText, Typography, Chip, Stack } from '@mui/material';
+
+import Link from 'next/link';
+
 import UserListItem from '@/features/users/components/UserListItem';
+
+import { ProjectSummary } from '../types';
 
 export function ProjectSummaryListItem({
   project,

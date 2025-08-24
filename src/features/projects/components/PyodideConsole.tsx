@@ -1,4 +1,5 @@
-import { usePyodide } from '@/lib/pyodide/providers/PyodideProvider';
+import React from 'react';
+
 import { Delete } from '@mui/icons-material';
 import {
   Box,
@@ -13,7 +14,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React from 'react';
+
+import { usePyodide } from '@/lib/pyodide/providers/PyodideProvider';
 
 enum LogType {
   None,
