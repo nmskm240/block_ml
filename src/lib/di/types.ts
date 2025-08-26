@@ -10,6 +10,7 @@ export const Token = {
   AuthService: Symbol('AuthService'),
   AssetStorageService: Symbol('AssetStorageService'),
   UserStorageService: Symbol('UserStorageService'),
-  ProjectService: Symbol('ProjectService'),
+  ProjectQueryService: Symbol('ProjectQueryService'),
+
   Logger: Symbol('Logger'),
 } as const;

@@ -16,9 +16,6 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/jest.afterSetup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@/lib/prisma/client$': '<rootDir>/src/lib/prisma/__mocks__/client.ts',
-    '^@supabase/supabase-js$':
-      '<rootDir>/src/lib/supabase/__mocks__/supabase-js.ts',
   },
   testPathIgnorePatterns: ['/node_modules/', '/__mocks__/'],
   transformIgnorePatterns: ['/node_modules/(?!(.*)/(es|esm)/)'],

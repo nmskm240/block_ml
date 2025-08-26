@@ -1,2 +1,4 @@
 /*global jestPrisma */
-export const jestPrismaClient = jestPrisma.client;
+const prisma = jestPrisma.client;
+
+export default prisma;
