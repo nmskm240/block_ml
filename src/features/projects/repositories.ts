@@ -75,6 +75,7 @@ export class ProjectRepository implements IProjectRepository {
       project: {
         id: entity.id,
         title: entity.title,
+description: entity.description,
         status: entity.status,
         workspaceJson: entity.workspaceJson,
         createdAt: entity.createdAt,

@@ -15,6 +15,7 @@ export function toDomain(entity: {
   return new Project({
     id: entity.project.id,
     title: entity.project.title,
+    description: entity.project.description,
     workspaceJson: JSON.stringify(entity.project.workspaceJson),
     ownerUserId: entity.userProject.userId,
     status: fromProjectStatus(entity.project.status),
@@ -36,6 +37,7 @@ export function toEntity(model: Project): {
     project: {
       id: model.id.value,
       title: model.title.value,
+      description: model.description.value,
       workspaceJson: model.workspaceJson.value,
       status: model.status,
     },

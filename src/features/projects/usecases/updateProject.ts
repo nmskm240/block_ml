@@ -7,25 +7,25 @@ import { Token, withTransactionScope } from '@/lib/di';
 
 export async function updateProject(
   userId: string,
-  input: { id: string; json: string; assets: File[] }
+  input: { id: string; json: string; assets: File[] },
 ) {
   await withTransactionScope(async (container) => {
     const repository = container.resolve<IProjectRepository>(
-      Token.ProjectRepository
+      Token.ProjectRepository,
     );
     const storage = container.resolve<IAssetStorageService>(
-      Token.AssetStorageService
+      Token.AssetStorageService,
     );
 
     const project = await repository.getById(input.id);
-    if (!project.isEdittable(userId)) {
+    if (!project.isEditableBy(userId)) {
       throw new Error('Permission denied');
     }
 
     const uploadedAssets = await storage.upload(input.assets);
     project.edit(
       input.json,
-      uploadedAssets.map((asset) => asset.id.value)
+      uploadedAssets.map((asset) => asset.id.value),
     );
     await repository.update(project);
   });

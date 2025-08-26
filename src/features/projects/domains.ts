@@ -1,13 +1,14 @@
 import { createId } from '@paralleldrive/cuid2';
 
+import { AssetId } from '@/features/assets';
+import { UserId } from '@/features/users/';
 import { Id } from '@/lib/domain/vo/';
 
-import { AssetId } from '../assets/domains';
-import { UserId } from '../users/domains';
 
 type ProjectParams = {
   id: string;
   title: string;
+  description: string;
   workspaceJson: string;
   status: ProjectStatus;
   assetIds: string[];
@@ -18,6 +19,7 @@ type ProjectParams = {
 export default class Project {
   public readonly id: ProjectId;
   private _title: ProjectTitle;
+  private _description: ProjectDescription;
   private _workspaceJson: BlocklyJson;
   public readonly ownerUserId?: UserId;
   private _assetIds: AssetId[];
@@ -27,6 +29,7 @@ export default class Project {
   constructor(params: ProjectParams) {
     this.id = new ProjectId(params.id);
     this._title = new ProjectTitle(params.title);
+    this._description = new ProjectDescription(params.description);
     this._workspaceJson = new BlocklyJson(params.workspaceJson);
     this.ownerUserId = params.ownerUserId
       ? new UserId(params.ownerUserId)
@@ -38,6 +41,10 @@ export default class Project {
 
   get title() {
     return this._title;
+  }
+
+  get description() {
+    return this._description;
   }
 
   get status() {
@@ -60,6 +67,7 @@ export default class Project {
     return new Project({
       id: ProjectId.generate().value,
       title: process.env.DEFAULT_PROJECT_TITLE!,
+      description: '',
       workspaceJson: process.env.DEFAULT_PROJECT_WORKSPACE_JSON!,
       ownerUserId: ownerUserId,
       assetIds: [],
@@ -77,14 +85,14 @@ export default class Project {
 
   // FIXME: AssetはUseAassetなど分離したほうがいいかもしれない
   edit(workspaceJson: string, assetIds: string[]) {
-    if (this.isTemporary || !this.isEdittable(this.ownerUserId!.value)) {
+    if (this.isTemporary || !this.isEditableBy(this.ownerUserId!.value)) {
       throw new Error();
     }
     this._workspaceJson = new BlocklyJson(workspaceJson);
     this._assetIds = assetIds.map((e) => new AssetId(e));
   }
 
-  isEdittable(userId: string) {
+  isEditableBy(userId: string) {
     return (
       (this.ownerUserId?.value === userId &&
         this.status === ProjectStatus.Active) ||
@@ -110,13 +118,31 @@ export function fromProjectStatus(value: number): ProjectStatus {
 
 //#region valueObjects
 
-class ProjectId extends Id<ProjectId> {
+export class ProjectDescription {
+  constructor(readonly value: string) {
+    if (value.length > 500) {
+      throw new Error('Project description must be 500 characters or less.');
+    }
+
+    this.value = value;
+  }
+
+  equals(other: ProjectDescription): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+
+export class ProjectId extends Id<ProjectId> {
   static generate(): ProjectId {
     return new ProjectId(createId());
   }
 }
 
-class ProjectTitle {
+export class ProjectTitle {
   constructor(readonly value: string) {
     const trimmed = value.trim();
     if (!trimmed) {
@@ -138,7 +164,7 @@ class ProjectTitle {
   }
 }
 
-class BlocklyJson {
+export class BlocklyJson {
   constructor(readonly value: string) {
     const trimmed = value.trim();
     if (!trimmed) {

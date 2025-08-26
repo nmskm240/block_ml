@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
 
-import { Token } from '@/lib/di/types';
+import { Token } from '@/lib/di';
 
 import User from './domains';
 import { toDomain, toEntity } from './mapper';
@@ -9,6 +9,7 @@ import { toDomain, toEntity } from './mapper';
 export interface IUserRepository {
   create(user: User): Promise<User>;
   findById(userId: string): Promise<User | undefined>;
+  getById(userId: string): Promise<User>;
   findByEmail(email: string): Promise<User | undefined>;
   existsByEmail(email: string): Promise<boolean>;
   update(user: User): Promise<User>;
@@ -36,6 +37,18 @@ export class UserRepository implements IUserRepository {
 
     if (!entity) {
       return undefined;
+    }
+
+    return toDomain(entity);
+  }
+
+  async getById(userId: string): Promise<User> {
+    const entity = await this._client.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!entity) {
+      throw new UserNotFoundError(userId);
     }
 
     return toDomain(entity);
@@ -76,3 +89,13 @@ export class UserRepository implements IUserRepository {
     return toDomain(updated);
   }
 }
+
+// #region error
+
+export class UserNotFoundError extends Error {
+  constructor(userId: string) {
+    super(`User not found. id: ${userId}`);
+  }
+}
+
+// #endregion

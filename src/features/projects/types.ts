@@ -1,8 +1,8 @@
 import { Project as ProjectEntity } from '@prisma/client';
 import { z } from 'zod';
 
-import { AssetSchema } from '../assets/types';
-import { UserInfoSchema } from '../users/types';
+import { AssetSchema } from '@/features/assets';
+import { UserInfoSchema } from '@/features/users';
 
 export type ProjectEntityInput = Omit<
   ProjectEntity,
@@ -36,3 +36,15 @@ export const ProjectEditingSchema = z.object({
 });
 
 export type ProjectEditing = z.infer<typeof ProjectEditingSchema>;
+
+export const ProjectDetailSchema = z.object({
+  id: z.cuid2(),
+  title: z.string(),
+  description: z.string(),
+  status: z.number(),
+  createdBy: UserInfoSchema,
+  assets: z.array(AssetSchema),
+  updatedAt: z.date(),
+});
+
+export type ProjectDetail = z.infer<typeof ProjectDetailSchema>;
