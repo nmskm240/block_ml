@@ -1,8 +1,7 @@
- 
-import "reflect-metadata";
+import 'reflect-metadata';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
-import { ProjectSummaryList } from '@/features/projects/components/ProjectSummaryList';
+import { ProjectSummaryList } from '@/features/inspectAsset/components/ProjectSummaryList';
 import { ProjectSearchQuerySchema } from '@/features/projects/types';
 import { searchProjectSumamries } from '@/features/projects/usecases/searchProjectSummaries';
 

@@ -7,9 +7,9 @@ import { Box, CircularProgress, IconButton } from '@mui/material';
 
 import { useParams } from 'next/navigation';
 
-import { EditorHandle, Editor } from '@/features/projects/components/Editor';
-import PyodideConsole from '@/features/projects/components/PyodideConsole';
-import PyodideFileExplore from '@/features/projects/components/PyodideFileExplore';
+import { EditorHandle, Editor } from '@/features/editProject/components/Editor';
+import PyodideConsole from '@/features/inspectProject/components/PyodideConsole';
+import PyodideFileExplore from '@/features/inspectAsset/components/PyodideFileExplore';
 import useEditProject from '@/features/projects/hooks/useEditProject';
 import { updateProject } from '@/features/projects/usecases';
 import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';

@@ -3,23 +3,19 @@ import { PrismaClient } from '@prisma/client';
 import { StorageClient } from '@supabase/storage-js';
 import { SupabaseClient } from '@supabase/supabase-js';
 
-import { AssetRepository, IAssetRepository } from '@/features/assets';
+import { IAssetRepository, IAssetStorage } from '@/domains/asset';
+import { IProjectRepository } from '@/domains/project';
+import { IUserRepository, IUserStorage } from '@/domains/user';
 import {
-  AssetStorageService,
-  IAssetStorageService,
-} from '@/features/assets/services';
-import { IProjectRepository, ProjectRepository } from '@/features/projects';
-import { ProjectQueryService } from '@/features/projects/services';
-import { IUserRepository, UserRepository } from '@/features/users';
-import {
-  AuthService,
-  IAuthService,
-  IUserStorageService,
-  UserStorageService,
-} from '@/features/users/services';
+  AssetRepository,
+  ProjectRepository,
+  UserRepository,
+} from '@/infra/repositories';
+import { AssetStorage, UserStorage } from '@/infra/storages';
 import logger, { Logger } from '@/lib/logger';
 import prisma from '@/lib/prisma/client';
 import supabaseClient from '@/lib/supabase/client';
+import { AuthService, IAuthService, ProjectQueryService } from '@/services';
 
 import container from './container';
 import { Token } from './types';
@@ -48,13 +44,8 @@ container.register<IProjectRepository>(
 );
 container.register<IUserRepository>(Token.UserRepository, UserRepository);
 
-container.register<IAssetStorageService>(
-  Token.AssetStorageService,
-  AssetStorageService,
-);
+container.register<IAssetStorage>(Token.AssetStorage, AssetStorage);
+container.register<IUserStorage>(Token.UserStorage, UserStorage);
+
 container.register<IAuthService>(Token.AuthService, AuthService);
-container.register<IUserStorageService>(
-  Token.UserStorageService,
-  UserStorageService,
-);
 container.register(Token.ProjectQueryService, ProjectQueryService);

@@ -10,7 +10,7 @@ import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import signIn from '@/features/users/usecases/signIn';
+import signIn from '@/features/signIn/action';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',

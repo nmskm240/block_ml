@@ -1,13 +1,25 @@
 import { randomUUID } from 'crypto';
 
+import { PrismaClient } from '@prisma/client';
 import { Session } from 'next-auth';
-import { DependencyContainer } from 'tsyringe';
 
-import { IUserRepository, User } from '@/features/users';
-import { Token } from '@/lib/di';
+import { IUserRepository, User } from '@/domains/user';
+import { container, Token } from '@/lib/di';
 import { auth } from '@/lib/nextAuth/__mocks__/auth';
 
-export async function generateTestUser(container: DependencyContainer) {
+export async function cleanupDatabase() {
+  const prisma = container.resolve<PrismaClient>(Token.PrismaClient);
+
+  await Promise.all([
+    prisma.userProject.deleteMany(),
+    prisma.projectAsset.deleteMany(),
+    prisma.user.deleteMany(),
+    prisma.project.deleteMany(),
+    prisma.asset.deleteMany(),
+  ]);
+}
+
+export async function generateTestUser() {
   const userRepository = container.resolve<IUserRepository>(
     Token.UserRepository,
   );
@@ -21,6 +33,6 @@ export async function generateTestUser(container: DependencyContainer) {
   return user;
 }
 
-export function updateSession(session: Session) {
+export function updateSession(session: Session | null) {
   auth.mockResolvedValue(session);
 }

@@ -1,4 +1,7 @@
-import { Paper, Typography } from '@mui/material';
+import { Paper, Typography, Box } from '@mui/material';
+
+import { TrashProjectButton } from '@/features/inspectAsset/components';
+import { fetchProjectEditing } from '@/features/projects/usecases';
 
 type PageParams = {
   projectId: string;
@@ -6,6 +9,7 @@ type PageParams = {
 
 export default async function ProjectDetailPage(props: { params: PageParams }) {
   const params = props.params;
+  const project = await fetchProjectEditing(params.projectId);
 
   return (
     <div className="global-page-padding">
@@ -16,7 +20,12 @@ export default async function ProjectDetailPage(props: { params: PageParams }) {
           m: '8 auto',
         }}
       >
-        <Typography>Project</Typography>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {project.id}
+        </Typography>
+        <Box mt={4}>
+          <TrashProjectButton projectId={params.projectId} />
+        </Box>
       </Paper>
     </div>
   );
