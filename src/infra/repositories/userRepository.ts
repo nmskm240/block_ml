@@ -2,7 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { inject, injectable } from 'tsyringe';
 
 import { User, toDomain, toEntity, IUserRepository } from '@/domains/user';
-import { UserNotFoundError } from '@/domains/errors';
+import { UserNotFoundError } from '@/errors';
 import { Token } from '@/lib/di';
 
 @injectable()

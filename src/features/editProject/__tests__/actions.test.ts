@@ -7,7 +7,7 @@ import { UserId } from '@/domains/user/valueObjects';
 import { ProjectNotFoundError } from '@/errors';
 import { container, Token } from '@/lib/di';
 import { MockFile } from '@/lib/jest/__mocks__/file';
-import { generateTestUser } from '@/lib/jest/helper';
+import { generateTestUser, updateSession } from '@/lib/jest/helper';
 
 import { fetchProjectEditing, updateProject } from '../actions';
 
@@ -28,10 +28,10 @@ describe('fetchProjectEditing', () => {
     const project = Project.empty(user.id.value);
     const assetFile = new MockFile('asset.txt', 'test');
 
-    const assets = await assetStorageService.uploads([assetFile]);
+    const uploadedAssets = await assetStorageService.uploads([assetFile]);
     project.edit(
       '{}',
-      assets.map((x) => x.id.value),
+      uploadedAssets.map((x) => x.id.value),
     );
     await projectRepository.create(project);
 
@@ -39,6 +39,10 @@ describe('fetchProjectEditing', () => {
 
     expect(result.id).toBe(project.id.value);
     expect(result.assets).toHaveLength(1);
+    expect(result.assets[0].id).toBe(uploadedAssets[0].id.value);
+    expect(result.assets[0].name).toBe('asset.txt');
+    expect(result.assets[0].file).toBeInstanceOf(File);
+    expect(result.assets[0].file?.name).toBe('asset.txt');
   });
 
   it('should throw error if project not found', async () => {
@@ -53,15 +57,17 @@ describe('updateProject', () => {
     const project = Project.empty(user.id.value);
     const assetFile = new MockFile('asset.csv', 'test');
 
+    updateSession({ user: { id: user.id.value }, expires: '' });
+
     await projectRepository.create(project);
-    await updateProject(user.id.value, {
+    await updateProject({
       id: project.id.value,
       json: '{"updated": true}',
       assets: [assetFile],
     });
 
     const updatedProject = await projectRepository.getById(project.id.value);
-    expect(updatedProject?.workspace.value).toBe('"{\\"updated\\": true}"');
+    expect(updatedProject?.workspace.value).toBe('"{\\\"updated\\\": true}"');
     expect(updatedProject?.assetIds).toHaveLength(1);
 
     const assetRepository = container.resolve<IAssetRepository>(
@@ -73,11 +79,9 @@ describe('updateProject', () => {
   });
 
   it('should throw an error if project not found', async () => {
-    // InMemoryRepositoryは空のまま
+    updateSession({ user: { id: user.id.value }, expires: '' });
     const input = { id: createId(), json: '{}', assets: [] };
-    await expect(updateProject(createId(), input)).rejects.toThrow(
-      ProjectNotFoundError,
-    );
+    await expect(updateProject(input)).rejects.toThrow(ProjectNotFoundError);
   });
 
   it('should throw an error if user is not the owner', async () => {
@@ -86,13 +90,12 @@ describe('updateProject', () => {
     );
 
     const requesterId = UserId.generate(); // 別のユーザー
+    updateSession({ user: { id: requesterId.value }, expires: '' });
 
     const project = Project.empty(user.id.value);
     await projectRepository.create(project);
 
     const input = { id: project.id.value, json: '{}', assets: [] };
-    await expect(updateProject(requesterId.value, input)).rejects.toThrow(
-      'Permission denied',
-    );
+    await expect(updateProject(input)).rejects.toThrow('Permission denied');
   });
 });

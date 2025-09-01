@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 
-import { usePyodide } from '@/lib/pyodide/providers/PyodideProvider';
+import { usePyodide } from '@/lib/pyodide';
 
 enum LogType {
   None,
@@ -29,7 +29,7 @@ type LogEntry = {
   timestamp: Date;
 };
 
-export default function PyodideConsole() {
+export function PyodideConsole() {
   const { pyodideRef, isLoading } = usePyodide();
   const [logs, setLogs] = React.useState<LogEntry[]>([]);
   const bottomRef = React.useRef<HTMLDivElement>(null);

@@ -2,7 +2,7 @@ import type { PyodideInterface } from 'pyodide';
 
 const BASE_PATH = process.env.NEXT_PUBLIC_PYODIDE_FS_PATH!;
 
-export default class PyodideFileService {
+export class FileService {
   constructor(private readonly _api: PyodideInterface) {}
 
   async uploads(files: File[]) {

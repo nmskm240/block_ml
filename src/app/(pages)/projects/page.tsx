@@ -1,15 +1,14 @@
-import 'reflect-metadata';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
-import { ProjectSummaryList } from '@/features/inspectAsset/components/ProjectSummaryList';
-import { ProjectSearchQuerySchema } from '@/features/projects/types';
-import { searchProjectSumamries } from '@/features/projects/usecases/searchProjectSummaries';
+import { searchProject } from '@/features/searchProject';
+import { ProjectSummaryList } from '@/features/searchProject/components';
+import { ProjectSearchQuerySchema } from '@/services';
 
 export default async function ProjectListPage(props: {
   searchParams: ReadonlyURLSearchParams;
 }) {
   const query = await ProjectSearchQuerySchema.parseAsync(props.searchParams);
-  const projectSummaries = await searchProjectSumamries(query);
+  const projectSummaries = await searchProject(query);
 
   return (
     <div className="global-page-padding">

@@ -1,18 +1,15 @@
-import { ProjectSummaryList } from '@/features/inspectAsset/components/ProjectSummaryList';
-import { searchProjectSumamries } from '@/features/projects/usecases';
-import UserProfile from '@/features/users/profile/components/UserProfile';
-import 'reflect-metadata';
+import { searchProject } from '@/features/searchProject';
+import { ProjectSummaryList } from '@/features/searchProject/components';
 
 type Params = {
   userId: string;
 };
 
-export default async function UserPage(props: { params: Params }) {
-  const { userId } = props.params;
-  const summaries = await searchProjectSumamries({ userId: userId });
+export default async function UserPage(props: { params: Promise<Params> }) {
+  const { userId } = await props.params;
+  const summaries = await searchProject({ userId: userId });
   return (
     <div>
-      <UserProfile userId={userId} />
       <ProjectSummaryList summaries={summaries} />
     </div>
   );

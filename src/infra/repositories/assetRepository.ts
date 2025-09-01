@@ -23,6 +23,18 @@ export class AssetRepository implements IAssetRepository {
     return toDomain(entity);
   }
 
+  async findByIds(ids: string[]): Promise<Asset[]> {
+    const entities = await this._client.asset.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+
+    return entities.map(toDomain);
+  }
+
   async save(asset: Asset): Promise<Asset> {
     const entity = toEntity(asset);
     const saved = await this._client.asset.upsert({

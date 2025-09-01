@@ -64,7 +64,7 @@ export default function SignInPage() {
     setError('');
 
     try {
-      const result = await signIn({ email, password });
+      await signIn({ email, password });
     } catch {
       setError('An error occurred. Please try again later.');
     }

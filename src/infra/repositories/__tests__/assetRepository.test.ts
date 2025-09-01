@@ -35,6 +35,51 @@ describe('findById', () => {
   });
 });
 
+describe('findByIds', () => {
+  it('should return found assets', async () => {
+    const asset1 = await prisma.asset.create({
+      data: {
+        id: createId(),
+        fileName: 'test1.txt',
+        filePath: 'test1.txt',
+      },
+    });
+    const asset2 = await prisma.asset.create({
+      data: {
+        id: createId(),
+        fileName: 'test2.txt',
+        filePath: 'test2.txt',
+      },
+    });
+
+    const foundAssets = await repository.findByIds([asset1.id, asset2.id]);
+
+    expect(foundAssets).toHaveLength(2);
+    expect(foundAssets.map((a) => a.id.value)).toContain(asset1.id);
+    expect(foundAssets.map((a) => a.id.value)).toContain(asset2.id);
+  });
+
+  it('should return an empty array if no assets are found', async () => {
+    const foundAssets = await repository.findByIds([createId(), createId()]);
+    expect(foundAssets).toHaveLength(0);
+  });
+
+  it('should return only found assets', async () => {
+    const asset1 = await prisma.asset.create({
+      data: {
+        id: createId(),
+        fileName: 'test1.txt',
+        filePath: 'test1.txt',
+      },
+    });
+
+    const foundAssets = await repository.findByIds([asset1.id, createId()]);
+
+    expect(foundAssets).toHaveLength(1);
+    expect(foundAssets[0].id.value).toBe(asset1.id);
+  });
+});
+
 describe('save', () => {
   it('should create a new asset if it does not exist', async () => {
     const newAsset = new Asset({

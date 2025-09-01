@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { signUp } from '../action';
 import { SignUpParams, SignUpSchema } from '../types';
 
-export default function SignUpForm() {
+export function SignUpForm() {
   const {
     register,
     handleSubmit,

@@ -36,10 +36,18 @@ export const ProjectSearchQuerySchema = z.object({
 
 export type ProjectSearchQuery = z.infer<typeof ProjectSearchQuerySchema>;
 
+export const ProjectAssetInfoSchema = z.object({
+  id: z.cuid2(),
+  name: z.string(),
+  file: z.instanceof(File).optional(),
+});
+
+export type ProjectAssetInfo = z.infer<typeof ProjectAssetInfoSchema>;
+
 export const ProjectEditingSchema = z.object({
   id: z.cuid2(),
   workspace: z.json(),
-  assets: z.array(z.file("")),
+  assets: z.array(ProjectAssetInfoSchema),
 });
 
 export type ProjectEditing = z.infer<typeof ProjectEditingSchema>;

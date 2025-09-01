@@ -5,6 +5,8 @@ import React from 'react';
 
 import Script from 'next/script';
 
+import { FileService } from '../services';
+
 import type { PyodideInterface } from 'pyodide';
 
 const PYODIDE_VERSION = process.env.NEXT_PUBLIC_PYODIDE_VERSION!;
@@ -20,6 +22,7 @@ const PYPI_PACKAGES = process.env
 
 type PyodideContextType = {
   pyodideRef: React.RefObject<PyodideInterface | null>;
+  fs: FileService | undefined;
   isLoading: boolean;
 };
 
@@ -33,6 +36,7 @@ const PyodideContext = React.createContext<PyodideContextType | undefined>(
 
 export function PyodideProvider({ children }: PyodideProviderProps) {
   const pyodideRef = React.useRef<PyodideInterface>(null);
+  const [fs, setFs] = React.useState<FileService | undefined>(undefined);
   const [isLoading, setIsLoading] = React.useState(true);
   const loadPyodideEnv = React.useCallback(async () => {
     setIsLoading(true);
@@ -57,6 +61,7 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
       await micropip.install(PYPI_PACKAGES);
     }
 
+    setFs(new FileService(pyodideRef.current));
     setIsLoading(false);
   }, []);
 
@@ -67,7 +72,7 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
         strategy="afterInteractive"
         onLoad={loadPyodideEnv}
       />
-      <PyodideContext.Provider value={{ pyodideRef, isLoading }}>
+      <PyodideContext.Provider value={{ pyodideRef, fs, isLoading }}>
         {children}
       </PyodideContext.Provider>
     </>
