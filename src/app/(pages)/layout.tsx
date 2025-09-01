@@ -1,4 +1,8 @@
 import 'reflect-metadata';
+import '@/lib/di/registry';
+
+import React from 'react';
+
 import { SessionProvider } from 'next-auth/react';
 
 import '@/styles/globals.css';

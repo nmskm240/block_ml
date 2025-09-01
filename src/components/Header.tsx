@@ -2,7 +2,6 @@ import { AppBar, Toolbar, Typography } from '@mui/material';
 
 import Link from 'next/link';
 
-
 import { SearchBox, SignOutButton } from '@/components';
 import { auth } from '@/lib/nextAuth';
 

@@ -1,32 +1,25 @@
-import 'reflect-metadata';
 import { randomUUID } from 'crypto';
 
-import { Prisma, PrismaClient } from '@prisma/client';
-import { DependencyContainer } from 'tsyringe';
+import { PrismaClient } from '@prisma/client';
+import { Session } from 'next-auth';
 
-import { IUserRepository, User } from '@/features/users';
-import { Token } from '@/lib/di';
+import { IUserRepository, User } from '@/domains/user';
+import { container, Token } from '@/lib/di';
+import { auth } from '@/lib/nextAuth/__mocks__/auth';
 
-export async function cleanupDatabase(prisma: PrismaClient) {
-  // Prismaのメタ情報から、このプロジェクトで使われている全モデル名を取得
-  const modelNames = Prisma.dmmf.datamodel.models.map(
-    (model) => `"${model.dbName || model.name}"`,
-  );
+export async function cleanupDatabase() {
+  const prisma = container.resolve<PrismaClient>(Token.PrismaClient);
 
-  if (modelNames.length === 0) {
-    return;
-  }
-
-  // 全テーブルをTRUNCATEするSQLを組み立てる
-  const truncateQuery = `TRUNCATE TABLE ${modelNames.join(
-    ', ',
-  )} RESTART IDENTITY CASCADE;`;
-
-  // 組み立てたSQLを実行
-  await prisma.$executeRawUnsafe(truncateQuery);
+  await Promise.all([
+    prisma.userProject.deleteMany(),
+    prisma.projectAsset.deleteMany(),
+    prisma.user.deleteMany(),
+    prisma.project.deleteMany(),
+    prisma.asset.deleteMany(),
+  ]);
 }
 
-export async function generateTestUser(container: DependencyContainer) {
+export async function generateTestUser() {
   const userRepository = container.resolve<IUserRepository>(
     Token.UserRepository,
   );
@@ -38,4 +31,8 @@ export async function generateTestUser(container: DependencyContainer) {
   });
   await userRepository.create(user);
   return user;
+}
+
+export function updateSession(session: Session | null) {
+  auth.mockResolvedValue(session);
 }

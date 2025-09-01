@@ -1,3 +1,2 @@
 export * from './types';
-export { default as container } from "./container";
-export * from './container';
+export { default as container, withTransactionScope } from "./container";

@@ -1,4 +1,4 @@
-'use client';
+// 'use client';
 
 import React from 'react';
 
@@ -7,12 +7,11 @@ import { Box, CircularProgress, IconButton } from '@mui/material';
 
 import { useParams } from 'next/navigation';
 
-import { EditorHandle, Editor } from '@/features/projects/components/Editor';
-import PyodideConsole from '@/features/projects/components/PyodideConsole';
-import PyodideFileExplore from '@/features/projects/components/PyodideFileExplore';
-import useEditProject from '@/features/projects/hooks/useEditProject';
-import { updateProject } from '@/features/projects/usecases';
-import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
+import { updateProject } from '@/features/editProject';
+import { EditorHandle, Editor } from '@/features/editProject/components';
+import { useEditProject } from '@/features/editProject/hooks';
+import { PyodideConsole } from '@/features/inspectProject/components';
+import { usePyodide } from '@/lib/pyodide';
 
 type PageParams = {
   projectId: string;
@@ -20,21 +19,22 @@ type PageParams = {
 
 export default function ProjectEditPage() {
   const { projectId } = useParams<PageParams>();
-  const { projectJson, isLoading } = useEditProject(projectId);
+  const { projectJson, assets, isLoading } = useEditProject(projectId);
   const editorRef = React.useRef<EditorHandle>(null);
-  const fileService = usePyodideFileService();
+  const { fs } = usePyodide();
 
   const run = async () => {
-    try {
-      await editorRef.current?.run();
-    } catch (e) {}
+    // try {
+    await editorRef.current?.run();
+    // } catch (e) {}
   };
 
   const save = async () => {
     const projectJson = editorRef.current!.toWorkspaceJson();
-    await updateProject(projectId, {
-      projectJson: projectJson,
-      assets: await fileService?.listFiles(),
+    await updateProject({
+      id: projectId,
+      json: projectJson,
+      assets: (await fs?.listFiles()) ?? [],
     });
   };
 
@@ -109,9 +109,10 @@ export default function ProjectEditPage() {
             flexGrow: 1,
             height: 0,
             minHeight: 0,
+            padding: '8px',
           }}
         >
-          <PyodideFileExplore />
+          <ProjectAssetList assets={assets} />
         </div>
       </div>
     </div>

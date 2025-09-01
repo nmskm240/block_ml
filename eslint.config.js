@@ -7,6 +7,12 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import { globalIgnores } from 'eslint/config';
 import globals from 'globals';
+import path from 'path'; // Import 'path' module
+import { fileURLToPath } from 'url'; // Import 'fileURLToPath' for __dirname equivalent
+
+// Get __dirname equivalent in ES module context
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default [
   globalIgnores(['dist']),
@@ -19,6 +25,10 @@ export default [
         ...globals.browser,
         ...globals.jest,
         ...globals.node,
+      },
+      parserOptions: { // Add this block
+        project: './tsconfig.json', // Path to your tsconfig.json
+        tsconfigRootDir: __dirname, // Root directory of your tsconfig.json
       },
     },
     plugins: {
@@ -58,7 +68,7 @@ export default [
           ],
           pathGroups: [
             // 副作用のあるインポートをキャッチする
-            { pattern: '^\\u0000', group: 'builtin', position: 'before' },
+            { pattern: '^\u0000', group: 'builtin', position: 'before' },
             { pattern: 'react', group: 'external', position: 'before' },
             { pattern: 'next/**', group: 'internal', position: 'before' },
             { pattern: '@/**', group: 'internal' },

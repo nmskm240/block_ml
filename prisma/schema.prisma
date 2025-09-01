@@ -73,6 +73,7 @@ model VerificationToken {
 model Project {
   id              String   @id @default(cuid())
   title           String   @default("") @map("title")
+  description     String   @default("") @map("description")
   workspaceJson   Json     @default("{}") @map("workspace_json")
   status          Int      @map("status")
   statusUpdatedAt DateTime @default(now()) @map("status_updated_at") @db.Timestamptz()

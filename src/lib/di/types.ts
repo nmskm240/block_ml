@@ -7,9 +7,11 @@ export const Token = {
   ProjectRepository: Symbol('ProjectRepository'),
   UserRepository: Symbol('UserRepository'),
 
+  AssetStorage: Symbol('AssetStorageService'),
+  UserStorage: Symbol('UserStorageService'),
+  
   AuthService: Symbol('AuthService'),
-  AssetStorageService: Symbol('AssetStorageService'),
-  UserStorageService: Symbol('UserStorageService'),
-  ProjectService: Symbol('ProjectService'),
+  ProjectQueryService: Symbol('ProjectQueryService'),
+
   Logger: Symbol('Logger'),
 } as const;

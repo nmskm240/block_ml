@@ -1,4 +1,6 @@
-import { PyodideProvider } from '@/lib/pyodide/providers/PyodideProvider';
+import React from 'react';
+
+import { PyodideProvider } from '@/lib/pyodide';
 
 export default function ProjectsRootLayout({
   children,

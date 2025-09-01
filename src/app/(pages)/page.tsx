@@ -1,9 +1,11 @@
 import { Button } from '@mui/material';
 
+import { CreateProjectButton } from '@/features/createProject';
+
 export default function IndexPage() {
-  return (
+return (
     <div className="global-page-padding">
-      <Button>新しいプロジェクトを作成</Button>
+      <CreateProjectButton/>
       <Button>マイページに移動</Button>
     </div>
   );
