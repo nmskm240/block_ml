@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function useResizeObserver<T extends HTMLDivElement>(
+export function useResizeObserver<T extends HTMLDivElement>(
   onResize: () => void
 ) {
   const ref = React.useRef<T>(null);
