@@ -1,18 +1,35 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
+
 import { ListItemButton, ListItemText } from '@mui/material';
 
-import { ProjectAssetInfo } from '@/services';
+import { usePyodide } from '@/lib/pyodide';
 
-type Props = {
-  info: ProjectAssetInfo;
-  onClick?: () => void;
-};
+export function ProjectAssets() {
+  const { fs } = usePyodide();
+  const [assets, setAssets] = useState<string[]>([]);
 
-export function ProjectAsset({ info, onClick }: Props) {
+  useEffect(() => {
+    if (!fs) return;
+    setAssets(fs.list());
+
+    const unsub = fs.subscribe?.('change', () => {
+      setAssets(fs.list());
+    });
+
+    return () => {
+      unsub?.();
+    };
+  }, [fs]);
+
   return (
-    <ListItemButton onClick={onClick}>
-      <ListItemText primary={info.name} />
-    </ListItemButton>
+    <>
+      {assets.map((asset) => (
+        <ListItemButton key={asset}>
+          <ListItemText primary={asset} />
+        </ListItemButton>
+      ))}
+    </>
   );
 }
