@@ -5,7 +5,8 @@ import { ProjectNotFoundError } from '@/errors';
 import { Token } from '@/lib/di';
 
 import type {
-  ProjectDetail,
+  AssetInfo,
+  ProjectMetadata,
   ProjectSearchQuery,
   ProjectSummary,
 } from './types';
@@ -17,7 +18,7 @@ export class ProjectQueryService {
     private readonly _prisma: PrismaClient,
   ) {}
 
-  async fetchProjectDetail(projectId: string): Promise<ProjectDetail> {
+  async fetchProjectMetadata(projectId: string): Promise<ProjectMetadata> {
     const entity = await this._prisma.project.findFirst({
       where: { id: projectId },
       include: {
@@ -36,6 +37,7 @@ export class ProjectQueryService {
       id: entity.id,
       title: entity.title,
       description: entity.description,
+      workspace: JSON.stringify(entity.workspaceJson),
       status: entity.status,
       createdBy: {
         id: createdBy.id,
@@ -45,37 +47,7 @@ export class ProjectQueryService {
       assets: entity.projectAssets.map((e) => ({
         id: e.asset.id,
         name: e.asset.fileName,
-        path: e.asset.filePath,
       })),
-      updatedAt: entity.updatedAt,
-    };
-  }
-
-  async fetchProjectSummary(projectId: string): Promise<ProjectSummary> {
-    const entity = await this._prisma.project.findFirst({
-      where: { id: projectId },
-      include: {
-        userProjects: { include: { user: true } },
-        projectAssets: { include: { asset: true } },
-      },
-    });
-
-    if (!entity || entity.userProjects.length == 0) {
-      throw new ProjectNotFoundError(projectId);
-    }
-
-    const createdBy = entity.userProjects[0].user;
-
-    return {
-      id: entity.id,
-      title: entity.title,
-      description: entity.description,
-      status: entity.status,
-      createdBy: {
-        id: createdBy.id,
-        name: createdBy.name ?? '',
-        avatarUrl: createdBy.image ?? '',
-      },
       updatedAt: entity.updatedAt,
     };
   }
@@ -90,6 +62,7 @@ export class ProjectQueryService {
       },
       include: {
         userProjects: { include: { user: true }, take: 1 },
+        projectAssets: { include: { asset: true } },
       },
       skip: query.offset,
       take: query.limit,
@@ -106,6 +79,10 @@ export class ProjectQueryService {
         name: entity.userProjects[0]?.user.name ?? '',
         avatarUrl: entity.userProjects[0]?.user.image ?? '',
       },
+      assets: entity.projectAssets.map<AssetInfo>((e) => ({
+        id: e.asset.id,
+        name: e.asset.fileName,
+      })),
       updatedAt: entity.updatedAt,
     }));
   }
