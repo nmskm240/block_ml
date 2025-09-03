@@ -2,7 +2,7 @@ import React from 'react';
 
 import { PyodideProvider } from '@/lib/pyodide';
 
-export default function ProjectsRootLayout({
+export default function ProjectPageLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

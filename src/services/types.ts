@@ -2,11 +2,16 @@ import { z } from 'zod';
 
 export const AssetInfoSchema = z.object({
   id: z.cuid2(),
-  name: z.string().min(1),
-  path: z.url(),
+  name: z.string(),
 });
 
 export type AssetInfo = z.infer<typeof AssetInfoSchema>;
+
+export const ProjectAssetInfoSchema = AssetInfoSchema.extend({
+  file: z.instanceof(File),
+});
+
+export type ProjectAssetInfo = z.infer<typeof ProjectAssetInfoSchema>;
 
 export const UserInfoSchema = z.object({
   id: z.cuid2(),
@@ -22,10 +27,23 @@ export const ProjectSummarySchema = z.object({
   description: z.string(),
   status: z.number(),
   createdBy: UserInfoSchema,
+  assets: z.array(AssetInfoSchema),
   updatedAt: z.date(),
 });
 
 export type ProjectSummary = z.infer<typeof ProjectSummarySchema>;
+
+export const ProjectMetadataSchema = ProjectSummarySchema.extend({
+  workspace: z.json(),
+});
+
+export type ProjectMetadata = z.infer<typeof ProjectMetadataSchema>;
+
+export const ProjectInfoSchema = ProjectMetadataSchema.extend({
+  assets: z.array(ProjectAssetInfoSchema),
+});
+
+export type ProjectInfo = z.infer<typeof ProjectInfoSchema>;
 
 export const ProjectSearchQuerySchema = z.object({
   keyword: z.string().optional(),
@@ -35,31 +53,3 @@ export const ProjectSearchQuerySchema = z.object({
 });
 
 export type ProjectSearchQuery = z.infer<typeof ProjectSearchQuerySchema>;
-
-export const ProjectAssetInfoSchema = z.object({
-  id: z.cuid2(),
-  name: z.string(),
-  file: z.instanceof(File).optional(),
-});
-
-export type ProjectAssetInfo = z.infer<typeof ProjectAssetInfoSchema>;
-
-export const ProjectEditingSchema = z.object({
-  id: z.cuid2(),
-  workspace: z.json(),
-  assets: z.array(ProjectAssetInfoSchema),
-});
-
-export type ProjectEditing = z.infer<typeof ProjectEditingSchema>;
-
-export const ProjectDetailSchema = z.object({
-  id: z.cuid2(),
-  title: z.string(),
-  description: z.string(),
-  status: z.number(),
-  createdBy: UserInfoSchema,
-  assets: z.array(AssetInfoSchema),
-  updatedAt: z.date(),
-});
-
-export type ProjectDetail = z.infer<typeof ProjectDetailSchema>;
