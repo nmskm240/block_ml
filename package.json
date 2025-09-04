@@ -39,6 +39,7 @@
     "react-plotly.js": "^2.6.0",
     "react-split": "^2.0.14",
     "reflect-metadata": "^0.2.2",
+    "ts-pattern": "^5.8.0",
     "tsyringe": "^4.10.0",
     "uuid": "^11.1.0",
     "zod": "^4.0.14"

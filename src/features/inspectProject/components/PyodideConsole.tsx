@@ -2,164 +2,48 @@
 
 import React from 'react';
 
-import { Delete } from '@mui/icons-material';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, List } from '@mui/material';
+import { match } from 'ts-pattern';
 
 import { usePyodide } from '@/lib/pyodide';
+import { Entry } from '@/lib/pyodide/types';
 
-enum LogType {
-  None,
-  Out,
-  Error,
-}
-
-type LogEntry = {
-  type: LogType;
-  message: string;
-  timestamp: Date;
-};
+import { GraphEntryItem } from './GraphEntryItem';
+import { LogEntryItem } from './LogEntryItem';
 
 export function PyodideConsole() {
-  const { pyodideRef, isLoading } = usePyodide();
-  const [logs, setLogs] = React.useState<LogEntry[]>([]);
-  const bottomRef = React.useRef<HTMLDivElement>(null);
+  const { logService } = usePyodide();
+  const [entries, setEntries] = React.useState<Entry[]>([]); // Local state for entries
 
-  const append = (log: LogEntry) => {
-    setLogs((prev) => {
-      const maxLines = Number.parseInt(process.env.NEXT_PUBLIC_MAX_LOG_LINES!);
-      const trimmed = prev.length >= maxLines ? prev.slice(1) : prev;
-      return [...trimmed, log];
+  React.useEffect(() => {
+    if (!logService) return;
+
+    const unsubscribe = logService.subscribe('change', (newEntries) => {
+      setEntries(newEntries);
     });
-  };
 
-  const clear = () => {
-    setLogs([]);
-  };
+    setEntries(logService.getEntries());
+
+    return () => {
+      unsubscribe();
+    };
+  }, [logService]);
+
+  const bottomRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [logs.length]);
-
-  React.useEffect(() => {
-    if (!pyodideRef.current || isLoading) return;
-
-    pyodideRef.current.setStdout({
-      batched: (message: string) => {
-        append({
-          type: LogType.Out,
-          message: message.trim(),
-          timestamp: new Date(),
-        });
-      },
-    });
-
-    pyodideRef.current.setStderr({
-      batched: (message: string) => {
-        append({
-          type: LogType.Error,
-          message: message.trim(),
-          timestamp: new Date(),
-        });
-      },
-    });
-  }, [pyodideRef, isLoading]);
+  }, [entries.length]);
 
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        height: '100%',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}
-    >
-      <CardHeader
-        title="実行ログ"
-        action={
-          <Box>
-            {/*
-            TODO
-            <Tooltip title="ログを保存">
-              <IconButton onClick={onSave}>
-                <SaveAlt />
-              </IconButton>
-            </Tooltip>
-            */}
-            <Tooltip title="ログをクリア">
-              <IconButton onClick={clear}>
-                <Delete />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        }
-        sx={{ pb: 1 }}
-      />
-      <Divider />
-      <CardContent
-        sx={{
-          flex: 1,
-          overflowY: 'auto',
-          px: 2,
-          py: 1,
-        }}
-      >
-        <List dense>
-          {logs.map((log, idx) => (
-            <ListItem
-              key={idx}
-              alignItems="flex-start"
-              sx={{
-                color: log.type === LogType.Error ? '#b00020' : 'inherit',
-                bgcolor:
-                  log.type === LogType.Error
-                    ? 'rgba(255,0,0,0.05)'
-                    : 'transparent',
-                borderRadius: 1,
-                py: 0.5,
-              }}
-            >
-              <ListItemText
-                primary={
-                  <>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      sx={{ color: '#999', mr: 1 }}
-                    >
-                      [{log.timestamp.toLocaleTimeString()}]
-                    </Typography>
-                    <Typography
-                      component="span"
-                      variant="body2"
-                      sx={{
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {log.message}
-                    </Typography>
-                  </>
-                }
-              />
-            </ListItem>
-          ))}
-          <Box ref={bottomRef} />
-        </List>
-      </CardContent>
-    </Card>
+    <List dense>
+      {entries.map((entry) =>
+        match(entry.content.type)
+          .with('log', () => <LogEntryItem key={entry.id} entry={entry} />)
+          .with('graph', () => <GraphEntryItem key={entry.id} entry={entry} />)
+          .exhaustive(),
+      )}
+      <Box ref={bottomRef} />
+    </List>
   );
 }

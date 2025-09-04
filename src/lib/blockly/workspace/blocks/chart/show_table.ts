@@ -20,7 +20,20 @@ pythonGenerator.forBlock[CHART_SHOW_TABLE_BLOCK_KEY] = (block, generator) => {
   const title = block.getFieldValue("TITLE");
   const dfCode = generator.valueToCode(block, "DF", Order.NONE) || "df";
 
-  (generator as any).definitions_["import_json"] = "import json";
+  (generator as any).definitions_["import_plotly_go"] =
+    "import plotly.graph_objects as go";
 
-  return `__show_table_json("${title}", ${dfCode}.to_json(orient='split'))`;
+  const code = `
+fig = go.Figure(data=[go.Table(
+  header=dict(values=list(${dfCode}.columns),
+              fill_color='paleturquoise',
+              align='left'),
+  cells=dict(values=[${dfCode}[col] for col in ${dfCode}.columns],
+             fill_color='lavender',
+             align='left'))
+])
+fig.update_layout(title='${title}')
+print(fig.to_json())
+`;
+  return code;
 };
