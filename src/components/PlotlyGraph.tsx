@@ -14,9 +14,12 @@ export function PlotlyGraph({ figure }: Props) {
   return (
     <Plot
       data={figure.data}
-      layout={figure.layout}
-      style={{ width: '100%', height: '400px' }}
-      useResizeHandler
+      layout={{
+        ...figure.layout,
+        margin: { t: 30, r: 5, b: 0, l: 5 },
+        autosize: true,
+      }}
+      style={{ height: '400px' }}
     />
   );
 }

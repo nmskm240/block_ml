@@ -36,7 +36,7 @@ export function GraphEntryItem({ entry }: Props) {
           [{entry.timestamp.toLocaleTimeString()}]
         </Typography>
       </Box>
-      <Box sx={{ width: '100%', mt: 1 }}>
+      <Box sx={{ width: '100%', mt: 1, overflowX: 'auto' }}>
         <PlotlyGraph figure={payload} />
       </Box>
     </ListItem>
