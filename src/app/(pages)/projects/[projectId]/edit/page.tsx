@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Divider } from '@mui/material';
 
 import { ProjectAssets } from '@/components/project';
 import {
@@ -8,7 +8,10 @@ import {
   Editor,
   SaveProjectButton,
 } from '@/features/editProject/components';
-import { PyodideConsole } from '@/features/inspectProject/components';
+import {
+  ClearLogButton,
+  PyodideConsole,
+} from '@/features/inspectProject/components';
 import { RunProjectButton } from '@/features/runProject/components';
 
 type PageParams = {
@@ -72,7 +75,33 @@ export default async function ProjectEditPage(props: {
             minHeight: 0,
           }}
         >
-          <PyodideConsole />
+          <Card
+            variant="outlined"
+            sx={{
+              height: '100%',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+            }}
+          >
+            <CardHeader
+              title="実行ログ"
+              sx={{ pb: 1 }}
+              action={<ClearLogButton />}
+            />
+            <Divider />
+            <CardContent
+              sx={{
+                flex: 1,
+                overflowY: 'auto',
+                px: 2,
+                py: 1,
+              }}
+            >
+              <PyodideConsole />
+            </CardContent>
+          </Card>
         </div>
         <div
           style={{
