@@ -26,9 +26,9 @@ export enum PlotlyGraphType {
 }
 
 export enum PlotlyGraphHistfuncType {
-  Count = "count",
-  Sum = "sum",
-  Avg = "avg",
-  Min = "min",
-  Max = "max",
+  Count = 'count',
+  Sum = 'sum',
+  Avg = 'avg',
+  Min = 'min',
+  Max = 'max',
 }

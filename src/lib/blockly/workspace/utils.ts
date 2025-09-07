@@ -1,4 +1,3 @@
-import { Block } from 'blockly/core';
 import { PythonGenerator } from 'blockly/python';
 
 const SEPARATOR = '# --- BLOCKLY TEMPLATE ---';

@@ -146,12 +146,14 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       kind: 'category',
       name: 'ML',
       contents: [
+        { kind: 'block', type: blocks.SKLEARN_LOAD_DATASET },
         { kind: 'block', type: blocks.SKLEARN_SELECT_MODEL },
         {
           kind: 'block',
-          type: blocks.SKLEARN_FIT_MODEL,
+          type: blocks.SKLEARN_TRAIN_MODEL,
         },
         { kind: 'block', type: blocks.SKLEARN_LABEL_ENCODING },
+        { kind: 'block', type: blocks.DATAFRAME_TRAIN_TEST_SPLIT },
       ],
     },
   ],
