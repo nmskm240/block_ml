@@ -3,12 +3,14 @@ import path from 'path';
 import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
 
-import { VariableTypes } from '../../../types/variables';
-import { CsvFileDropdown } from '../../fields';
+import { CsvFileDropdown } from '../fields';
+import { VariableTypes } from '../types';
+import { applyPlaceholders, stripImports } from '../utils';
+import template from './template/dataframe_read_csv.py';
 
-export const DATA_FRAME_READ_CSV_KEY = 'dataframe_read_csv';
+export const DATAFRAME_READ_CSV = 'dataframe_read_csv';
 
-Blockly.Blocks[DATA_FRAME_READ_CSV_KEY] = {
+Blockly.Blocks[DATAFRAME_READ_CSV] = {
   init: function () {
     this.appendDummyInput()
       .appendField('CSVファイルを読み込む')
@@ -19,13 +21,15 @@ Blockly.Blocks[DATA_FRAME_READ_CSV_KEY] = {
   },
 };
 
-pythonGenerator.forBlock[DATA_FRAME_READ_CSV_KEY] = (block, generator) => {
+pythonGenerator.forBlock[DATAFRAME_READ_CSV] = (block, generator) => {
   const fileName = block.getFieldValue('CSV_FILE');
-  (generator as any).definitions_['import_pandas'] = 'import pandas as pd';
   const filePath = path.join(
     process.env.NEXT_PUBLIC_PYODIDE_FS_PATH!,
-    fileName
+    fileName,
   );
-  const code = `pd.read_csv('${filePath}')`;
-  return [code, Order.ATOMIC];
+  const body = stripImports(template, generator);
+  const code = applyPlaceholders(body, {
+    __BLOCKLY_filePath__: filePath,
+  });
+  return [code, Order.FUNCTION_CALL];
 };

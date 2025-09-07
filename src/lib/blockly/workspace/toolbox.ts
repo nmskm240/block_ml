@@ -2,9 +2,7 @@ import '@blockly/block-plus-minus';
 import 'blockly/blocks';
 import * as Blockly from 'blockly/core';
 
-import * as ch from './blocks/chart';
-import * as df from './blocks/dataframe';
-import * as sk from './blocks/sklearn';
+import * as blocks from './blocks';
 
 const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: 'categoryToolbox',
@@ -105,10 +103,10 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       kind: 'category',
       name: 'DataFrame',
       contents: [
-        { kind: 'block', type: df.DATA_FRAME_READ_CSV_KEY },
+        { kind: 'block', type: blocks.DATAFRAME_READ_CSV },
         {
           kind: 'block',
-          type: df.DATA_FRAME_DROP_COLUMN_KEY,
+          type: blocks.DATAFRAME_DROP_COLUMN,
           inputs: {
             columns: {
               shadow: {
@@ -119,9 +117,9 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         },
         {
           kind: 'block',
-          type: df.DATA_FRAME_FILTER_BLOCK_KEY,
+          type: blocks.DATAFRAME_FILTER,
           inputs: {
-            Condition: {
+            condition: {
               shadow: {
                 type: 'logic_compare',
               },
@@ -130,7 +128,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         },
         {
           kind: 'block',
-          type: df.DATA_FRAME_SELECT_COLUMN,
+          type: blocks.DATAFRAME_SELECT_COLUMN,
           inputs: {
             column: {
               shadow: {
@@ -139,38 +137,21 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
             },
           },
         },
-        { kind: 'block', type: df.DATA_FRAME_IMPUTE_MISSING_VALUES },
+        { kind: 'block', type: blocks.DATAFRAME_FILL_MISSING },
+        { kind: 'block', type: blocks.PLOTLY_PLOT_GRAPH },
+        { kind: 'block', type: blocks.PLOTLY_PLOT_TABLE },
       ],
     },
     {
       kind: 'category',
       name: 'ML',
       contents: [
-        { kind: 'block', type: sk.SK_LEARN_SELECT_MODEL },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_MODEL },
         {
           kind: 'block',
-          type: sk.SK_LEARN_FIT_MODEL,
+          type: blocks.SKLEARN_FIT_MODEL,
         },
-        { kind: 'block', type: sk.SK_LEARN_LABEL_ENCODING },
-        {
-          kind: 'block',
-          type: sk.SK_LEARN_PREDICT_AND_EVALUATE,
-          inputs: {
-            Y: {
-              shadow: {
-                type: 'text',
-              },
-            },
-          },
-        },
-      ],
-    },
-    {
-      kind: 'category',
-      name: '出力',
-      contents: [
-        { kind: 'block', type: ch.CHART_PLOT_BLOCK_KEY },
-        { kind: 'block', type: ch.CHART_SHOW_TABLE_BLOCK_KEY },
+        { kind: 'block', type: blocks.SKLEARN_LABEL_ENCODING },
       ],
     },
   ],
