@@ -15,7 +15,7 @@ Blockly.Blocks[DATAFRAME_SELECT_COLUMN] = {
     this.appendValueInput('column')
       .appendField('の列')
       .setCheck(VariableTypes.String);
-    this.setOutput(true);
+    this.setOutput(true, VariableTypes.Dataframe);
     this.setColour(260);
     this.setInputsInline(true);
   },
@@ -29,5 +29,5 @@ pythonGenerator.forBlock[DATAFRAME_SELECT_COLUMN] = (block, generator) => {
     __BLOCKLY_df__: df,
     __BLOCKLY_column__: target,
   });
-  return `${code}\n`;
+  return [code, Order.MEMBER]; 
 };

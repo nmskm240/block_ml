@@ -6,8 +6,7 @@ export class SklearnDatasetDropdown extends Blockly.FieldDropdown {
   constructor() {
     super([
       ['Iris', SklearnDatasets.Iris],
-      ['Boston', SklearnDatasets.Boston],
-      ['Digits', SklearnDatasets.Digits],
+      ['Wine', SklearnDatasets.Wine],
     ]);
   }
 }

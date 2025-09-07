@@ -5,8 +5,8 @@ export { DATAFRAME_READ_CSV } from './dataframe_read_csv';
 export { DATAFRAME_SELECT_COLUMN } from './dataframe_select_column';
 export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
 
-export { PLOTLY_PLOT_GRAPH } from "./plotly_plot_graph";
-export { PLOTLY_PLOT_TABLE } from "./plotly_plot_table";
+export { PLOTLY_PLOT_GRAPH } from './plotly_plot_graph';
+export { PLOTLY_PLOT_TABLE } from './plotly_plot_table';
 
 export { SKLEARN_TRAIN_MODEL } from './sklearn_train_model';
 export { SKLEARN_LABEL_ENCODING } from './sklearn_label_encoding';
