@@ -2,11 +2,11 @@ import * as Blockly from 'blockly/core';
 import { pythonGenerator } from 'blockly/python';
 
 import { applyPlaceholders, stripImports } from '../utils';
-import template from './template/sklearn_fit_model.py';
+import template from './template/sklearn_train_model.py';
 
-export const SKLEARN_FIT_MODEL = 'sklearn_fit_model';
+export const SKLEARN_TRAIN_MODEL = 'sklearn_train_model';
 
-Blockly.Blocks[SKLEARN_FIT_MODEL] = {
+Blockly.Blocks[SKLEARN_TRAIN_MODEL] = {
   init: function () {
     this.appendDummyInput('')
       .appendField('モデル')
@@ -28,7 +28,7 @@ Blockly.Blocks[SKLEARN_FIT_MODEL] = {
   },
 };
 
-pythonGenerator.forBlock[SKLEARN_FIT_MODEL] = (block, generator) => {
+pythonGenerator.forBlock[SKLEARN_TRAIN_MODEL] = (block, generator) => {
   const model = block.getField('model')?.getText() || 'model';
   const x = block.getField('x')?.getText() || 'x';
   const y = block.getField('y')?.getText() || 'y';
@@ -37,6 +37,7 @@ pythonGenerator.forBlock[SKLEARN_FIT_MODEL] = (block, generator) => {
     __BLOCKLY_model__: model,
     __BLOCKLY_x__: x,
     __BLOCKLY_y__: y,
+    __BLOCKLY_sample_weight__: 'None',
   });
   return `${code}\n`;
 };

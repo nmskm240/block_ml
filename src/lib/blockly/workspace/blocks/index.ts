@@ -8,7 +8,7 @@ export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
 export { PLOTLY_PLOT_GRAPH } from "./plotly_plot_graph";
 export { PLOTLY_PLOT_TABLE } from "./plotly_plot_table";
 
-export { SKLEARN_FIT_MODEL } from './sklearn_fit_model';
+export { SKLEARN_TRAIN_MODEL } from './sklearn_train_model';
 export { SKLEARN_LABEL_ENCODING } from './sklearn_label_encoding';
 export { SKLEARN_SELECT_MODEL } from './sklearn_select_model';
 export { SKLEARN_PREDICT } from './sklearn_predict';
