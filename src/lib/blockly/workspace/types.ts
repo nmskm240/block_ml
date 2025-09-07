@@ -12,6 +12,11 @@ export enum SklearnModelType {
   LogisticRegression = 'logistic_Regrression',
 }
 
+export enum SklearnDatasets {
+  Iris = 'iris',
+  Wine = "wine"
+}
+
 export enum PlotlyGraphType {
   Bar = 'bar',
   Box = 'box',

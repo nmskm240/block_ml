@@ -3,3 +3,4 @@ export { FillMissingStrategyDropdown } from './fill_missing_strategy_dropdown';
 export { PlotlyGraphDropdown } from "./plotly_graph_dropdown";
 export { PlotlyGraphHistfuncDropdown } from "./plotly_graph_histfunc_dropdown";
 export { SklearnModelDropdown } from './sklearn_model_dropdown';
+export { SklearnDatasetDropdown } from './sklearn_dataset_dropdown';
