@@ -9,13 +9,12 @@ export const SKLEARN_PREDICT = 'sklearn_predict';
 
 Blockly.Blocks[SKLEARN_PREDICT] = {
   init: function () {
-    this.appendDummyInput('model')
-      .appendField(new Blockly.FieldVariable('model'), 'model')
-      .setCheck(VariableTypes.Model)
-      .appendField('学習済みモデル');
-    this.appendValueInput('X')
+    this.appendValueInput('MODEL')
+      .setCheck([VariableTypes.Model, VariableTypes.Pipeline])
+      .appendField('モデル');
+    this.appendValueInput('X_DATA')
       .setCheck(VariableTypes.Dataframe)
-      .appendField('で、次のデータを予測');
+      .appendField('で、データXを予測');
     this.setOutput(true, VariableTypes.Dataframe);
     this.setInputsInline(true);
     this.setColour(230);
@@ -25,13 +24,13 @@ Blockly.Blocks[SKLEARN_PREDICT] = {
 };
 
 pythonGenerator.forBlock[SKLEARN_PREDICT] = (block, generator) => {
-  const model = (block.getFieldValue('model') as string) || 'model';
-  const x = generator.valueToCode(block, 'X', Order.NONE) || 'x';
+  const model = generator.valueToCode(block, 'MODEL', Order.ATOMIC) || 'None';
+  const xData = generator.valueToCode(block, 'X_DATA', Order.NONE) || 'None';
 
   const body = stripImports(template, generator);
   const code = applyPlaceholders(body, {
     __BLOCKLY_model__: model,
-    __BLOCKLY_x__: x,
+    __BLOCKLY_x_data__: xData,
   });
 
   return [code, Order.FUNCTION_CALL];
