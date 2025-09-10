@@ -1,8 +1,10 @@
-import '@blockly/block-plus-minus';
-import 'blockly/blocks';
+import * as procedure from '@blockly/block-shareable-procedures';
 import * as Blockly from 'blockly/core';
 
 import * as blocks from './blocks';
+
+procedure.unregisterProcedureBlocks();
+Blockly.common.defineBlocks(procedure.blocks);
 
 const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: 'categoryToolbox',
@@ -148,6 +150,10 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       contents: [
         { kind: 'block', type: blocks.SKLEARN_LOAD_DATASET },
         { kind: 'block', type: blocks.SKLEARN_SELECT_MODEL },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_TRANSFORMER },
+        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER },
+        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER_DEF },
+        { kind: 'block', type: blocks.SKLEARN_MAKE_PIPELINE },
         {
           kind: 'block',
           type: blocks.SKLEARN_TRAIN_MODEL,

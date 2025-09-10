@@ -1,6 +1,10 @@
 export { CsvFileDropdown } from './csv_file_dropdown';
 export { FillMissingStrategyDropdown } from './fill_missing_strategy_dropdown';
+export { PlotlyGraphDropdown } from './plotly_graph_dropdown';
+export { PlotlyGraphHistfuncDropdown } from './plotly_graph_histfunc_dropdown';
 export { PlotlyGraphDropdown } from "./plotly_graph_dropdown";
 export { PlotlyGraphHistfuncDropdown } from "./plotly_graph_histfunc_dropdown";
 export { SklearnModelDropdown } from './sklearn_model_dropdown';
 export { SklearnDatasetDropdown } from './sklearn_dataset_dropdown';
+export { SklearnTransformerDropdown } from './sklearn_transformer_dropdown';
+export { SklearnCustomTransformerDropdown } from './sklearn_custom_transformer_dropdown';

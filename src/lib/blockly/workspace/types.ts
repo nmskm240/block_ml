@@ -5,6 +5,8 @@ export enum VariableTypes {
   Array = 'Array',
   Dataframe = 'Dataframe',
   Model = 'Model',
+  Transformer = 'Transformer',
+  Pipeline = 'Pipeline',
 }
 
 export enum SklearnModelType {
@@ -12,9 +14,14 @@ export enum SklearnModelType {
   LogisticRegression = 'logistic_Regrression',
 }
 
+export enum SklearnTransformerType {
+  StandardScaler = 'standard_scaler',
+  MinMaxScaler = 'min_max_scaler',
+}
+
 export enum SklearnDatasets {
   Iris = 'iris',
-  Wine = "wine"
+  Wine = 'wine',
 }
 
 export enum PlotlyGraphType {

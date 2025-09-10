@@ -11,5 +11,8 @@ export { PLOTLY_PLOT_TABLE } from './plotly_plot_table';
 export { SKLEARN_TRAIN_MODEL } from './sklearn_train_model';
 export { SKLEARN_LABEL_ENCODING } from './sklearn_label_encoding';
 export { SKLEARN_SELECT_MODEL } from './sklearn_select_model';
+export { SKLEARN_SELECT_TRANSFORMER } from './sklearn_select_transformer';
 export { SKLEARN_PREDICT } from './sklearn_predict';
 export { SKLEARN_LOAD_DATASET } from './sklearn_load_dataset';
+export { SKLEARN_CUSTOM_TRANSFORMER_DEF } from './sklearn_custom_transformer_def';
+export { SKLEARN_CUSTOM_TRANSFORMER } from './sklearn_custom_transformer';
