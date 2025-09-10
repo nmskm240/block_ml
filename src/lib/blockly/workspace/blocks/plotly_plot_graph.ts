@@ -33,7 +33,7 @@ Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
       .appendField(new PlotlyGraphDropdown(), 'type');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(260);
+    this.setColour(210);
     this.setTooltip('指定された列でグラフを描画します');
 
     this.updateShape_();

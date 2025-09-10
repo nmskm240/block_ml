@@ -17,7 +17,7 @@ Blockly.Blocks[DATAFRAME_FILTER] = {
       .setCheck(VariableTypes.Boolean)
       .appendField('条件に合う行');
     this.setOutput(true, VariableTypes.Dataframe);
-    this.setColour(260);
+    this.setColour(210);
     this.setTooltip('');
     this.setInputsInline(true);
   },

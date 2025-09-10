@@ -16,7 +16,7 @@ Blockly.Blocks[SKLEARN_SELECT_REGRESSION_MODEL] = {
       .appendField('回帰モデルを作成')
       .appendField(new SklearnRegressionModelDropdown(), 'type');
     this.setOutput(true, VariableTypes.Model);
-    this.setColour(230);
+    this.setColour(100);
     this.setTooltip('指定した回帰モデルを作成します');
   },
 };

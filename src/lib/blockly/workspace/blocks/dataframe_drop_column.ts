@@ -18,7 +18,7 @@ Blockly.Blocks[DATAFRAME_DROP_COLUMN] = {
     this.appendDummyInput().appendField('を削除する');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(260);
+    this.setColour(210);
     this.setTooltip('');
   },
 };

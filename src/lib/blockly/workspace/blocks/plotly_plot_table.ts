@@ -19,7 +19,7 @@ Blockly.Blocks[PLOTLY_PLOT_TABLE] = {
       .appendField(new Blockly.FieldTextInput('データ表'), 'title');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(260);
+    this.setColour(210);
     this.setTooltip('DataFrameを表として表示します');
   },
 };

@@ -18,7 +18,7 @@ Blockly.Blocks[SKLEARN_LABEL_ENCODING] = {
       .appendField('の列');
     this.appendDummyInput().appendField('をラベルエンコーディングする');
     this.setOutput(true, VariableTypes.Dataframe);
-    this.setColour(120);
+    this.setColour(200);
     this.setTooltip(
       '指定したデータフレームの列をラベルエンコーディングします。',
     );

@@ -104,6 +104,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
     {
       kind: 'category',
       name: 'DataFrame',
+      colour: '210',
       contents: [
         { kind: 'block', type: blocks.DATAFRAME_READ_CSV },
         {
@@ -147,6 +148,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
     {
       kind: 'category',
       name: 'ML',
+      colour: '240',
       contents: [
         { kind: 'label', text: 'データ取得' },
         { kind: 'block', type: blocks.SKLEARN_LOAD_DATASET },

@@ -20,7 +20,7 @@ Blockly.Blocks[DATAFRAME_FILL_MISSING] = {
       .appendField(new FillMissingStrategyDropdown(), 'strategy')
       .appendField('で補完する');
     this.setOutput(true, VariableTypes.Dataframe);
-    this.setColour(230);
+    this.setColour(210);
     this.setTooltip('指定したデータフレームの欠損値を補完します。');
     this.setHelpUrl('');
   },

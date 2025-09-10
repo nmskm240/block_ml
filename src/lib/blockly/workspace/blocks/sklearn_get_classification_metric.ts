@@ -23,7 +23,7 @@ Blockly.Blocks[SKLEARN_GET_CLASSIFICATION_METRIC] = {
       .appendField('を計算');
     this.setInputsInline(true);
     this.setOutput(true, VariableTypes.Number);
-    this.setColour(230);
+    this.setColour(350);
     this.setTooltip('正解データと予測データから指定された分類評価指標を計算します。');
     this.setHelpUrl('');
   },

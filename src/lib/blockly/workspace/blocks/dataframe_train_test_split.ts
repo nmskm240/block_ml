@@ -34,7 +34,7 @@ Blockly.Blocks[DATAFRAME_TRAIN_TEST_SPLIT] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230); // Using a similar color to other DataFrame blocks
+    this.setColour(180);
     this.setTooltip(
       '特徴量と目的変数を学習データとテストデータに分割し、指定された変数に代入します',
     );

@@ -17,7 +17,7 @@ Blockly.Blocks[SKLEARN_TRANSFORM] = {
       .appendField('をデータXに適用して変換');
     this.setInputsInline(true);
     this.setOutput(true, VariableTypes.Dataframe);
-    this.setColour(120);
+    this.setColour(30);
     this.setTooltip('指定したオブジェクトをデータXに適用して変換します。');
     this.setHelpUrl('');
   },

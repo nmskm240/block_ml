@@ -13,7 +13,7 @@ Blockly.Blocks[SKLEARN_MAKE_PIPELINE] = {
       .setCheck([VariableTypes.Array, VariableTypes.Transformer])
       .appendField('パイプラインを作成');
     this.setOutput(true, VariableTypes.Pipeline);
-    this.setColour(290);
+    this.setColour(250);
     this.setTooltip(
       '変換器や推定器のリストからscikit-learnパイプラインを作成します。',
     );

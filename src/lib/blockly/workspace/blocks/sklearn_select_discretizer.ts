@@ -16,7 +16,7 @@ Blockly.Blocks[SKLEARN_SELECT_DISCRETIZER] = {
       .appendField('離散化を作成')
       .appendField(new SklearnDiscretizerDropdown(), 'type');
     this.setOutput(true, VariableTypes.Transformer);
-    this.setColour(230);
+    this.setColour(200);
     this.setTooltip('指定した離散化を作成します');
   },
 };

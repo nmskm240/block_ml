@@ -21,7 +21,7 @@ Blockly.Blocks[SKLEARN_CUSTOM_TRANSFORMER_DEF] = {
       .appendField('変換対象')
       .appendField(new Blockly.FieldVariable('x'), 'X');
     this.appendStatementInput('BODY');
-    this.setColour(290);
+    this.setColour(30);
     this.setTooltip('');
     this.setHelpUrl('');
   },

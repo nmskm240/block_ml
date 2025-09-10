@@ -16,7 +16,7 @@ Blockly.Blocks[SKLEARN_LOAD_DATASET] = {
       .appendField('データセットをロード')
       .appendField(new SklearnDatasetDropdown(), 'dataset');
     this.setOutput(true, VariableTypes.Dataframe);
-    this.setColour(120);
+    this.setColour(180);
     this.setTooltip('scikit-learnのテストデータセットをロードします。');
     this.setHelpUrl('');
   },

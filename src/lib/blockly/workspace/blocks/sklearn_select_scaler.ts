@@ -16,7 +16,7 @@ Blockly.Blocks[SKLEARN_SELECT_SCALER] = {
       .appendField('スケーラーを作成')
       .appendField(new SklearnScalerDropdown(), 'type');
     this.setOutput(true, VariableTypes.Transformer);
-    this.setColour(230);
+    this.setColour(200);
     this.setTooltip('指定したスケーラーを作成します');
   },
 };

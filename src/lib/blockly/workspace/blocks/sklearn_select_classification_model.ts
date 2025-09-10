@@ -17,7 +17,7 @@ Blockly.Blocks[SKLEARN_SELECT_CLASSIFICATION_MODEL] = {
       .appendField('分類モデルを作成')
       .appendField(new SklearnClassificationModelDropdown(), 'type');
     this.setOutput(true, VariableTypes.Model);
-    this.setColour(230);
+    this.setColour(100);
     this.setTooltip('指定した分類モデルを作成します');
   },
 };

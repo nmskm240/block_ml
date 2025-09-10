@@ -16,7 +16,7 @@ Blockly.Blocks[SKLEARN_SELECT_NORMALIZER] = {
       .appendField('正規化を作成')
       .appendField(new SklearnNormalizerDropdown(), 'type');
     this.setOutput(true, VariableTypes.Transformer);
-    this.setColour(230);
+    this.setColour(200);
     this.setTooltip('指定した正規化を作成します');
   },
 };

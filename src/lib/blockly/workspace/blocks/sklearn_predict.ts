@@ -17,7 +17,7 @@ Blockly.Blocks[SKLEARN_PREDICT] = {
       .appendField('で、データXを予測');
     this.setOutput(true, VariableTypes.Dataframe);
     this.setInputsInline(true);
-    this.setColour(230);
+    this.setColour(220);
     this.setTooltip('学習済みのモデルを使用して予測を行います。');
     this.setHelpUrl('');
   },

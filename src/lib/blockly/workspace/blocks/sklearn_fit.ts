@@ -25,7 +25,7 @@ Blockly.Blocks[SKLEARN_FIT] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(120);
+    this.setColour(100);
     this.setTooltip('指定したオブジェクトをデータXとデータYで学習させます。');
     this.setHelpUrl('');
   },

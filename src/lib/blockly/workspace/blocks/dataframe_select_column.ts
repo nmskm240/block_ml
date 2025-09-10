@@ -16,7 +16,7 @@ Blockly.Blocks[DATAFRAME_SELECT_COLUMN] = {
       .appendField('の列')
       .setCheck(VariableTypes.String);
     this.setOutput(true, VariableTypes.Dataframe);
-    this.setColour(260);
+    this.setColour(210);
     this.setInputsInline(true);
   },
 };

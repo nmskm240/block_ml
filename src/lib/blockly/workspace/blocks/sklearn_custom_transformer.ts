@@ -14,7 +14,7 @@ Blockly.Blocks[SKLEARN_CUSTOM_TRANSFORMER] = {
       .appendField('カスタム変換器')
       .appendField(new SklearnCustomTransformerDropdown(), 'FUNC');
     this.setOutput(true, VariableTypes.Transformer);
-    this.setColour(160);
+    this.setColour(30);
     this.setTooltip('FunctionTransformer に渡す関数を選択');
     this.setHelpUrl('');
   },

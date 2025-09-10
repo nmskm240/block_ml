@@ -16,7 +16,7 @@ Blockly.Blocks[SKLEARN_SELECT_ENCODER] = {
       .appendField('エンコーダーを作成')
       .appendField(new SklearnEncoderDropdown(), 'type');
     this.setOutput(true, VariableTypes.Transformer);
-    this.setColour(230);
+    this.setColour(200);
     this.setTooltip('指定したエンコーダーを作成します');
   },
 };
