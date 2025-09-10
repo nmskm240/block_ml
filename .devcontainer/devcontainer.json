@@ -9,6 +9,9 @@
     "ghcr.io/devcontainers/features/java:1": {},
     "ghcr.io/devcontainers-extra/features/apt-packages:1": {
       "packages": "graphviz"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
     }
   },
   "customizations": {
@@ -27,8 +30,8 @@
       ]
     }
   },
-  "postCreateCommand": ".devcontainer/on-post-create.sh",
-  "postAttachCommand": ".devcontainer/on-post-attach.sh",
+  "postCreateCommand": "sh .devcontainer/on-post-create.sh",
+  "postAttachCommand": "sh .devcontainer/on-post-attach.sh",
   "containerEnv": {
     "PRISMA_DATABASE_URL": "postgresql://postgres:postgres@localhost:54322/postgres",
     "WATCHPACK_POLLING": "true",

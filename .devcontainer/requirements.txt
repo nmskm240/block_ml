@@ -1,0 +1,4 @@
+pandas
+scikit-learn
+micropip
+plotly==6.2.0

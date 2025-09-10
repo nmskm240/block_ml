@@ -1,10 +1,10 @@
-import '@blockly/block-plus-minus';
-import 'blockly/blocks';
+import * as procedure from '@blockly/block-shareable-procedures';
 import * as Blockly from 'blockly/core';
 
-import * as ch from './blocks/chart';
-import * as df from './blocks/dataframe';
-import * as sk from './blocks/sklearn';
+import * as blocks from './blocks';
+
+procedure.unregisterProcedureBlocks();
+Blockly.common.defineBlocks(procedure.blocks);
 
 const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: 'categoryToolbox',
@@ -104,11 +104,12 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
     {
       kind: 'category',
       name: 'DataFrame',
+      colour: '210',
       contents: [
-        { kind: 'block', type: df.DATA_FRAME_READ_CSV_KEY },
+        { kind: 'block', type: blocks.DATAFRAME_READ_CSV },
         {
           kind: 'block',
-          type: df.DATA_FRAME_DROP_COLUMN_KEY,
+          type: blocks.DATAFRAME_DROP_COLUMN,
           inputs: {
             columns: {
               shadow: {
@@ -119,9 +120,9 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         },
         {
           kind: 'block',
-          type: df.DATA_FRAME_FILTER_BLOCK_KEY,
+          type: blocks.DATAFRAME_FILTER,
           inputs: {
-            Condition: {
+            condition: {
               shadow: {
                 type: 'logic_compare',
               },
@@ -130,7 +131,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         },
         {
           kind: 'block',
-          type: df.DATA_FRAME_SELECT_COLUMN,
+          type: blocks.DATAFRAME_SELECT_COLUMN,
           inputs: {
             column: {
               shadow: {
@@ -139,38 +140,58 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
             },
           },
         },
-        { kind: 'block', type: df.DATA_FRAME_IMPUTE_MISSING_VALUES },
+        { kind: 'block', type: blocks.DATAFRAME_FILL_MISSING },
+        { kind: 'block', type: blocks.PLOTLY_PLOT_GRAPH },
+        { kind: 'block', type: blocks.PLOTLY_PLOT_TABLE },
       ],
     },
     {
       kind: 'category',
       name: 'ML',
+      colour: '240',
       contents: [
-        { kind: 'block', type: sk.SK_LEARN_SELECT_MODEL },
-        {
-          kind: 'block',
-          type: sk.SK_LEARN_FIT_MODEL,
-        },
-        { kind: 'block', type: sk.SK_LEARN_LABEL_ENCODING },
-        {
-          kind: 'block',
-          type: sk.SK_LEARN_PREDICT_AND_EVALUATE,
-          inputs: {
-            Y: {
-              shadow: {
-                type: 'text',
-              },
-            },
-          },
-        },
-      ],
-    },
-    {
-      kind: 'category',
-      name: '出力',
-      contents: [
-        { kind: 'block', type: ch.CHART_PLOT_BLOCK_KEY },
-        { kind: 'block', type: ch.CHART_SHOW_TABLE_BLOCK_KEY },
+        { kind: 'label', text: 'データ取得' },
+        { kind: 'block', type: blocks.SKLEARN_LOAD_DATASET },
+        { kind: 'block', type: blocks.DATAFRAME_TRAIN_TEST_SPLIT },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '前処理' },
+        { kind: 'block', type: blocks.SKLEARN_LABEL_ENCODING },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_ENCODER },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_SCALER },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_NORMALIZER },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_DISCRETIZER },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '特徴量変換' },
+        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER_DEF },
+        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER },
+        { kind: 'block', type: blocks.SKLEARN_TRANSFORM },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: 'パイプライン' },
+        { kind: 'block', type: blocks.SKLEARN_MAKE_PIPELINE },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '学習' },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_CLASSIFICATION_MODEL },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_REGRESSION_MODEL },
+        { kind: 'block', type: blocks.SKLEARN_FIT },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '予測' },
+        { kind: 'block', type: blocks.SKLEARN_PREDICT },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '評価' },
+        { kind: 'block', type: blocks.SKLEARN_GET_CLASSIFICATION_METRIC },
+        { kind: 'block', type: blocks.SKLEARN_GET_REGRESSION_METRIC },
       ],
     },
   ],

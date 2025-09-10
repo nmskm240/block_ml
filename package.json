@@ -13,6 +13,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
     "@blockly/block-plus-minus": "^9.0.1",
+    "@blockly/block-shareable-procedures": "^6.0.3",
     "@blockly/continuous-toolbox": "^7.0.2",
     "@blockly/field-date": "^10.0.2",
     "@blockly/plugin-typed-variable-modal": "^9.0.1",
@@ -26,7 +27,7 @@
     "@prisma/client": "^6.12.0",
     "@supabase/supabase-js": "^2.52.0",
     "bcryptjs": "^3.0.2",
-    "blockly": "^12.1.0",
+    "blockly": "^12.3.0",
     "next": "15.4.2",
     "next-auth": "^5.0.0-beta.29",
     "pino": "^9.9.0",
