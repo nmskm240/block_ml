@@ -3,9 +3,10 @@ import { Order, pythonGenerator } from 'blockly/python';
 import { match } from 'ts-pattern';
 
 import { SklearnRegressionMetricDropdown } from '../fields';
-import { VariableTypes, SklearnRegressionMetricType } from '../types';
+import { SklearnRegressionMetricType, VariableTypes } from '../types';
 import { applyPlaceholders, stripImports } from '../utils';
-import getMetricTemplate from './template/sklearn_get_regression_metric/get_metric.py';
+import meanSquaredErrorTemplate from './template/sklearn_get_regression_metric/mean_squared_error.py';
+import r2ScoreTemplate from './template/sklearn_get_regression_metric/r2_score.py';
 
 export const SKLEARN_GET_REGRESSION_METRIC = 'sklearn_get_regression_metric';
 
@@ -13,7 +14,7 @@ Blockly.Blocks[SKLEARN_GET_REGRESSION_METRIC] = {
   init: function () {
     this.appendValueInput('Y_TRUE')
       .setCheck(VariableTypes.Dataframe)
-      .appendField('正解データ');
+      .appendField('回帰の正解データ');
     this.appendValueInput('Y_PRED')
       .setCheck(VariableTypes.Dataframe)
       .appendField('予測データ');
@@ -34,11 +35,15 @@ pythonGenerator.forBlock[SKLEARN_GET_REGRESSION_METRIC] = (block, generator) => 
   const yPred = generator.valueToCode(block, 'Y_PRED', Order.ATOMIC) || 'None';
   const metricType = block.getFieldValue('METRIC') as SklearnRegressionMetricType;
 
-  const body = stripImports(getMetricTemplate, generator);
+  const template = match(metricType)
+    .with(SklearnRegressionMetricType.MeanSquaredError, () => meanSquaredErrorTemplate)
+    .with(SklearnRegressionMetricType.R2Score, () => r2ScoreTemplate)
+    .exhaustive();
+
+  const body = stripImports(template, generator);
   const code = applyPlaceholders(body, {
     __BLOCKLY_y_true__: yTrue,
     __BLOCKLY_y_pred__: yPred,
-    __BLOCKLY_metric_function__: metricType,
   });
 
   return [code, Order.FUNCTION_CALL];

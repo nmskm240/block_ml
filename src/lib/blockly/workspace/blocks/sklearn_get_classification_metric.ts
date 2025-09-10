@@ -5,7 +5,10 @@ import { match } from 'ts-pattern';
 import { SklearnClassificationMetricDropdown } from '../fields';
 import { VariableTypes, SklearnClassificationMetricType } from '../types';
 import { applyPlaceholders, stripImports } from '../utils';
-import getMetricTemplate from './template/sklearn_get_classification_metric/get_metric.py';
+import accuracyScoreTemplate from './template/sklearn_get_classification_metric/accuracy_score.py';
+import f1ScoreTemplate from './template/sklearn_get_classification_metric/f1_score.py';
+import precisionScoreTemplate from './template/sklearn_get_classification_metric/precision_score.py';
+import recallScoreTemplate from './template/sklearn_get_classification_metric/recall_score.py';
 
 export const SKLEARN_GET_CLASSIFICATION_METRIC = 'sklearn_get_classification_metric';
 
@@ -13,7 +16,7 @@ Blockly.Blocks[SKLEARN_GET_CLASSIFICATION_METRIC] = {
   init: function () {
     this.appendValueInput('Y_TRUE')
       .setCheck(VariableTypes.Dataframe)
-      .appendField('正解データ');
+      .appendField('分類の正解データ');
     this.appendValueInput('Y_PRED')
       .setCheck(VariableTypes.Dataframe)
       .appendField('予測データ');
@@ -34,11 +37,17 @@ pythonGenerator.forBlock[SKLEARN_GET_CLASSIFICATION_METRIC] = (block, generator)
   const yPred = generator.valueToCode(block, 'Y_PRED', Order.ATOMIC) || 'None';
   const metricType = block.getFieldValue('METRIC') as SklearnClassificationMetricType;
 
-  const body = stripImports(getMetricTemplate, generator);
+  const template = match(metricType)
+    .with(SklearnClassificationMetricType.Accuracy, () => accuracyScoreTemplate)
+    .with(SklearnClassificationMetricType.Precision, () => precisionScoreTemplate)
+    .with(SklearnClassificationMetricType.Recall, () => recallScoreTemplate)
+    .with(SklearnClassificationMetricType.F1, () => f1ScoreTemplate)
+    .exhaustive();
+
+  const body = stripImports(template, generator);
   const code = applyPlaceholders(body, {
     __BLOCKLY_y_true__: yTrue,
     __BLOCKLY_y_pred__: yPred,
-    __BLOCKLY_metric_function__: metricType,
   });
 
   return [code, Order.FUNCTION_CALL];
