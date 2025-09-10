@@ -9,14 +9,46 @@ export enum VariableTypes {
   Pipeline = 'Pipeline',
 }
 
-export enum SklearnModelType {
+export enum SklearnClassificationModelType {
   TreeClassifier = 'tree_classifier',
   LogisticRegression = 'logistic_Regrression',
 }
 
-export enum SklearnTransformerType {
+export enum SklearnRegressionModelType {
+  LinearRegression = 'linear_regression',
+  SVR = 'svr',
+}
+
+export enum SklearnScalerType {
   StandardScaler = 'standard_scaler',
   MinMaxScaler = 'min_max_scaler',
+}
+
+export enum SklearnEncoderType {
+  OneHotEncoder = 'one_hot_encoder',
+  LabelEncoder = 'label_encoder',
+}
+
+export enum SklearnNormalizerType {
+  L1 = 'l1',
+  L2 = 'l2',
+}
+
+export enum SklearnDiscretizerType {
+  Binarizer = 'binarizer',
+  KBinsDiscretizer = 'kbins_discretizer',
+}
+
+export enum SklearnClassificationMetricType {
+  Accuracy = 'accuracy_score',
+  Precision = 'precision_score',
+  Recall = 'recall_score',
+  F1 = 'f1_score',
+}
+
+export enum SklearnRegressionMetricType {
+  MeanSquaredError = 'mean_squared_error',
+  R2Score = 'r2_score',
 }
 
 export enum SklearnDatasets {
