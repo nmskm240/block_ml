@@ -148,18 +148,48 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       kind: 'category',
       name: 'ML',
       contents: [
+        { kind: 'label', text: 'データ取得' },
         { kind: 'block', type: blocks.SKLEARN_LOAD_DATASET },
-        { kind: 'block', type: blocks.SKLEARN_SELECT_MODEL },
-        { kind: 'block', type: blocks.SKLEARN_SELECT_TRANSFORMER },
-        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER },
-        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER_DEF },
-        { kind: 'block', type: blocks.SKLEARN_MAKE_PIPELINE },
-        {
-          kind: 'block',
-          type: blocks.SKLEARN_TRAIN_MODEL,
-        },
-        { kind: 'block', type: blocks.SKLEARN_LABEL_ENCODING },
         { kind: 'block', type: blocks.DATAFRAME_TRAIN_TEST_SPLIT },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '前処理' },
+        { kind: 'block', type: blocks.SKLEARN_LABEL_ENCODING },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_ENCODER },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_SCALER },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_NORMALIZER },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_DISCRETIZER },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '特徴量変換' },
+        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER_DEF },
+        { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER },
+        { kind: 'block', type: blocks.SKLEARN_TRANSFORM },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: 'パイプライン' },
+        { kind: 'block', type: blocks.SKLEARN_MAKE_PIPELINE },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '学習' },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_CLASSIFICATION_MODEL },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_REGRESSION_MODEL },
+        { kind: 'block', type: blocks.SKLEARN_FIT },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '予測' },
+        { kind: 'block', type: blocks.SKLEARN_PREDICT },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '評価' },
+        { kind: 'block', type: blocks.SKLEARN_GET_CLASSIFICATION_METRIC },
+        { kind: 'block', type: blocks.SKLEARN_GET_REGRESSION_METRIC },
       ],
     },
   ],
