@@ -1,42 +1,63 @@
-import { Entry, LogType } from '../types';
-import { createEntry } from '../utils';
+import { createId } from '@paralleldrive/cuid2';
 
-type LogServiceEvent = 'change';
+import { Entry, ErrorContent, GraphContent, LogContent } from '../types';
 
 type Listener = (entries: Entry[]) => void;
 
 export class LogService {
   private entries: Entry[] = [];
-  private listeners: Record<LogServiceEvent, Set<Listener>> = {
-    change: new Set(),
-  };
+  private listeners: Map<string, Set<Listener>> = new Map();
 
-  constructor() {}
+  subscribe(event: 'change', listener: Listener): () => void {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, new Set());
+    }
+    this.listeners.get(event)?.add(listener);
 
-  subscribe(event: LogServiceEvent, listener: Listener) {
-    this.listeners[event].add(listener);
-    return () => this.listeners[event].delete(listener); // unsubscribe
+    return () => {
+      this.listeners.get(event)?.delete(listener);
+    };
   }
 
-  private emit(event: LogServiceEvent) {
-    this.listeners[event].forEach((l) => l(this.entries));
+  private notify(event: 'change'): void {
+    this.listeners
+      .get(event)
+      ?.forEach((listener) => listener([...this.entries]));
   }
 
-  append(message: string, type: LogType) {
-    const entry = createEntry(message, type);
-    const maxLines = Number.parseInt(process.env.NEXT_PUBLIC_MAX_LOG_LINES!);
-    const trimmed =
-      this.entries.length >= maxLines ? this.entries.slice(1) : this.entries;
-    this.entries = [...trimmed, entry];
-    this.emit('change');
+  getEntries(): Entry[] {
+    return [...this.entries];
   }
 
-  clear() {
+  addLog(content: Omit<LogContent, 'type'>): void {
+    this.entries.push({
+      id: createId(),
+      createdAt: new Date(),
+      content: { type: 'log', ...content },
+    });
+    this.notify('change');
+  }
+
+  addGraph(content: Omit<GraphContent, 'type'>): void {
+    this.entries.push({
+      id: createId(),
+      createdAt: new Date(),
+      content: { type: 'graph', ...content },
+    });
+    this.notify('change');
+  }
+
+  addError(content: Omit<ErrorContent, 'type'>): void {
+    this.entries.push({
+      id: createId(),
+      createdAt: new Date(),
+      content: { type: 'error', ...content },
+    });
+    this.notify('change');
+  }
+
+  clear(): void {
     this.entries = [];
-    this.emit('change');
-  }
-
-  getEntries() {
-    return this.entries;
+    this.notify('change');
   }
 }

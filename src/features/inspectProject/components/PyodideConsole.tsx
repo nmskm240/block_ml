@@ -8,6 +8,7 @@ import { match } from 'ts-pattern';
 import { usePyodide } from '@/lib/pyodide';
 import { Entry } from '@/lib/pyodide/types';
 
+import { ErrorEntryItem } from './ErrorEntryItem';
 import { GraphEntryItem } from './GraphEntryItem';
 import { LogEntryItem } from './LogEntryItem';
 
@@ -41,6 +42,7 @@ export function PyodideConsole() {
         match(entry.content.type)
           .with('log', () => <LogEntryItem key={entry.id} entry={entry} />)
           .with('graph', () => <GraphEntryItem key={entry.id} entry={entry} />)
+          .with('error', () => <ErrorEntryItem key={entry.id} entry={entry} />)
           .exhaustive(),
       )}
       <Box ref={bottomRef} />
