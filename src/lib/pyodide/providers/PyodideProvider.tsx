@@ -6,7 +6,6 @@ import React from 'react';
 import Script from 'next/script';
 
 import { FileService, LogService } from '../services';
-import { LogType } from '../types';
 
 import type { PyodideInterface } from 'pyodide';
 
@@ -73,13 +72,13 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
 
     pyodideRef.current.setStdout({
       batched: (message: string) => {
-        logService.append(message, LogType.Out);
+        logService.addLog({ message });
       },
     });
 
     pyodideRef.current.setStderr({
       batched: (message: string) => {
-        logService.append(message, LogType.Error);
+        logService.addError({ message });
       },
     });
   }, [isLoading, logService]);
