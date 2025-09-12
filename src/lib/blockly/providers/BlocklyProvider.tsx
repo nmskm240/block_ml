@@ -7,6 +7,7 @@ import React, {
   useMemo,
 } from 'react';
 
+import { DisableTopBlocks } from '@blockly/disable-top-blocks';
 import * as Blockly from 'blockly';
 
 import {
@@ -77,6 +78,11 @@ export function BlocklyProvider({
     if (workspaceParams) {
       (ws as WithAdditionalWorkspace).data = workspaceParams;
     }
+
+    ws.addChangeListener(Blockly.Events.disableOrphans);
+
+    const disableTopBlocks = new DisableTopBlocks(ws);
+    disableTopBlocks.init();
 
     setWorkspace(ws);
 

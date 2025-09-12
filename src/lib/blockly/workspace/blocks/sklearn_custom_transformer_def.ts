@@ -34,7 +34,6 @@ pythonGenerator.forBlock[SKLEARN_CUSTOM_TRANSFORMER_DEF] = (
   const name = block.getFieldValue('NAME');
   const statementBody = generator.statementToCode(block, 'BODY').trim();
   const x = block.getField('X')?.getText() || "x";
-  console.log(x)
   const body = stripImports(template, generator);
   const code = applyPlaceholders(body, {
     __BLOCKLY_func_name__: generator.FUNCTION_NAME_PLACEHOLDER_,
