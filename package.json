@@ -15,6 +15,7 @@
     "@blockly/block-plus-minus": "^9.0.1",
     "@blockly/block-shareable-procedures": "^6.0.3",
     "@blockly/continuous-toolbox": "^7.0.2",
+    "@blockly/disable-top-blocks": "^0.6.2",
     "@blockly/field-date": "^10.0.2",
     "@blockly/plugin-typed-variable-modal": "^9.0.1",
     "@emotion/react": "^11.14.0",
