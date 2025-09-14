@@ -13,7 +13,6 @@ export const SKLEARN_SELECT_ENCODER = 'sklearn_select_encoder';
 Blockly.Blocks[SKLEARN_SELECT_ENCODER] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('エンコーダーを作成')
       .appendField(new SklearnEncoderDropdown(), 'type');
     this.setOutput(true, VariableTypes.Transformer);
     this.setColour(200);

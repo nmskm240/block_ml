@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as Blockly from "blockly/core";
 import { PythonGenerator } from 'blockly/python';
 
 const SEPARATOR = '# --- BLOCKLY TEMPLATE ---';
@@ -47,4 +49,18 @@ export function applyPlaceholders(
     );
   }
   return result;
+}
+
+export function createShadowBlock(type: string, fields: Record<string, any> = {}) {
+  const shadow = Blockly.utils.xml.createElement('shadow');
+  shadow.setAttribute('type', type);
+
+  Object.entries(fields).forEach(([name, value]) => {
+    const field = Blockly.utils.xml.createElement('field');
+    field.setAttribute('name', name);
+    field.textContent = String(value);
+    shadow.appendChild(field);
+  });
+
+  return shadow;
 }

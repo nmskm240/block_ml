@@ -13,7 +13,6 @@ export const SKLEARN_SELECT_SCALER = 'sklearn_select_scaler';
 Blockly.Blocks[SKLEARN_SELECT_SCALER] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('スケーラーを作成')
       .appendField(new SklearnScalerDropdown(), 'type');
     this.setOutput(true, VariableTypes.Transformer);
     this.setColour(200);
