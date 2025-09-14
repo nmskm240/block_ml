@@ -1,37 +1,26 @@
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box } from '@mui/material';
 
-import Link from 'next/link';
+import Image from 'next/image';
 
-import { SearchBox, SignOutButton } from '@/components';
-import { auth } from '@/lib/nextAuth';
+import { AboutButton } from './AboutButton';
 
-export async function Header() {
-  const session = await auth();
-
+export function Header() {
   return (
     <AppBar position="static" color="primary">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            Block ML
-          </Link>
-        </Typography>
-        <SearchBox />
-        {session ? (
-          <>
-            <Typography sx={{ ml: 2, mr: 2 }}>{session.user?.name}</Typography>
-            <SignOutButton />
-          </>
-        ) : (
-          <>
-            <Link color="inherit" href="/auth/sign-in">
-              Sign In
-            </Link>
-            <Link color="inherit" href="/auth/sign-up">
-              Sign Up
-            </Link>
-          </>
-        )}
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Image
+            src="/favicon.ico"
+            alt="Block ML logo"
+            width={28}
+            height={28}
+            style={{ marginRight: '12px' }}
+          />
+          <Typography variant="h6" component="div">
+            Modulo blocks
+          </Typography>
+        </Box>
+        <AboutButton />
       </Toolbar>
     </AppBar>
   );
