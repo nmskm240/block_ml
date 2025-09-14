@@ -15,7 +15,7 @@ describe('toDomain', () => {
         id: projectId,
         title: 'Test Project',
         description: 'description',
-        workspaceJson: { blocks: {} }, // Prisma Json type
+        workspaceJson: { blocks: {} },
         status: ProjectStatus.Active,
       },
       userProject: {

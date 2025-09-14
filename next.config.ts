@@ -1,3 +1,5 @@
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
+
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -10,6 +12,10 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  experimental: {
+    esmExternals: true,
+  },
 };
 
 export default nextConfig;
+initOpenNextCloudflareForDev();

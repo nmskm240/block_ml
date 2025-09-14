@@ -18,7 +18,9 @@ export function toDomain(entity: ProjectEntitySet): Project {
     id: entity.project.id,
     title: entity.project.title,
     description: entity.project.description,
-    workspaceJson: JSON.stringify(entity.project.workspaceJson),
+    workspaceJson: entity.project.workspaceJson
+      ? JSON.stringify(entity.project.workspaceJson)
+      : '{}',
     ownerUserId: entity.userProject.userId,
     status: fromProjectStatus(entity.project.status),
     assetIds: entity.projectAssets.map((e) => e.assetId),

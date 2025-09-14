@@ -33,7 +33,7 @@ global.Response = MockResponse as any;
 export const setupFetchMock = () => {
   jest
     .spyOn(global, 'fetch')
-    .mockImplementation((input: RequestInfo | URL, init?: RequestInit) => {
+    .mockImplementation((input: RequestInfo | URL) => {
       const url = typeof input === 'string' ? input : input.toString();
 
       // Check if a specific mock response is registered for this URL

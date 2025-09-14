@@ -5,8 +5,8 @@ import { match } from 'ts-pattern';
 import { SklearnEncoderDropdown } from '../fields';
 import { VariableTypes, SklearnEncoderType } from '../types';
 import { applyPlaceholders, stripImports } from '../utils';
-import oneHotEncoderTemplate from './template/sklearn_select_encoder/one_hot_encoder.py';
 import labelEncoderTemplate from './template/sklearn_select_encoder/label_encoder.py';
+import oneHotEncoderTemplate from './template/sklearn_select_encoder/one_hot_encoder.py';
 
 export const SKLEARN_SELECT_ENCODER = 'sklearn_select_encoder';
 

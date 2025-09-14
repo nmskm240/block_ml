@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { pythonGenerator } from 'blockly/python';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import { useBlockly } from '@/lib/blockly';
@@ -12,7 +12,7 @@ export function CodeViewer() {
   const { workspace } = useBlockly();
   const [code, setCode] = React.useState('');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!workspace) return;
 
     const generateCode = () => {

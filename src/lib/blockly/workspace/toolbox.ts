@@ -11,6 +11,12 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   contents: [
     {
       kind: 'category',
+      name: 'イベント',
+      colour: '0',
+      contents: [{ kind: 'block', type: blocks.EVENT_RUN_PROJECT }],
+    },
+    {
+      kind: 'category',
       name: '制御',
       colour: '%{BKY_LOGIC_HUE}',
       contents: [

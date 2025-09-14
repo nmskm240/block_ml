@@ -5,6 +5,8 @@ import React from 'react';
 
 import Script from 'next/script';
 
+import { PlotlyFigureSchema } from '@/lib/plotly/types';
+
 import { FileService, LogService } from '../services';
 
 import type { PyodideInterface } from 'pyodide';
@@ -36,7 +38,9 @@ const Context = React.createContext<ContextType | undefined>(undefined);
 export function PyodideProvider({ children }: PyodideProviderProps) {
   const pyodideRef = React.useRef<PyodideInterface>(null);
   const [fs, setFs] = React.useState<FileService | undefined>(undefined);
-  const [logService, setLogService] = React.useState<LogService | undefined>(undefined); // New state for LogService
+  const [logService, setLogService] = React.useState<LogService | undefined>(
+    undefined,
+  );
   const [isLoading, setIsLoading] = React.useState(true);
 
   const loadPyodideEnv = React.useCallback(async () => {
@@ -72,7 +76,12 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
 
     pyodideRef.current.setStdout({
       batched: (message: string) => {
-        logService.addLog({ message });
+        const parsed = PlotlyFigureSchema.safeParse(message);
+        if (parsed.success) {
+          logService.addGraph({ figure: parsed.data });
+        } else {
+          logService.addLog({ message });
+        }
       },
     });
 
@@ -90,9 +99,7 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
         strategy="afterInteractive"
         onLoad={loadPyodideEnv}
       />
-      <Context.Provider
-        value={{ pyodideRef, fs, logService, isLoading }}
-      >
+      <Context.Provider value={{ pyodideRef, fs, logService, isLoading }}>
         {children}
       </Context.Provider>
     </>

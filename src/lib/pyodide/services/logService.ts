@@ -38,11 +38,11 @@ export class LogService {
     this.notify('change');
   }
 
-  addGraph(content: Omit<GraphContent, 'type'>): void {
+  addGraph(content: Omit<GraphContent, 'type' | 'targetId'>): void {
     this.entries.push({
       id: createId(),
       createdAt: new Date(),
-      content: { type: 'graph', ...content },
+      content: { type: 'graph', targetId: createId(), ...content },
     });
     this.notify('change');
   }
