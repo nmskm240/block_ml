@@ -1,8 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React from 'react';
-import type { PyodideInterface } from 'pyodide';
+
 import Script from 'next/script';
+
+import { PlotlyFigureSchema } from '@/lib/plotly/types';
+
+import { FileService, LogService } from '../services';
+
+import type { PyodideInterface } from 'pyodide';
 
 const PYODIDE_VERSION = process.env.NEXT_PUBLIC_PYODIDE_VERSION!;
 const PYODIDE_CDN = process.env.NEXT_PUBLIC_PYODIDE_CDN!;
@@ -15,22 +22,27 @@ const PYPI_PACKAGES = process.env
   .NEXT_PUBLIC_PYODIDE_PYPI_PACKAGES!.split(',')
   .map((p) => p.trim());
 
-type PyodideContextType = {
+type ContextType = {
   pyodideRef: React.RefObject<PyodideInterface | null>;
+  fs: FileService | undefined;
   isLoading: boolean;
+  logService: LogService | undefined;
 };
 
 type PyodideProviderProps = {
   children: React.ReactNode;
 };
 
-const PyodideContext = React.createContext<PyodideContextType | undefined>(
-  undefined
-);
+const Context = React.createContext<ContextType | undefined>(undefined);
 
 export function PyodideProvider({ children }: PyodideProviderProps) {
   const pyodideRef = React.useRef<PyodideInterface>(null);
+  const [fs, setFs] = React.useState<FileService | undefined>(undefined);
+  const [logService, setLogService] = React.useState<LogService | undefined>(
+    undefined,
+  );
   const [isLoading, setIsLoading] = React.useState(true);
+
   const loadPyodideEnv = React.useCallback(async () => {
     setIsLoading(true);
 
@@ -54,8 +66,31 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
       await micropip.install(PYPI_PACKAGES);
     }
 
+    setFs(new FileService(pyodideRef.current));
+    setLogService(new LogService());
     setIsLoading(false);
   }, []);
+
+  React.useEffect(() => {
+    if (isLoading || !pyodideRef.current || !logService) return;
+
+    pyodideRef.current.setStdout({
+      batched: (message: string) => {
+        const parsed = PlotlyFigureSchema.safeParse(message);
+        if (parsed.success) {
+          logService.addGraph({ figure: parsed.data });
+        } else {
+          logService.addLog({ message });
+        }
+      },
+    });
+
+    pyodideRef.current.setStderr({
+      batched: (message: string) => {
+        logService.addError({ message });
+      },
+    });
+  }, [isLoading, logService]);
 
   return (
     <>
@@ -64,15 +99,16 @@ export function PyodideProvider({ children }: PyodideProviderProps) {
         strategy="afterInteractive"
         onLoad={loadPyodideEnv}
       />
-      <PyodideContext.Provider value={{ pyodideRef, isLoading }}>
+      <Context.Provider value={{ pyodideRef, fs, logService, isLoading }}>
         {children}
-      </PyodideContext.Provider>
+      </Context.Provider>
     </>
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePyodide = () => {
-  const ctx = React.useContext(PyodideContext);
+  const ctx = React.useContext(Context);
   if (!ctx) throw new Error('usePyodide must be used within PyodideProvider');
   return ctx;
 };

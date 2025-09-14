@@ -1,14 +1,16 @@
 'use client';
 
 import * as React from 'react';
-import signIn from '@/app/api/(actions)/signIn';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import MuiCard from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
+
+import signIn from '@/features/signIn/action';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -61,10 +63,10 @@ export default function SignInPage() {
     event.preventDefault();
     setError('');
 
-    const result = await signIn({ email, password });
-
-    if (!result.isSuccess) {
-      setError('Invalid email or password');
+    try {
+      await signIn({ email, password });
+    } catch {
+      setError('An error occurred. Please try again later.');
     }
   };
 

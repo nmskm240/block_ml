@@ -7,10 +7,11 @@ export const Token = {
   ProjectRepository: Symbol('ProjectRepository'),
   UserRepository: Symbol('UserRepository'),
 
+  AssetStorage: Symbol('AssetStorageService'),
+  UserStorage: Symbol('UserStorageService'),
+  
   AuthService: Symbol('AuthService'),
-  AssetStorageService: Symbol('StorageService'),
-  UserStorageService: Symbol('UserStorageService'),
-  ProjectService: Symbol('ProjectService'),
-} as const;
+  ProjectQueryService: Symbol('ProjectQueryService'),
 
-export type Token = (typeof Token)[keyof typeof Token];
+  Logger: Symbol('Logger'),
+} as const;

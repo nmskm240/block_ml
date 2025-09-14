@@ -1,21 +1,12 @@
-'use client';
-
-import useCreateProjectAndRedirect from '@/features/projects/hooks/useCreateAndRedirectProject';
-import useNavigateToMyPage from '@/features/users/profile/hooks/useNavvigateToMyPage';
-
 import { Button } from '@mui/material';
 
+import { CreateProjectButton } from '@/features/createProject';
+
 export default function IndexPage() {
-  const createProjectAndRedirect = useCreateProjectAndRedirect();
-  const navigateToMyPage = useNavigateToMyPage();
-  return (
-    <div className='global-page-padding'>
-      <Button onClick={() => createProjectAndRedirect()}>
-        新しいプロジェクトを作成
-      </Button>
-      <Button onClick={() => navigateToMyPage()} >
-        マイページに移動
-      </Button>
+return (
+    <div className="global-page-padding">
+      <CreateProjectButton/>
+      <Button>マイページに移動</Button>
     </div>
   );
 }

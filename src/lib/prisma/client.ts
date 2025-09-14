@@ -1,20 +1,66 @@
 import { PrismaClient } from '@prisma/client';
 
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-//
-// Learn more: https://pris.ly/d/help/next-js-best-practices
+import logger from '@/lib/logger';
 
-const globalForPrisma = global as unknown as {
-  prisma: PrismaClient | undefined;
-};
+const prisma = new PrismaClient({
+  log: [
+    {
+      emit: 'event',
+      level: 'query',
+    },
+    {
+      emit: 'event',
+      level: 'error',
+    },
+    {
+      emit: 'event',
+      level: 'info',
+    },
+    {
+      emit: 'event',
+      level: 'warn',
+    },
+  ],
+});
 
-const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: ['query'],
-  });
+prisma.$on('query', (e) => {
+  logger.info(
+    {
+      query: e.query,
+      params: e.params,
+      duration: e.duration,
+    },
+    'Prisma query',
+  );
+});
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+prisma.$on('error', (e) => {
+  logger.error({ error: e }, 'Prisma error');
+});
 
-export default prisma;
+prisma.$on('info', (e) => {
+  logger.info({ info: e }, 'Prisma info');
+});
+
+prisma.$on('warn', (e) => {
+  logger.warn({ warn: e }, 'Prisma warn');
+});
+
+const extended = prisma.$extends({
+  query: {
+    project: {
+      update: async ({ args }) => {
+        if (args.data.status) {
+          args.data.statusUpdatedAt = new Date();
+        }
+      },
+      updateMany: async ({ args }) => {
+        if (args.data.status) {
+          args.data.statusUpdatedAt = new Date();
+        }
+      },
+    },
+  },
+});
+
+export default extended;

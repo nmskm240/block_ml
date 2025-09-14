@@ -1,4 +1,4 @@
-# !/bin/sh
+#!/bin/sh
 
 # tailscaled をバックグラウンドで起動
 nohup tailscaled --state=/var/lib/tailscale/tailscaled.state \

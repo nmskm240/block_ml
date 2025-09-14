@@ -1,0 +1,3 @@
+# --- BLOCKLY TEMPLATE ---
+
+__BLOCKLY_PIPELINE__.fit(__BLOCKLY_X__, __BLOCKLY_Y__)
