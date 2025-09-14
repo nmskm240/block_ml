@@ -4,6 +4,7 @@ export { DATAFRAME_FILTER } from './dataframe_filter';
 export { DATAFRAME_READ_CSV } from './dataframe_read_csv';
 export { DATAFRAME_SELECT_COLUMN } from './dataframe_select_column';
 export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
+export { DATAFRAME_COLUMNS_DROPDOWN } from './dataframe_columns_dropdown';
 
 export { EVENT_RUN_PROJECT } from './event_run_project';
 
@@ -15,7 +16,6 @@ export { SKLEARN_CUSTOM_TRANSFORMER_DEF } from './sklearn_custom_transformer_def
 export { SKLEARN_FIT } from './sklearn_fit';
 export { SKLEARN_GET_CLASSIFICATION_METRIC } from './sklearn_get_classification_metric';
 export { SKLEARN_GET_REGRESSION_METRIC } from './sklearn_get_regression_metric';
-export { SKLEARN_LABEL_ENCODING } from './sklearn_label_encoding';
 export { SKLEARN_LOAD_DATASET } from './sklearn_load_dataset';
 export { SKLEARN_MAKE_PIPELINE } from './sklearn_make_pipeline';
 export { SKLEARN_PREDICT } from './sklearn_predict';

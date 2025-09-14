@@ -163,11 +163,10 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: 'sep' },
 
         { kind: 'label', text: '前処理' },
-        { kind: 'block', type: blocks.SKLEARN_LABEL_ENCODING },
         { kind: 'block', type: blocks.SKLEARN_SELECT_ENCODER },
         { kind: 'block', type: blocks.SKLEARN_SELECT_SCALER },
-        { kind: 'block', type: blocks.SKLEARN_SELECT_NORMALIZER },
-        { kind: 'block', type: blocks.SKLEARN_SELECT_DISCRETIZER },
+        // { kind: 'block', type: blocks.SKLEARN_SELECT_NORMALIZER },
+        // { kind: 'block', type: blocks.SKLEARN_SELECT_DISCRETIZER },
 
         { kind: 'sep' },
 
@@ -178,7 +177,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
 
         { kind: 'sep' },
 
-        { kind: 'label', text: 'パイプライン' },
+        { kind: 'label', text: '学習器' },
         { kind: 'block', type: blocks.SKLEARN_MAKE_PIPELINE },
 
         { kind: 'sep' },

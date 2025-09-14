@@ -2,36 +2,38 @@ import * as Blockly from 'blockly/core';
 import { Order, pythonGenerator } from 'blockly/python';
 
 import { VariableTypes } from '../types';
-import { applyPlaceholders, stripImports } from '../utils';
+import { applyPlaceholders, createShadowBlock, stripImports } from '../utils';
 import template from './template/dataframe_train_test_split.py';
 
 export const DATAFRAME_TRAIN_TEST_SPLIT = 'dataframe_train_test_split';
 
 Blockly.Blocks[DATAFRAME_TRAIN_TEST_SPLIT] = {
-  init: function () {
+  init: function (this: Blockly.Block) {
     this.appendValueInput('X')
       .setCheck(VariableTypes.Dataframe)
-      .appendField('特徴量 (X)');
+      .appendField('特徴量')
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'X' }));
     this.appendValueInput('Y')
       .setCheck(VariableTypes.Dataframe)
-      .appendField('目的変数 (y)');
+      .appendField('目的変数')
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'y' }));
     this.appendDummyInput()
       .appendField('テストサイズ')
-      .appendField(new Blockly.FieldNumber(0.2, 0, 1), 'TEST_SIZE');
-    this.appendDummyInput()
-      .appendField('乱数シード')
+      .appendField(new Blockly.FieldNumber(0.2, 0, 1), 'TEST_SIZE')
+      .appendField(', 乱数シード')
       .appendField(new Blockly.FieldNumber(42), 'RANDOM_STATE');
     this.appendDummyInput()
       .appendField('を学習データ')
       .appendField(new Blockly.FieldVariable('X_train'), 'X_TRAIN')
+      .appendField(', 学習ターゲット')
+      .appendField(new Blockly.FieldVariable('y_train'), 'Y_TRAIN');
+    this.appendDummyInput()
       .appendField(', テストデータ')
       .appendField(new Blockly.FieldVariable('X_test'), 'X_TEST')
-      .appendField(', 学習ターゲット')
-      .appendField(new Blockly.FieldVariable('y_train'), 'Y_TRAIN')
       .appendField(', テストターゲット')
       .appendField(new Blockly.FieldVariable('y_test'), 'Y_TEST')
       .appendField('に分割する');
-    this.setInputsInline(false);
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(180);

@@ -5,8 +5,8 @@ import { SklearnScalerType } from '../types';
 export class SklearnScalerDropdown extends Blockly.FieldDropdown {
   constructor() {
     super([
-      ['標準化', SklearnScalerType.StandardScaler],
-      ['正規化', SklearnScalerType.MinMaxScaler],
+      ['StandardScaler', SklearnScalerType.StandardScaler],
+      ['MinMaxScaler', SklearnScalerType.MinMaxScaler],
     ]);
   }
 }

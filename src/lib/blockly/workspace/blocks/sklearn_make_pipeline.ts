@@ -2,7 +2,7 @@ import * as Blockly from 'blockly/core';
 import { pythonGenerator, Order } from 'blockly/python';
 
 import { VariableTypes } from '../types';
-import { applyPlaceholders, stripImports } from '../utils';
+import { applyPlaceholders, createShadowBlock, stripImports } from '../utils';
 import template from './template/sklearn_make_pipeline.py';
 
 export const SKLEARN_MAKE_PIPELINE = 'sklearn_make_pipeline';
@@ -11,12 +11,11 @@ Blockly.Blocks[SKLEARN_MAKE_PIPELINE] = {
   init: function (this: Blockly.Block) {
     this.appendValueInput('STEPS')
       .setCheck([VariableTypes.Array, VariableTypes.Transformer])
-      .appendField('パイプラインを作成');
+      .appendField('学習器を作成')
+      .setShadowDom(createShadowBlock('lists_create_with'));
     this.setOutput(true, VariableTypes.Pipeline);
     this.setColour(250);
-    this.setTooltip(
-      '変換器や推定器のリストからscikit-learnパイプラインを作成します。',
-    );
+    this.setTooltip('変換器やモデルのリストから学習器を作成します。');
     this.setHelpUrl('');
   },
 };
