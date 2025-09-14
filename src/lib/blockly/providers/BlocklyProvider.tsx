@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   createContext,
   useContext,
@@ -8,7 +9,8 @@ import React, {
 } from 'react';
 
 import { DisableTopBlocks } from '@blockly/disable-top-blocks';
-import * as Blockly from 'blockly';
+import * as Blockly from 'blockly/core';
+import * as ja from 'blockly/msg/ja';
 
 import {
   BlocklyWorkspaceAdditionalParams,
@@ -25,10 +27,8 @@ const BlocklyContext = createContext<Context | null>(null);
 
 type Props = {
   children: React.ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialState?: { [key: string]: any };
   workspaceParams?: BlocklyWorkspaceAdditionalParams;
-  locale?: string;
   toolbox?: Blockly.utils.toolbox.ToolboxDefinition;
 };
 
@@ -36,7 +36,6 @@ export function BlocklyProvider({
   children,
   initialState,
   workspaceParams,
-  locale = 'ja',
   toolbox = mlToolbox,
 }: Props) {
   const blocklyDivRef = useRef<HTMLDivElement>(null);
@@ -47,7 +46,7 @@ export function BlocklyProvider({
       return;
     }
 
-    // Blockly.setLocale(require(`blockly/msg/${locale}`));
+    Blockly.setLocale(ja as any);
     const ws = Blockly.inject(blocklyDivRef.current, {
       toolbox: toolbox,
       trashcan: false,
@@ -89,7 +88,7 @@ export function BlocklyProvider({
     return () => {
       ws.dispose();
     };
-  }, [initialState, workspaceParams, locale, toolbox]);
+  }, [initialState, workspaceParams, toolbox]);
 
   const value = useMemo<Context>(
     () => ({
