@@ -3,10 +3,9 @@ import '@/lib/di/registry';
 
 import React from 'react';
 
-import { SessionProvider } from 'next-auth/react';
-
 import '@/styles/globals.css';
 import { Header } from '@/components';
+import { PyodideProvider } from '@/lib/pyodide';
 
 export default function RootLayout({
   children,
@@ -16,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <SessionProvider>
+        <PyodideProvider>
           <div
             style={{
               display: 'flex',
@@ -27,7 +26,7 @@ export default function RootLayout({
             <Header />
             {children}
           </div>
-        </SessionProvider>
+        </PyodideProvider>
       </body>
     </html>
   );
