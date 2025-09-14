@@ -15,7 +15,6 @@ export function GraphEntryItem({ entry }: Props) {
   if (entry.content.type !== 'graph') {
     return null;
   }
-  const payload = entry.content.payload;
 
   return (
     <ListItem
@@ -33,11 +32,11 @@ export function GraphEntryItem({ entry }: Props) {
           variant="body2"
           sx={{ color: '#999', mr: 1 }}
         >
-          [{entry.timestamp.toLocaleTimeString()}]
+          [{entry.createdAt.toLocaleTimeString()}]
         </Typography>
       </Box>
       <Box sx={{ width: '100%', mt: 1, overflowX: 'auto' }}>
-        <PlotlyGraph figure={payload} />
+        <PlotlyGraph figure={entry.content.figure} />
       </Box>
     </ListItem>
   );

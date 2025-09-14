@@ -1,6 +1,7 @@
 import { List } from '@mui/material';
 
-import { ProjectSummary } from '../types';
+import { ProjectSummary } from '@/services';
+
 import { ProjectSummaryListItem } from './ProjectSummaryListItem';
 
 type Props = {

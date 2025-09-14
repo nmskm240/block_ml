@@ -3,8 +3,7 @@ import { ListItem, ListItemText, Typography, Chip, Stack } from '@mui/material';
 import Link from 'next/link';
 
 import UserListItem from '@/components/user/UserListItem';
-
-import { ProjectSummary } from '../types';
+import { ProjectSummary } from '@/services';
 
 export function ProjectSummaryListItem({
   project,

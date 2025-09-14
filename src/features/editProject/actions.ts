@@ -2,7 +2,7 @@
 import '@/lib/di/registry';
 import 'reflect-metadata';
 
-import { IAssetRepository, IAssetStorage } from '@/domains/asset';
+import { IAssetStorage } from '@/domains/asset';
 import { IProjectRepository } from '@/domains/project';
 import { Token, withTransactionScope } from '@/lib/di';
 import { auth } from '@/lib/nextAuth';

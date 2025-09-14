@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   Box,
@@ -27,11 +27,11 @@ function a11yProps(index: number) {
 }
 
 export function Inspector() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const { logService } = usePyodide();
-  const [entries, setEntries] = React.useState<Entry[]>([]);
+  const [entries, setEntries] = useState<Entry[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!logService) return;
 
     const unsubscribe = logService.subscribe('change', (newEntries) => {
@@ -83,12 +83,20 @@ export function Inspector() {
         }}
       >
         {value === 0 && (
-          <div role="tabpanel" id="inspector-tabpanel-0" style={{ padding: '8px 16px' }}>
+          <div
+            role="tabpanel"
+            id="inspector-tabpanel-0"
+            style={{ padding: '8px 16px' }}
+          >
             <PyodideConsole entries={entries} />
           </div>
         )}
         {value === 1 && (
-          <div role="tabpanel" id="inspector-tabpanel-1" style={{ height: '100%' }}>
+          <div
+            role="tabpanel"
+            id="inspector-tabpanel-1"
+            style={{ height: '100%' }}
+          >
             <CodeViewer />
           </div>
         )}

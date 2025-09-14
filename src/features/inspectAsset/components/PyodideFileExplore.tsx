@@ -16,40 +16,40 @@ import {
   Typography,
 } from '@mui/material';
 
-import usePyodideFileService from '@/lib/pyodide/hooks/usePyodideFileService';
+import { usePyodide } from '@/lib/pyodide';
 
 export default function PyodideFileExplore() {
-  const service = usePyodideFileService();
+  const { fs } = usePyodide();
   const [fileNames, setFileNames] = React.useState<string[]>([]);
 
   const refreh = React.useCallback(async () => {
-    if (!service) return;
-    const list = service.list();
+    if (!fs) return;
+    const list = fs.list();
     // . と .. を除外
     setFileNames(list.filter((name) => name !== '.' && name !== '..'));
-  }, [service]);
+  }, [fs]);
 
   React.useEffect(() => {
     refreh();
   }, [refreh]);
 
   const onClickFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!service || !e.target.files) {
+    if (!fs || !e.target.files) {
       return;
     }
 
-    await service.uploads(Array.from(e.target.files));
+    await fs.uploads(Array.from(e.target.files));
     await refreh();
   };
 
   const onRemoveFile = async (fileName: string) => {
-    if(!service) {
+    if (!fs) {
       return;
     }
 
-    await service.remove(fileName);
+    await fs.remove(fileName);
     await refreh();
-  }
+  };
 
   return (
     <Card
