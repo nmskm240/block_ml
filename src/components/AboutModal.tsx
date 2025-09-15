@@ -21,7 +21,7 @@ type Props = {
 export function AboutModal({ open, onClose }: Props) {
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>About Modulo blocks</DialogTitle>
+      <DialogTitle>About Moduloxs</DialogTitle>
       <DialogContent>
         <DialogContentText component="div" sx={{ mb: 2 }}>
           This application is created by 240.
@@ -55,7 +55,7 @@ export function AboutModal({ open, onClose }: Props) {
             href="https://github.com/nmskm240"
             target="_blank"
             rel="noopener"
-            aria-label="YouTube"
+            aria-label="Github"
           >
             <GitHub />
           </IconButton>
