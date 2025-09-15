@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    
+
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "start": "next start",
     "lint": "next lint",
@@ -26,7 +26,6 @@
     "@mui/icons-material": "^7.2.0",
     "@mui/lab": "^7.0.0-beta.14",
     "@mui/material": "^7.2.0",
-    
     "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^6.12.0",
     "@supabase/supabase-js": "^2.52.0",
