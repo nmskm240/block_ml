@@ -4,7 +4,6 @@ export { DATAFRAME_FILTER } from './dataframe_filter';
 export { DATAFRAME_READ_CSV } from './dataframe_read_csv';
 export { DATAFRAME_SELECT_COLUMN } from './dataframe_select_column';
 export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
-export { DATAFRAME_COLUMNS_DROPDOWN } from './dataframe_columns_dropdown';
 
 export { EVENT_RUN_PROJECT } from './event_run_project';
 
