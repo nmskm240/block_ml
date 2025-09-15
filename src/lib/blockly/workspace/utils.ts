@@ -23,7 +23,6 @@ export function stripImports(
   for (const imp of imports) {
     const cleanImport = imp.trim();
     if (cleanImport) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (generator as any).definitions_[cleanImport] = cleanImport;
     }
   }

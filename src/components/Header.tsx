@@ -17,7 +17,7 @@ export function Header() {
             style={{ marginRight: '12px' }}
           />
           <Typography variant="h6" component="div">
-            Modulo blocks
+            Moduloxs
           </Typography>
         </Box>
         <AboutButton />
