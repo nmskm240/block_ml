@@ -4,9 +4,12 @@ import React, { useEffect } from 'react';
 
 import { pythonGenerator } from 'blockly/python';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import { useBlockly } from '@/lib/blockly';
+
+SyntaxHighlighter.registerLanguage('python', python);
 
 export function CodeViewer() {
   const { workspace } = useBlockly();
