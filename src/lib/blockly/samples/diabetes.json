@@ -1,0 +1,423 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "event_run_project",
+        "id": "3+SAUQ{=UHq#xI0s0koo",
+        "x": 224,
+        "y": 186,
+        "inputs": {
+          "DO": {
+            "block": {
+              "type": "variables_set",
+              "id": "/6yO(Zxzxm:%M7MheY)k",
+              "fields": {
+                "VAR": {
+                  "id": "^RqkU~:;@8}5z@#2MQn;"
+                }
+              },
+              "inputs": {
+                "VALUE": {
+                  "block": {
+                    "type": "sklearn_load_dataset",
+                    "id": "ExwU.[yK2)EwaV_l^Z4#",
+                    "fields": {
+                      "dataset": "diabetes"
+                    }
+                  }
+                }
+              },
+              "next": {
+                "block": {
+                  "type": "variables_set",
+                  "id": "#k~v=H;TXGvnUdQ|%0Xl",
+                  "fields": {
+                    "VAR": {
+                      "id": "66|g6(RTypboUeNE]?z~"
+                    }
+                  },
+                  "inputs": {
+                    "VALUE": {
+                      "block": {
+                        "type": "dataframe_select_column",
+                        "id": "%Ts[sCM||_t=v,:4Nd@F",
+                        "fields": {
+                          "df": {
+                            "id": "^RqkU~:;@8}5z@#2MQn;"
+                          }
+                        },
+                        "inputs": {
+                          "column": {
+                            "shadow": {
+                              "type": "text",
+                              "id": "504$OyJ]_8TmgYP@cmrE",
+                              "fields": {
+                                "TEXT": "target"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "next": {
+                    "block": {
+                      "type": "dataframe_drop_column",
+                      "id": "2aICev}*f@@nO{k.*/Rd",
+                      "fields": {
+                        "df": {
+                          "id": "^RqkU~:;@8}5z@#2MQn;"
+                        }
+                      },
+                      "inputs": {
+                        "columns": {
+                          "shadow": {
+                            "type": "text",
+                            "id": "POA,aC6jVmwft)xVoX~S",
+                            "fields": {
+                              "TEXT": "target"
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "variables_set",
+                          "id": "l2Q2I0:Ubd:]Iy`IJy9Q",
+                          "fields": {
+                            "VAR": {
+                              "id": "~c*pw*R{I9^u.Y.FFbp`"
+                            }
+                          },
+                          "inputs": {
+                            "VALUE": {
+                              "block": {
+                                "type": "variables_get",
+                                "id": "w!aGPdyhm]|EwF9NfF##",
+                                "fields": {
+                                  "VAR": {
+                                    "id": "^RqkU~:;@8}5z@#2MQn;"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "dataframe_train_test_split",
+                              "id": "3-c[cYn$hfGMhu*u7e]V",
+                              "fields": {
+                                "TEST_SIZE": 0.2,
+                                "RANDOM_STATE": 42,
+                                "X_TRAIN": {
+                                  "id": "%JJ01O]3dy(6?U,)OSf^"
+                                },
+                                "Y_TRAIN": {
+                                  "id": "OYa9!n(/iJEQAtN0VU~y"
+                                },
+                                "X_TEST": {
+                                  "id": "kxOB~QwA:CTR{mgYynjm"
+                                },
+                                "Y_TEST": {
+                                  "id": "vk5tkaUC51/:?s%m|{7+"
+                                }
+                              },
+                              "inputs": {
+                                "X": {
+                                  "shadow": {
+                                    "type": "variables_get",
+                                    "id": "Kk}3Be6Lj-z8AMjX4bTo",
+                                    "fields": {
+                                      "VAR": {
+                                        "id": "~c*pw*R{I9^u.Y.FFbp`",
+                                        "name": "X",
+                                        "type": ""
+                                      }
+                                    }
+                                  }
+                                },
+                                "Y": {
+                                  "shadow": {
+                                    "type": "variables_get",
+                                    "id": "EPd;4@un$oWKX62QnAbQ",
+                                    "fields": {
+                                      "VAR": {
+                                        "id": "66|g6(RTypboUeNE]?z~",
+                                        "name": "y",
+                                        "type": ""
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "variables_set",
+                                  "id": "e0f.qVZMfbx/5w)%b.IJ",
+                                  "fields": {
+                                    "VAR": {
+                                      "id": "08)A-I/x`]DM;@F7w4BJ"
+                                    }
+                                  },
+                                  "inputs": {
+                                    "VALUE": {
+                                      "block": {
+                                        "type": "sklearn_make_pipeline",
+                                        "id": "B([u3(3^l+1f]nNrPcj=",
+                                        "inputs": {
+                                          "STEPS": {
+                                            "shadow": {
+                                              "type": "lists_create_with",
+                                              "id": "%-(+y[wDEvSOrE|8{+Y7",
+                                              "extraState": {
+                                                "itemCount": 3
+                                              }
+                                            },
+                                            "block": {
+                                              "type": "lists_create_with",
+                                              "id": "N=baL)hj~#w*y{Kg~U[}",
+                                              "extraState": {
+                                                "itemCount": 2
+                                              },
+                                              "inputs": {
+                                                "ADD0": {
+                                                  "block": {
+                                                    "type": "sklearn_select_scaler",
+                                                    "id": "VB?CPP6h94Qxfq5^@LyU",
+                                                    "fields": {
+                                                      "type": "standard_scaler"
+                                                    }
+                                                  }
+                                                },
+                                                "ADD1": {
+                                                  "block": {
+                                                    "type": "sklearn_select_regression_model",
+                                                    "id": "MYsAHGuvjofV/#:fZknz",
+                                                    "fields": {
+                                                      "type": "linear_regression"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "sklearn_fit",
+                                      "id": "]z*h#~ZP`5AeVL)b?day",
+                                      "fields": {
+                                        "MODEL": {
+                                          "id": "08)A-I/x`]DM;@F7w4BJ"
+                                        }
+                                      },
+                                      "inputs": {
+                                        "X_DATA": {
+                                          "shadow": {
+                                            "type": "variables_get",
+                                            "id": "9DaW}#q;#TI//km^$10)",
+                                            "fields": {
+                                              "VAR": {
+                                                "id": "%JJ01O]3dy(6?U,)OSf^",
+                                                "name": "X_train",
+                                                "type": ""
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "Y_DATA": {
+                                          "shadow": {
+                                            "type": "variables_get",
+                                            "id": "uD7AB}O=I{`C*IiAz^)b",
+                                            "fields": {
+                                              "VAR": {
+                                                "id": "OYa9!n(/iJEQAtN0VU~y",
+                                                "name": "y_train",
+                                                "type": ""
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "next": {
+                                        "block": {
+                                          "type": "variables_set",
+                                          "id": "x,LmwD@V-T7n~i0)[2N2",
+                                          "fields": {
+                                            "VAR": {
+                                              "id": "Ft~9+VgOu]eK3,yWk+}q"
+                                            }
+                                          },
+                                          "inputs": {
+                                            "VALUE": {
+                                              "block": {
+                                                "type": "sklearn_predict",
+                                                "id": "8sN`Nz.pmFDrX{Xs9JL}",
+                                                "fields": {
+                                                  "MODEL": {
+                                                    "id": "08)A-I/x`]DM;@F7w4BJ"
+                                                  }
+                                                },
+                                                "inputs": {
+                                                  "X": {
+                                                    "shadow": {
+                                                      "type": "variables_get",
+                                                      "id": "}s0.]kE2s*hwkwWy|w8#",
+                                                      "fields": {
+                                                        "VAR": {
+                                                          "id": "kxOB~QwA:CTR{mgYynjm",
+                                                          "name": "X_test",
+                                                          "type": ""
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "next": {
+                                            "block": {
+                                              "type": "text_print",
+                                              "id": "q_T+]=vnrSJ-Net2dsQ1",
+                                              "inputs": {
+                                                "TEXT": {
+                                                  "block": {
+                                                    "type": "sklearn_get_regression_metric",
+                                                    "id": "^41D[Y]$~@HZ[.[-9nMg",
+                                                    "fields": {
+                                                      "METRIC": "mean_squared_error"
+                                                    },
+                                                    "inputs": {
+                                                      "Y_TRUE": {
+                                                        "block": {
+                                                          "type": "variables_get",
+                                                          "id": "WF4:=D7pyRm/[03cVW9k",
+                                                          "fields": {
+                                                            "VAR": {
+                                                              "id": "vk5tkaUC51/:?s%m|{7+"
+                                                            }
+                                                          }
+                                                        }
+                                                      },
+                                                      "Y_PRED": {
+                                                        "block": {
+                                                          "type": "variables_get",
+                                                          "id": "Cz@XX44.,JWR|pcAl_Nj",
+                                                          "fields": {
+                                                            "VAR": {
+                                                              "id": "Ft~9+VgOu]eK3,yWk+}q"
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              },
+                                              "next": {
+                                                "block": {
+                                                  "type": "text_print",
+                                                  "id": "=Gs)eJTdE;_Jt#l@bwUv",
+                                                  "inputs": {
+                                                    "TEXT": {
+                                                      "block": {
+                                                        "type": "sklearn_get_regression_metric",
+                                                        "id": "{MKjPc#z}gXt17o0vHyK",
+                                                        "fields": {
+                                                          "METRIC": "r2_score"
+                                                        },
+                                                        "inputs": {
+                                                          "Y_TRUE": {
+                                                            "block": {
+                                                              "type": "variables_get",
+                                                              "id": "hP/6PI)q1`l5C07QB#~|",
+                                                              "fields": {
+                                                                "VAR": {
+                                                                  "id": "vk5tkaUC51/:?s%m|{7+"
+                                                                }
+                                                              }
+                                                            }
+                                                          },
+                                                          "Y_PRED": {
+                                                            "block": {
+                                                              "type": "variables_get",
+                                                              "id": "qIqy()(BLZay}PAAo`)@",
+                                                              "fields": {
+                                                                "VAR": {
+                                                                  "id": "Ft~9+VgOu]eK3,yWk+}q"
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "variables": [
+    {
+      "name": "df",
+      "id": "^RqkU~:;@8}5z@#2MQn;"
+    },
+    {
+      "name": "X",
+      "id": "~c*pw*R{I9^u.Y.FFbp`"
+    },
+    {
+      "name": "y",
+      "id": "66|g6(RTypboUeNE]?z~"
+    },
+    {
+      "name": "X_train",
+      "id": "%JJ01O]3dy(6?U,)OSf^"
+    },
+    {
+      "name": "y_train",
+      "id": "OYa9!n(/iJEQAtN0VU~y"
+    },
+    {
+      "name": "X_test",
+      "id": "kxOB~QwA:CTR{mgYynjm"
+    },
+    {
+      "name": "y_test",
+      "id": "vk5tkaUC51/:?s%m|{7+"
+    },
+    {
+      "name": "pipeline",
+      "id": "08)A-I/x`]DM;@F7w4BJ"
+    },
+    {
+      "name": "y_pred",
+      "id": "Ft~9+VgOu]eK3,yWk+}q"
+    }
+  ]
+}

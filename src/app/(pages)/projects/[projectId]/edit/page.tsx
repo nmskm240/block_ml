@@ -6,6 +6,7 @@ import { ProjectAssets } from '@/components/project';
 import {
   AddProjectAssetButton,
   Editor,
+  SampleProjectLoader,
 } from '@/features/editProject/components';
 import { ExportButton } from '@/features/exportProject/components';
 import { ImportButton } from '@/features/importProject/components';
@@ -49,6 +50,7 @@ export default async function ProjectEditPage(props: {
           <RunProjectButton />
           <ImportButton />
           <ExportButton />
+          <SampleProjectLoader />
         </Box>
         <div style={{ flexGrow: 1, minHeight: 0 }}>
           <Editor />
