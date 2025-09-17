@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { Box, Card, CardContent, CardHeader, Divider } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { ProjectAssets } from '@/components/project';
 import {
   AddProjectAssetButton,
   Editor,
-  SaveProjectButton,
 } from '@/features/editProject/components';
+import { ExportButton } from '@/features/exportProject/components';
 import { Inspector } from '@/features/inspectProject/components';
 import { RunProjectButton } from '@/features/runProject/components';
 
@@ -46,7 +46,7 @@ export default async function ProjectEditPage(props: {
           }}
         >
           <RunProjectButton />
-          <SaveProjectButton projectId={projectId} />
+          <ExportButton />
         </Box>
         <div style={{ flexGrow: 1, minHeight: 0 }}>
           <Editor />
