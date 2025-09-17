@@ -8,6 +8,7 @@ import {
   Editor,
 } from '@/features/editProject/components';
 import { ExportButton } from '@/features/exportProject/components';
+import { ImportButton } from '@/features/importProject/components';
 import { Inspector } from '@/features/inspectProject/components';
 import { RunProjectButton } from '@/features/runProject/components';
 
@@ -46,6 +47,7 @@ export default async function ProjectEditPage(props: {
           }}
         >
           <RunProjectButton />
+          <ImportButton />
           <ExportButton />
         </Box>
         <div style={{ flexGrow: 1, minHeight: 0 }}>
