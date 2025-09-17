@@ -52,7 +52,9 @@ export enum SklearnRegressionMetricType {
 }
 
 export enum SklearnDatasets {
+  Diabetes = 'diabetes',
   Iris = 'iris',
+  Linnerud = 'linnerud',
   Wine = 'wine',
 }
 
