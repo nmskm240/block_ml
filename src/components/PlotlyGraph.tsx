@@ -2,9 +2,11 @@
 
 import React from 'react';
 
-import Plot from 'react-plotly.js';
+import dynamic from 'next/dynamic';
 
 import { PlotlyFigure } from '@/lib/plotly/types';
+
+const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 type Props = {
   figure: PlotlyFigure;
