@@ -1,6 +1,8 @@
 export { DATAFRAME_DROP_COLUMN } from './dataframe_drop_column';
+export { DATAFRAME_CREATE, DATAFRAME_COLUMN } from './dataframe_create';
 export { DATAFRAME_FILL_MISSING } from './dataframe_fill_missing';
 export { DATAFRAME_FILTER } from './dataframe_filter';
+export { DATAFRAME_GET_COLUMNS } from './dataframe_get_columns';
 export { DATAFRAME_READ_CSV } from './dataframe_read_csv';
 export { DATAFRAME_SELECT_COLUMN } from './dataframe_select_column';
 export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
@@ -15,6 +17,7 @@ export { SKLEARN_CUSTOM_TRANSFORMER_DEF } from './sklearn_custom_transformer_def
 export { SKLEARN_FIT } from './sklearn_fit';
 export { SKLEARN_GET_CLASSIFICATION_METRIC } from './sklearn_get_classification_metric';
 export { SKLEARN_GET_REGRESSION_METRIC } from './sklearn_get_regression_metric';
+export { SKLEARN_GET_FEATURE_IMPORTANCE } from './sklearn_get_feature_importance';
 export { SKLEARN_LOAD_DATASET } from './sklearn_load_dataset';
 export { SKLEARN_MAKE_PIPELINE } from './sklearn_make_pipeline';
 export { SKLEARN_PREDICT } from './sklearn_predict';

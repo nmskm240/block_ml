@@ -21,7 +21,8 @@ export function CodeViewer() {
     const generateCode = () => {
       const rawCode = pythonGenerator.workspaceToCode(workspace);
       // デバッグ用のコメントを正規表現で削除
-      const cleanCode = rawCode.replace(/# block_id:'(.*)'\n/g, '');
+      const cleanCode = rawCode.replace(/^\s*# block_id:'.*'\s*$\n/gm, '')
+        .replace(/# block_id:'.*'/g, '');
       setCode(cleanCode);
     };
 

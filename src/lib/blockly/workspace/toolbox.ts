@@ -112,7 +112,10 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       name: 'DataFrame',
       colour: '210',
       contents: [
+        { kind: 'block', type: blocks.DATAFRAME_CREATE },
+        { kind: 'block', type: blocks.DATAFRAME_COLUMN },
         { kind: 'block', type: blocks.DATAFRAME_READ_CSV },
+        { kind: 'block', type: blocks.DATAFRAME_GET_COLUMNS },
         {
           kind: 'block',
           type: blocks.DATAFRAME_DROP_COLUMN,
@@ -197,6 +200,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: 'label', text: '評価' },
         { kind: 'block', type: blocks.SKLEARN_GET_CLASSIFICATION_METRIC },
         { kind: 'block', type: blocks.SKLEARN_GET_REGRESSION_METRIC },
+        { kind: 'block', type: blocks.SKLEARN_GET_FEATURE_IMPORTANCE },
       ],
     },
   ],
