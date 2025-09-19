@@ -16,6 +16,16 @@ Blockly.Blocks[EVENT_RUN_PROJECT] = {
     this.setPreviousStatement(false);
     this.setNextStatement(false);
   },
+  onchange: function (this: Blockly.Block, event: Blockly.Events.BlockCreate) {
+    if (!this.workspace || !event.blockId) {
+      return;
+    }
+
+    const blocks = this.workspace.getBlocksByType(EVENT_RUN_PROJECT, false);
+    if (blocks.length > 1) {
+      this.workspace.getBlockById(event.blockId)?.dispose();
+    }
+  },
 };
 
 pythonGenerator.forBlock['event_run_project'] = (block, generator) => {
