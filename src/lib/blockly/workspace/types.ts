@@ -4,6 +4,7 @@ export enum VariableTypes {
   Boolean = 'Boolean',
   Array = 'Array',
   Dataframe = 'Dataframe',
+  DataFrameColumn = "DataframeColumn",
   Model = 'Model',
   Transformer = 'Transformer',
   Pipeline = 'Pipeline',

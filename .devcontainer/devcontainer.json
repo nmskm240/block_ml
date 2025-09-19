@@ -26,7 +26,8 @@
         "Supabase.vscode-supabase-extension",
         "Gruntfuggly.todo-tree",
         "Orta.vscode-jest",
-        "jebbs.plantuml"
+        "jebbs.plantuml",
+        "ms-python.black-formatter"
       ]
     }
   },
