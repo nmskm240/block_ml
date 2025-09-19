@@ -63,7 +63,7 @@ export default function PyodideFileExplore() {
       }}
     >
       <CardHeader
-        title="ファイル"
+        title="Files"
         action={
           <Tooltip title="CSVファイルを追加">
             <label htmlFor="file-upload">
