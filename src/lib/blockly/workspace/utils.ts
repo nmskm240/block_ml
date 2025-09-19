@@ -1,8 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as Blockly from "blockly/core";
+import * as Blockly from 'blockly/core';
 import { PythonGenerator } from 'blockly/python';
 
 const SEPARATOR = '# --- BLOCKLY TEMPLATE ---';
+const FUNCTION_START = '# --- BLOCKLY FUNC ---';
+const FUNCTION_END = '# --- BLOCKLY FUNC END ---';
+
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function splitFunctions(script: string) {
+  const regexp = new RegExp(
+    `${escapeRegExp(FUNCTION_START)}[\\s\\S]*?${escapeRegExp(FUNCTION_END)}`,
+    'g',
+  );
+  const matches = script.match(regexp) || [];
+  const funcs = matches.map((m) =>
+    m.replace(FUNCTION_START, '').replace(FUNCTION_END, '').trim(),
+  );
+
+  let usage = script;
+  for (const m of matches) {
+    usage = usage.replace(m, '');
+  }
+
+  return { funcs, usage };
+}
 
 /**
  * テンプレートを処理し、ヘッダーからimportを登録し、テンプレート本体を返します。
@@ -50,7 +74,10 @@ export function applyPlaceholders(
   return result;
 }
 
-export function createShadowBlock(type: string, fields: Record<string, any> = {}) {
+export function createShadowBlock(
+  type: string,
+  fields: Record<string, any> = {},
+) {
   const shadow = Blockly.utils.xml.createElement('shadow');
   shadow.setAttribute('type', type);
 
