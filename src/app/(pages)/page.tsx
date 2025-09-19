@@ -1,10 +1,16 @@
+import React from 'react';
+
 import { Box } from '@mui/material';
 
-import { Editor } from '@/features/editProject/components';
+import { Editor, SampleProjectLoader } from '@/features/editProject/components';
+import { ExportButton } from '@/features/exportProject/components';
+import { ImportButton } from '@/features/importProject/components';
+import PyodideFileExplore from '@/features/inspectAsset/components/PyodideFileExplore';
 import { Inspector } from '@/features/inspectProject/components';
 import { RunProjectButton } from '@/features/runProject/components';
 
-export default function IndexPage() {
+
+export default async function ProjectEditPage() {
   return (
     <div
       style={{
@@ -31,6 +37,9 @@ export default function IndexPage() {
           }}
         >
           <RunProjectButton />
+          <ImportButton />
+          <ExportButton />
+          <SampleProjectLoader />
         </Box>
         <div style={{ flexGrow: 1, minHeight: 0 }}>
           <Editor />
@@ -51,12 +60,22 @@ export default function IndexPage() {
       >
         <div
           style={{
-            flexGrow: 1,
-            height: '100%',
+            flexGrow: 3,
+            height: 0,
             minHeight: 0,
           }}
         >
           <Inspector />
+        </div>
+        <div
+          style={{
+            flexGrow: 1,
+            height: 0,
+            minHeight: 0,
+            padding: '8px',
+          }}
+        >
+          <PyodideFileExplore />
         </div>
       </div>
     </div>

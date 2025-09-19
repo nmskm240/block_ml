@@ -60,10 +60,10 @@ pythonGenerator.forBlock[DATAFRAME_TRAIN_TEST_SPLIT] = (block, generator) => {
     __BLOCKLY_Y__: y,
     __BLOCKLY_TEST_SIZE__: testSize,
     __BLOCKLY_RANDOM_STATE__: randomState,
-    __BLOCKLY_X_TRAIN_VAR__: xTrainVar,
-    __BLOCKLY_X_TEST_VAR__: xTestVar,
-    __BLOCKLY_Y_TRAIN_VAR__: yTrainVar,
-    __BLOCKLY_Y_TEST_VAR__: yTestVar,
+    __BLOCKLY_X_TRAIN__: xTrainVar,
+    __BLOCKLY_X_TEST__: xTestVar,
+    __BLOCKLY_Y_TRAIN__: yTrainVar,
+    __BLOCKLY_Y_TEST__: yTestVar,
   });
 
   return `${code}\n`;

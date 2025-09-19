@@ -1,6 +1,3 @@
-import 'reflect-metadata';
-import '@/lib/di/registry';
-
 import React from 'react';
 
 import '@/styles/globals.css';
@@ -15,18 +12,16 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <PyodideProvider>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100vh',
-            }}
-          >
-            <Header />
-            {children}
-          </div>
-        </PyodideProvider>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh',
+          }}
+        >
+          <Header />
+          <PyodideProvider>{children}</PyodideProvider>
+        </div>
       </body>
     </html>
   );

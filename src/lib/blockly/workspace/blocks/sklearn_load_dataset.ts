@@ -5,7 +5,9 @@ import { match } from 'ts-pattern';
 import { SklearnDatasetDropdown } from '../fields';
 import { SklearnDatasets, VariableTypes } from '../types';
 import { applyPlaceholders, stripImports } from '../utils';
+import diabetsTemplate from './template/sklearn_load_dataset/diabetes.py';
 import irisTemplate from './template/sklearn_load_dataset/iris.py';
+import linnerudTemplate from './template/sklearn_load_dataset/linnerud.py';
 import wineTemplate from './template/sklearn_load_dataset/wine.py';
 
 export const SKLEARN_LOAD_DATASET = 'sklearn_load_dataset';
@@ -25,7 +27,9 @@ Blockly.Blocks[SKLEARN_LOAD_DATASET] = {
 pythonGenerator.forBlock[SKLEARN_LOAD_DATASET] = (block, generator) => {
   const dataset = block.getFieldValue('dataset') as SklearnDatasets;
   const template = match(dataset)
+    .with(SklearnDatasets.Diabetes, () => diabetsTemplate)
     .with(SklearnDatasets.Iris, () => irisTemplate)
+    .with(SklearnDatasets.Linnerud, () => linnerudTemplate)
     .with(SklearnDatasets.Wine, () => wineTemplate)
     .exhaustive();
 

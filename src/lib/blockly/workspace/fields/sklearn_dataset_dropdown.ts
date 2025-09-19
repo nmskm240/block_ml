@@ -5,7 +5,9 @@ import { SklearnDatasets } from '../types';
 export class SklearnDatasetDropdown extends Blockly.FieldDropdown {
   constructor() {
     super([
+      ['Diabetes', SklearnDatasets.Diabetes],
       ['Iris', SklearnDatasets.Iris],
+      ['Linnerud', SklearnDatasets.Linnerud],
       ['Wine', SklearnDatasets.Wine],
     ]);
   }

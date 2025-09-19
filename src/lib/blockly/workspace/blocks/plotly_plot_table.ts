@@ -33,5 +33,5 @@ pythonGenerator.forBlock[PLOTLY_PLOT_TABLE] = (block, generator) => {
     __BLOCKLY_title__: `'${title}'`,
     __BLOCKLY_column_size__: COLUMN_SIZE.toString(),
   });
-  return code;
+  return `${code}\n`;
 };
