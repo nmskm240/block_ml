@@ -38,7 +38,7 @@ pythonGenerator.forBlock[SKLEARN_CUSTOM_TRANSFORMER_DEF] = (
   const code = applyPlaceholders(body, {
     __BLOCKLY_func_name__: generator.FUNCTION_NAME_PLACEHOLDER_,
     __BLOCKLY_x__: x,
-    __BLOCKLY_statement_body__: statementBody,
+    __BLOCKLY_statement_body__: statementBody || "pass",
   });
   generator.provideFunction_(name, code);
   return null;
