@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
 import { Workspace } from 'blockly';
-import { pythonGenerator } from 'blockly/python';
 
 import { usePyodide } from '@/lib/pyodide';
-
-// 各ステートメントの前にブロックIDをコメントとして挿入する
-pythonGenerator.STATEMENT_PREFIX = '# block_id:%1\n';
+import {
+  pythonGenerator,
+  WorkspaceToCodeOptions,
+} from '@/lib/blockly/python/generator';
+import { GenerationMode } from '@/lib/blockly/python/generationContext';
 
 export function usePythonRunner() {
   const { pyodideRef, logService, fs } = usePyodide();
@@ -24,7 +25,9 @@ export function usePythonRunner() {
     logService?.clear();
 
     try {
-      const code = pythonGenerator.workspaceToCode(workspace);
+      const code = pythonGenerator.workspaceToCode(workspace, {
+        mode: GenerationMode.ForRunning,
+      });
       await pyodideRef.current?.runPythonAsync(code);
     } catch (e) {
       setError(e as Error);

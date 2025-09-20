@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 
-import { pythonGenerator } from 'blockly/python';
+import { pythonGenerator } from '@/lib/blockly/python/generator';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -20,10 +20,7 @@ export function CodeViewer() {
 
     const generateCode = () => {
       const rawCode = pythonGenerator.workspaceToCode(workspace);
-      // デバッグ用のコメントを正規表現で削除
-      const cleanCode = rawCode.replace(/^\s*# block_id:'.*'\s*$\n/gm, '')
-        .replace(/# block_id:'.*'/g, '');
-      setCode(cleanCode);
+      setCode(rawCode);
     };
 
     // ワークスペースの変更をリッスンしてコードを再生成
