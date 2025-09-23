@@ -114,6 +114,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       contents: [
         { kind: 'block', type: blocks.DATAFRAME_CREATE },
         { kind: 'block', type: blocks.DATAFRAME_COLUMN },
+        { kind: 'block', type: blocks.DATAFRAME_TO_CSV },
         { kind: 'block', type: blocks.DATAFRAME_READ_CSV },
         { kind: 'block', type: blocks.DATAFRAME_GET_COLUMNS },
         {
@@ -149,7 +150,8 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
             },
           },
         },
-        { kind: 'block', type: blocks.DATAFRAME_FILL_MISSING },
+        // MEMO: 欠損値補完をsklearn_select_imputerに移管したため封鎖
+        // { kind: 'block', type: blocks.DATAFRAME_FILL_MISSING, disabled: true },
         { kind: 'block', type: blocks.PLOTLY_PLOT_GRAPH },
         { kind: 'block', type: blocks.PLOTLY_PLOT_TABLE },
       ],
@@ -168,12 +170,16 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: 'label', text: '前処理' },
         { kind: 'block', type: blocks.SKLEARN_SELECT_ENCODER },
         { kind: 'block', type: blocks.SKLEARN_SELECT_SCALER },
+        { kind: 'block', type: blocks.SKLEARN_SELECT_IMPUTER },
         // { kind: 'block', type: blocks.SKLEARN_SELECT_NORMALIZER },
         // { kind: 'block', type: blocks.SKLEARN_SELECT_DISCRETIZER },
 
         { kind: 'sep' },
 
         { kind: 'label', text: '特徴量変換' },
+        { kind: 'block', type: blocks.SKLEARN_COLUMN_TRANSFORMER },
+        { kind: 'block', type: blocks.SKLEARN_COLUMN_TRANSFORMER_ITEM_COLUMN },
+        { kind: 'block', type: blocks.SKLEARN_COLUMN_TRANSFORMER_ITEM_DTYPE },
         { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER_DEF },
         { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER },
         { kind: 'block', type: blocks.SKLEARN_TRANSFORM },

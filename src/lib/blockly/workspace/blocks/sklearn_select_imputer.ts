@@ -7,32 +7,28 @@ import {
   applyPlaceholders as replacePlaceholders,
   stripImports,
 } from '../utils';
-import template from './template/dataframe_fill_missing.py';
+import template from './template/sklearn_select_imputer.py';
 
-export const DATAFRAME_FILL_MISSING = 'dataframe_fill_missing';
+export const SKLEARN_SELECT_IMPUTER = 'sklearn_select_imputer';
 
-Blockly.Blocks[DATAFRAME_FILL_MISSING] = {
+Blockly.Blocks[SKLEARN_SELECT_IMPUTER] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('DataFrame')
-      .appendField(new Blockly.FieldVariable('df'), 'df')
-      .appendField('の欠損値を')
+      .appendField('欠損値を')
       .appendField(new FillMissingStrategyDropdown(), 'strategy')
       .appendField('で補完する');
-    this.setOutput(true, VariableTypes.Dataframe);
-    this.setColour(210);
-    this.setTooltip('指定したデータフレームの欠損値を補完します。');
+    this.setOutput(true, VariableTypes.Transformer);
+    this.setColour(200);
+    this.setTooltip('欠損値を補完します。');
     this.setHelpUrl('');
   },
 };
 
-pythonGenerator.forBlock[DATAFRAME_FILL_MISSING] = (block, generator) => {
-  const df = block.getField('df')?.getText() || 'df';
+pythonGenerator.forBlock[SKLEARN_SELECT_IMPUTER] = (block, generator) => {
   const strategy = block.getFieldValue('strategy');
   const body = stripImports(template, generator);
   const code = replacePlaceholders(body, {
-    __BLOCKLY_df__: df,
-    __BLOCKLY_strategy__: strategy,
+    __BLOCKLY_STRATEGY__: strategy,
   });
   return [code, Order.FUNCTION_CALL];
 };
