@@ -18,6 +18,7 @@
     "@blockly/disable-top-blocks": "^0.6.2",
     "@blockly/field-date": "^10.0.2",
     "@blockly/plugin-typed-variable-modal": "^9.0.1",
+    "@blockly/theme-dark": "^8.0.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.1",

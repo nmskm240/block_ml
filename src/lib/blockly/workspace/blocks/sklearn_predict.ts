@@ -22,9 +22,8 @@ Blockly.Blocks[SKLEARN_PREDICT] = {
       .appendField('特徴量')
       .setCheck(VariableTypes.Dataframe)
       .setShadowDom(createShadowBlock('variables_get', { VAR: 'X' }));
-    this.appendDummyInput()
-      .appendField("から予測する")
-    this.setOutput(true, VariableTypes.Dataframe);
+    this.appendDummyInput().appendField('から予測する');
+    this.setOutput(true);
     this.setInputsInline(true);
     this.setColour(220);
     this.setTooltip('学習済みの学習器を使用して予測を行います。');

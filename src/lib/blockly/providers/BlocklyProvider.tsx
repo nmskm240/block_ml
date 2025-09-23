@@ -9,8 +9,11 @@ import React, {
 } from 'react';
 
 import { DisableTopBlocks } from '@blockly/disable-top-blocks';
+import DarkTheme from '@blockly/theme-dark';
 import * as Blockly from 'blockly/core';
 import * as ja from 'blockly/msg/ja';
+
+import { useTheme } from '@/contexts/ThemeContext';
 
 import {
   BlocklyWorkspaceAdditionalParams,
@@ -40,6 +43,7 @@ export function BlocklyProvider({
 }: Props) {
   const blocklyDivRef = useRef<HTMLDivElement>(null);
   const [workspace, setWorkspace] = useState<Blockly.WorkspaceSvg | null>(null);
+  const { themeMode } = useTheme();
 
   useEffect(() => {
     if (!blocklyDivRef.current) {
@@ -49,6 +53,7 @@ export function BlocklyProvider({
     Blockly.setLocale(ja as any);
     const ws = Blockly.inject(blocklyDivRef.current, {
       toolbox: toolbox,
+      theme: themeMode === 'dark' ? DarkTheme : Blockly.Themes.Classic,
       trashcan: false,
       grid: {
         spacing: 20,
@@ -88,7 +93,14 @@ export function BlocklyProvider({
     return () => {
       ws.dispose();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialState, workspaceParams, toolbox]);
+
+  useEffect(() => {
+    if (workspace) {
+      workspace.setTheme(themeMode === 'dark' ? DarkTheme : Blockly.Themes.Classic);
+    }
+  }, [themeMode, workspace]);
 
   const value = useMemo<Context>(
     () => ({
