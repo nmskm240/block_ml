@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
-import { createTheme, ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
+
+import { createTheme, ThemeProvider as MuiThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
 
 import '@/styles/globals.css';
 import { Header } from '@/components';
-import { PyodideProvider } from '@/lib/pyodide';
 import { AppThemeProvider, useTheme } from '@/contexts/ThemeContext';
+import { PyodideProvider } from '@/lib/pyodide';
 
 function App({ children }: { children: React.ReactNode }) {
   const { themeMode } = useTheme();
@@ -17,6 +18,18 @@ function App({ children }: { children: React.ReactNode }) {
         palette: {
           mode: themeMode,
         },
+        components: {
+          MuiCardHeader: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                backgroundColor:
+                  theme.palette.mode === 'light'
+                    ? theme.palette.grey[100]
+                    : theme.palette.grey[800],
+              }),
+            },
+          },
+        },
       }),
     [themeMode]
   );
@@ -24,6 +37,13 @@ function App({ children }: { children: React.ReactNode }) {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
+      <GlobalStyles
+        styles={{
+          body: {
+            '--divider-color': theme.palette.divider,
+          },
+        }}
+      />
       <div
         style={{
           display: 'flex',
