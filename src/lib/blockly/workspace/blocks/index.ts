@@ -1,5 +1,5 @@
+export { DATAFRAME_COLUMN, DATAFRAME_CREATE } from './dataframe_create';
 export { DATAFRAME_DROP_COLUMN } from './dataframe_drop_column';
-export { DATAFRAME_CREATE, DATAFRAME_COLUMN } from './dataframe_create';
 export { DATAFRAME_FILL_MISSING } from './dataframe_fill_missing';
 export { DATAFRAME_FILTER } from './dataframe_filter';
 export { DATAFRAME_GET_COLUMNS } from './dataframe_get_columns';
@@ -32,4 +32,6 @@ export { SKLEARN_SELECT_ENCODER } from './sklearn_select_encoder';
 export { SKLEARN_SELECT_NORMALIZER } from './sklearn_select_normalizer';
 export { SKLEARN_SELECT_REGRESSION_MODEL } from './sklearn_select_regression_model';
 export { SKLEARN_SELECT_SCALER } from './sklearn_select_scaler';
+export { SKLEARN_SELECT_IMPUTER } from './sklearn_select_imputer';
 export { SKLEARN_TRANSFORM } from './sklearn_transform';
+
