@@ -5,7 +5,7 @@ import { SklearnEncoderType } from '../types';
 export class SklearnEncoderDropdown extends Blockly.FieldDropdown {
   constructor() {
     super([
-      ['LabelEncoder', SklearnEncoderType.LabelEncoder],
+      // ['LabelEncoder', SklearnEncoderType.LabelEncoder],
       ['OneHotEncoder', SklearnEncoderType.OneHotEncoder],
     ]);
   }
