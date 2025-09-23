@@ -2,4 +2,4 @@ from sklearn.preprocessing import OneHotEncoder
 
 # --- BLOCKLY TEMPLATE ---
 
-OneHotEncoder()
+OneHotEncoder(handle_unknown="ignore")
