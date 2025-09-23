@@ -9,7 +9,7 @@ import { usePyodide } from '@/lib/pyodide';
 pythonGenerator.STATEMENT_PREFIX = '# block_id:%1\n';
 
 export function usePythonRunner() {
-  const { pyodideRef, logService } = usePyodide();
+  const { pyodideRef, logService, fs } = usePyodide();
   const [error, setError] = useState<Error | null>(null);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -65,6 +65,8 @@ export function usePythonRunner() {
       }
     } finally {
       setIsRunning(false);
+      // ファイル作成の可能性があるため更新
+      await fs?.uploads([]);
     }
   };
 
