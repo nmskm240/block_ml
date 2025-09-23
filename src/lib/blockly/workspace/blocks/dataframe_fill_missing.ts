@@ -32,7 +32,7 @@ pythonGenerator.forBlock[DATAFRAME_FILL_MISSING] = (block, generator) => {
   const body = stripImports(template, generator);
   const code = replacePlaceholders(body, {
     __BLOCKLY_df__: df,
-    __BLOCKLY_strategy__: `'${strategy}'`,
+    __BLOCKLY_strategy__: strategy,
   });
   return [code, Order.FUNCTION_CALL];
 };
