@@ -114,6 +114,7 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       contents: [
         { kind: 'block', type: blocks.DATAFRAME_CREATE },
         { kind: 'block', type: blocks.DATAFRAME_COLUMN },
+        { kind: 'block', type: blocks.DATAFRAME_TO_CSV },
         { kind: 'block', type: blocks.DATAFRAME_READ_CSV },
         { kind: 'block', type: blocks.DATAFRAME_GET_COLUMNS },
         {

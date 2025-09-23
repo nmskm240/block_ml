@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { Delete, FileUpload } from '@mui/icons-material';
+import { Delete, Download, FileUpload } from '@mui/icons-material';
 import {
   Card,
   CardContent,
@@ -33,6 +33,18 @@ export default function PyodideFileExplore() {
     refreh();
   }, [refreh]);
 
+  useEffect(() => {
+    if (!fs) return;
+    refreh();
+    const unsub = fs.subscribe?.('change', () => {
+      refreh();
+    });
+
+    return () => {
+      unsub?.();
+    };
+  }, [fs, refreh]);
+
   const onClickFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!fs || !e.target.files) {
       return;
@@ -49,6 +61,30 @@ export default function PyodideFileExplore() {
 
     await fs.remove(fileName);
     await refreh();
+  };
+
+  const onDownloadFile = async (fileName: string) => {
+    if (!fs) {
+      return;
+    }
+
+    try {
+      const file = (await fs.listFiles()).find((x) => x.name === fileName);
+      if (!file) {
+        return;
+      }
+      const blob = new Blob([file], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Error downloading file:', e);
+    }
   };
 
   return (
@@ -94,14 +130,24 @@ export default function PyodideFileExplore() {
               <React.Fragment key={index}>
                 <ListItem
                   secondaryAction={
-                    <Tooltip title="ファイルを削除">
-                      <IconButton
-                        edge="end"
-                        onClick={() => onRemoveFile(fileName)}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </Tooltip>
+                    <>
+                      <Tooltip title="ファイルをダウンロード">
+                        <IconButton
+                          edge="end"
+                          onClick={() => onDownloadFile(fileName)}
+                        >
+                          <Download />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="ファイルを削除">
+                        <IconButton
+                          edge="end"
+                          onClick={() => onRemoveFile(fileName)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                    </>
                   }
                 >
                   <ListItemText primary={fileName} />

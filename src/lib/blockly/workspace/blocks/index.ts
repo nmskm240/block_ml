@@ -5,6 +5,7 @@ export { DATAFRAME_FILTER } from './dataframe_filter';
 export { DATAFRAME_GET_COLUMNS } from './dataframe_get_columns';
 export { DATAFRAME_READ_CSV } from './dataframe_read_csv';
 export { DATAFRAME_SELECT_COLUMN } from './dataframe_select_column';
+export { DATAFRAME_TO_CSV } from './dataframe_to_csv';
 export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
 
 export { EVENT_RUN_PROJECT } from './event_run_project';
