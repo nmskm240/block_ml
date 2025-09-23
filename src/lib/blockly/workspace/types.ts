@@ -4,7 +4,7 @@ export enum VariableTypes {
   Boolean = 'Boolean',
   Array = 'Array',
   Dataframe = 'Dataframe',
-  DataFrameColumn = "DataframeColumn",
+  DataFrameColumn = 'DataframeColumn',
   Model = 'Model',
   Transformer = 'Transformer',
   Pipeline = 'Pipeline',
@@ -73,4 +73,11 @@ export enum PlotlyGraphHistfuncType {
   Avg = 'avg',
   Min = 'min',
   Max = 'max',
+}
+
+export enum DataframeColumnDtype {
+  Int = 'int',
+  Float = 'float',
+  Bool = 'bool',
+  Object = 'object',
 }

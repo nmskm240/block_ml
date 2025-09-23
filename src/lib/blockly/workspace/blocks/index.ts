@@ -12,12 +12,17 @@ export { EVENT_RUN_PROJECT } from './event_run_project';
 export { PLOTLY_PLOT_GRAPH } from './plotly_plot_graph';
 export { PLOTLY_PLOT_TABLE } from './plotly_plot_table';
 
+export {
+  SKLEARN_COLUMN_TRANSFORMER,
+  SKLEARN_COLUMN_TRANSFORMER_ITEM_COLUMN,
+  SKLEARN_COLUMN_TRANSFORMER_ITEM_DTYPE
+} from './sklearn_column_transformer';
 export { SKLEARN_CUSTOM_TRANSFORMER } from './sklearn_custom_transformer';
 export { SKLEARN_CUSTOM_TRANSFORMER_DEF } from './sklearn_custom_transformer_def';
 export { SKLEARN_FIT } from './sklearn_fit';
 export { SKLEARN_GET_CLASSIFICATION_METRIC } from './sklearn_get_classification_metric';
-export { SKLEARN_GET_REGRESSION_METRIC } from './sklearn_get_regression_metric';
 export { SKLEARN_GET_FEATURE_IMPORTANCE } from './sklearn_get_feature_importance';
+export { SKLEARN_GET_REGRESSION_METRIC } from './sklearn_get_regression_metric';
 export { SKLEARN_LOAD_DATASET } from './sklearn_load_dataset';
 export { SKLEARN_MAKE_PIPELINE } from './sklearn_make_pipeline';
 export { SKLEARN_PREDICT } from './sklearn_predict';

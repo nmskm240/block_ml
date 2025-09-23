@@ -174,6 +174,9 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: 'sep' },
 
         { kind: 'label', text: '特徴量変換' },
+{ kind: 'block', type: blocks.SKLEARN_COLUMN_TRANSFORMER },
+        { kind: 'block', type: blocks.SKLEARN_COLUMN_TRANSFORMER_ITEM_COLUMN },
+        { kind: 'block', type: blocks.SKLEARN_COLUMN_TRANSFORMER_ITEM_DTYPE },
         { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER_DEF },
         { kind: 'block', type: blocks.SKLEARN_CUSTOM_TRANSFORMER },
         { kind: 'block', type: blocks.SKLEARN_TRANSFORM },
