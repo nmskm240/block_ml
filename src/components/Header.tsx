@@ -1,11 +1,21 @@
 'use client';
 
-import { AppBar, Toolbar, Typography, Box, IconButton } from '@mui/material';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { useState, useEffect } from 'react';
+
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+import {
+  AppBar,
+  Toolbar,
+  TextField,
+  Box,
+  IconButton,
+  Typography,
+} from '@mui/material';
+
 import Image from 'next/image';
 
 import { useTheme } from '@/contexts/ThemeContext';
+
 import { AboutButton } from './AboutButton';
 
 export function Header() {
@@ -28,7 +38,7 @@ export function Header() {
         </Box>
         <Box>
           <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
-            {themeMode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
           <AboutButton />
         </Box>
