@@ -1,8 +1,16 @@
 import React from 'react';
 
+import { App } from '@/components';
+import { AppThemeProvider } from '@/contexts/ThemeContext';
 import '@/styles/globals.css';
-import { Header } from '@/components';
-import { PyodideProvider } from '@/lib/pyodide';
+
+import type { Metadata } from 'next';
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const metadata: Metadata = {
+  title: 'Moduloxs',
+  description: 'Block ML is a block programming environment for data analysis.',
+};
 
 export default function RootLayout({
   children,
@@ -12,16 +20,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100vh',
-          }}
-        >
-          <Header />
-          <PyodideProvider>{children}</PyodideProvider>
-        </div>
+        <AppThemeProvider>
+          <App>{children}</App>
+        </AppThemeProvider>
       </body>
     </html>
   );
