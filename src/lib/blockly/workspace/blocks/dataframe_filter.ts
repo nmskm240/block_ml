@@ -2,20 +2,28 @@ import * as Blockly from 'blockly/core';
 import { pythonGenerator, Order } from 'blockly/python';
 
 import { VariableTypes } from '../types';
-import { applyPlaceholders, stripImports } from '../utils';
+import { applyPlaceholders, createShadowBlock, stripImports } from '../utils';
 import template from './template/dataframe_filter.py';
 
 export const DATAFRAME_FILTER = 'filter_block';
 
+enum Args {
+  DataFrame = 'DATAFRAME',
+  Condition = 'CONDITION',
+}
+
 Blockly.Blocks[DATAFRAME_FILTER] = {
-  init: function () {
-    this.appendDummyInput()
+  init: function (this: Blockly.Block) {
+    this.appendValueInput(Args.DataFrame)
       .appendField('DataFrame')
-      .appendField(new Blockly.FieldVariable('df'), 'df')
-      .appendField('から');
-    this.appendValueInput('condition')
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'df' }))
+      .setCheck(VariableTypes.Dataframe);
+    this.appendDummyInput().appendField('から');
+    this.appendValueInput(Args.Condition)
+      .appendField('条件')
       .setCheck(VariableTypes.Boolean)
-      .appendField('条件に合う行');
+      .setShadowDom(createShadowBlock('logic_compare'));
+    this.appendDummyInput().appendField('に合う行');
     this.setOutput(true, VariableTypes.Dataframe);
     this.setColour(210);
     this.setTooltip('');
@@ -24,9 +32,8 @@ Blockly.Blocks[DATAFRAME_FILTER] = {
 };
 
 pythonGenerator.forBlock[DATAFRAME_FILTER] = (block, generator) => {
-  const df = block.getField('df')?.getText() || 'df';
-  const condition =
-    generator.valueToCode(block, 'condition', Order.NONE) || true;
+  const df = generator.valueToCode(block, Args.DataFrame, Order.NONE);
+  const condition = generator.valueToCode(block, Args.Condition, Order.NONE);
   const body = stripImports(template, generator);
   const code = applyPlaceholders(body, {
     __BLOCKLY_df__: df,

@@ -7,6 +7,8 @@ export { DATAFRAME_READ_CSV } from './dataframe_read_csv';
 export { DATAFRAME_SELECT_COLUMN } from './dataframe_select_column';
 export { DATAFRAME_TO_CSV } from './dataframe_to_csv';
 export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
+export { DATAFRAME_ISNULL } from './dataframe_isnull';
+export { DATAFRAME_DTYPES } from './dataframe_dtypes';
 
 export { EVENT_RUN_PROJECT } from './event_run_project';
 

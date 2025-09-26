@@ -112,48 +112,33 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       name: 'DataFrame',
       colour: '210',
       contents: [
+        { kind: 'label', text: '生成・入出力' },
         { kind: 'block', type: blocks.DATAFRAME_CREATE },
         { kind: 'block', type: blocks.DATAFRAME_COLUMN },
-        { kind: 'block', type: blocks.DATAFRAME_TO_CSV },
         { kind: 'block', type: blocks.DATAFRAME_READ_CSV },
+        { kind: 'block', type: blocks.DATAFRAME_TO_CSV },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: 'データ加工' },
+        { kind: 'block', type: blocks.DATAFRAME_SELECT_COLUMN },
+        { kind: 'block', type: blocks.DATAFRAME_DROP_COLUMN },
+        { kind: 'block', type: blocks.DATAFRAME_FILTER },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: 'データ確認' },
         { kind: 'block', type: blocks.DATAFRAME_GET_COLUMNS },
-        {
-          kind: 'block',
-          type: blocks.DATAFRAME_DROP_COLUMN,
-          inputs: {
-            columns: {
-              shadow: {
-                type: 'text',
-              },
-            },
-          },
-        },
-        {
-          kind: 'block',
-          type: blocks.DATAFRAME_FILTER,
-          inputs: {
-            condition: {
-              shadow: {
-                type: 'logic_compare',
-              },
-            },
-          },
-        },
-        {
-          kind: 'block',
-          type: blocks.DATAFRAME_SELECT_COLUMN,
-          inputs: {
-            column: {
-              shadow: {
-                type: 'text',
-              },
-            },
-          },
-        },
-        // MEMO: 欠損値補完をsklearn_select_imputerに移管したため封鎖
-        // { kind: 'block', type: blocks.DATAFRAME_FILL_MISSING, disabled: true },
+        { kind: 'block', type: blocks.DATAFRAME_ISNULL },
+        { kind: 'block', type: blocks.DATAFRAME_DTYPES },
+
+        { kind: 'sep' },
+
+        { kind: 'label', text: '可視化' },
         { kind: 'block', type: blocks.PLOTLY_PLOT_GRAPH },
         { kind: 'block', type: blocks.PLOTLY_PLOT_TABLE },
+        // MEMO: 欠損値補完をsklearn_select_imputerに移管したため封鎖
+        // { kind: 'block', type: blocks.DATAFRAME_FILL_MISSING, disabled: true },
       ],
     },
     {
