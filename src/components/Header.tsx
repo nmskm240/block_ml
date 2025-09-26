@@ -20,6 +20,11 @@ import { AboutButton } from './AboutButton';
 
 export function Header() {
   const { themeMode, toggleTheme } = useTheme();
+  const [title, setTitle] = useState('');
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   return (
     <AppBar position="static" color="primary">
@@ -37,6 +42,12 @@ export function Header() {
           </Typography>
         </Box>
         <Box>
+          <TextField
+            variant="standard"
+            value={title}
+            placeholder="Project Title"
+            onChange={(e) => setTitle(e.target.value)}
+          />
           <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
             {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
