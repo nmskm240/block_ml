@@ -8,7 +8,12 @@ import {
   PlotlyGraphType,
   VariableTypes,
 } from '../types';
-import { applyPlaceholders, stripImports } from '../utils';
+import {
+  applyPlaceholders,
+  createShadowBlock,
+  stripDefinitions,
+  stripImports,
+} from '../utils';
 import barTemplate from './template/plotly_plot_graph/bar.py';
 import boxTemplate from './template/plotly_plot_graph/box.py';
 import histogramTemplate from './template/plotly_plot_graph/histogram.py';
@@ -17,45 +22,55 @@ import scatterTemplate from './template/plotly_plot_graph/scatter.py';
 
 export const PLOTLY_PLOT_GRAPH = 'plotly_plot_graph';
 
+type PlotGraphBlock = Blockly.Block & {
+  updateShape_: (this: PlotGraphBlock) => void;
+};
+
+enum Args {
+  DataFrame = 'DATAFRAME',
+  Title = 'TITLE',
+  X = 'X',
+  Y = 'Y',
+  Type = 'TYPE',
+  HistFunc = 'HIST_FUNC',
+}
+
 Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
-  init: function () {
-    this.appendValueInput('df')
-      .setCheck(VariableTypes.Dataframe)
-      .appendField('グラフ描画');
+  init: function (this: PlotGraphBlock) {
+    this.appendValueInput(Args.DataFrame)
+      .appendField('グラフ作成')
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'df' }))
+      .setCheck(VariableTypes.Dataframe);
     this.appendDummyInput()
       .appendField('タイトル')
-      .appendField(new Blockly.FieldTextInput('グラフ'), 'title')
+      .appendField(new Blockly.FieldTextInput('グラフ'), Args.Title)
       .appendField('x列')
-      .appendField(new Blockly.FieldTextInput('x'), 'x')
+      .appendField(new Blockly.FieldTextInput('x'), Args.X)
       .appendField('y列')
-      .appendField(new Blockly.FieldTextInput('y'), 'y')
+      .appendField(new Blockly.FieldTextInput('y'), Args.Y)
       .appendField('種類')
-      .appendField(new PlotlyGraphDropdown(), 'type');
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
+      .appendField(new PlotlyGraphDropdown(), Args.Type);
+    this.setOutput(true, VariableTypes.Figure);
     this.setColour(210);
-    this.setTooltip('指定された列でグラフを描画します');
+    this.setTooltip('指定された列でグラフを作成');
 
     this.updateShape_();
   },
   onchange: function (event: Blockly.Events.BlockChange) {
-    if (
-      event.type === Blockly.Events.BLOCK_CHANGE &&
-      event.blockId === this.id
-    ) {
-      if (event.name === 'type') {
+    if (event.blockId === this.id) {
+      if (event.name === Args.Type) {
         this.updateShape_();
       }
     }
   },
-  updateShape_: function () {
-    const type = this.getFieldValue('type');
+  updateShape_: function (this: PlotGraphBlock) {
+    const type = this.getFieldValue(Args.Type);
 
     if (type === PlotlyGraphType.Histogram) {
-      if (!this.getField('histfunc')) {
+      if (!this.getField(Args.HistFunc)) {
         this.appendDummyInput('histfunc_input')
           .appendField('集計方法')
-          .appendField(new PlotlyGraphHistfuncDropdown(), 'histfunc');
+          .appendField(new PlotlyGraphHistfuncDropdown(), Args.HistFunc);
       }
     } else {
       if (this.getInput('histfunc_input')) {
@@ -66,14 +81,14 @@ Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
 };
 
 pythonGenerator.forBlock[PLOTLY_PLOT_GRAPH] = (block, generator) => {
-  const df = generator.valueToCode(block, 'df', Order.NONE) || 'df';
-  const title = block.getFieldValue('title');
-  const x = block.getFieldValue('x');
-  const y = block.getFieldValue('y');
-  const type = block.getFieldValue('type') as PlotlyGraphType;
+  const df = generator.valueToCode(block, Args.DataFrame, Order.NONE);
+  const title = block.getFieldValue(Args.Title);
+  const x = block.getFieldValue(Args.X);
+  const y = block.getFieldValue(Args.Y);
+  const type = block.getFieldValue(Args.Type) as PlotlyGraphType;
   const histfunc =
     type === PlotlyGraphType.Histogram
-      ? (block.getFieldValue('histfunc') as PlotlyGraphHistfuncType) ||
+      ? (block.getFieldValue(Args.HistFunc) as PlotlyGraphHistfuncType) ||
         PlotlyGraphHistfuncType.Count
       : '';
 
@@ -84,7 +99,8 @@ pythonGenerator.forBlock[PLOTLY_PLOT_GRAPH] = (block, generator) => {
     .with(PlotlyGraphType.Line, () => lineTemplate)
     .with(PlotlyGraphType.Scatter, () => scatterTemplate)
     .exhaustive();
-  const body = stripImports(template, generator);
+  let body = stripImports(template, generator);
+  body = stripDefinitions(body, generator);
   const code = applyPlaceholders(body, {
     __BLOCKLY_df__: df,
     __BLOCKLY_x__: x,
@@ -93,5 +109,5 @@ pythonGenerator.forBlock[PLOTLY_PLOT_GRAPH] = (block, generator) => {
     __BLOCKLY_histfunc__: histfunc,
   });
 
-  return `${code}\n`;
+  return [code, Order.FUNCTION_CALL];
 };

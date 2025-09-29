@@ -1,7 +1,7 @@
 import * as Blockly from 'blockly';
 import { pythonGenerator } from 'blockly/python';
 
-import { applyPlaceholders, splitFunctions, stripImports } from '../utils';
+import { applyPlaceholders, splitFunctions, stripDefinitions, stripImports } from '../utils';
 import template from './template/event_run_project.py';
 
 export const EVENT_RUN_PROJECT = 'event_run_project';
@@ -30,7 +30,8 @@ Blockly.Blocks[EVENT_RUN_PROJECT] = {
 
 pythonGenerator.forBlock['event_run_project'] = (block, generator) => {
   const statements_do = generator.statementToCode(block, 'DO');
-  const body = stripImports(template, generator);
+  let body = stripImports(template, generator);
+  body = stripDefinitions(body, generator);
   let { funcs, usage } = splitFunctions(body);
   const mainFunc = generator.provideFunction_(
     'main',
