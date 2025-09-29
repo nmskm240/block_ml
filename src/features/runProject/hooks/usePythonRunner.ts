@@ -2,12 +2,9 @@ import { useState } from 'react';
 
 import { Workspace } from 'blockly';
 
-import { usePyodide } from '@/lib/pyodide';
-import {
-  pythonGenerator,
-  WorkspaceToCodeOptions,
-} from '@/lib/blockly/python/generator';
 import { GenerationMode } from '@/lib/blockly/python/generationContext';
+import { pythonGenerator } from '@/lib/blockly/python/generator';
+import { usePyodide } from '@/lib/pyodide';
 
 export function usePythonRunner() {
   const { pyodideRef, logService, fs } = usePyodide();

@@ -1,5 +1,6 @@
-import { pythonGenerator as baseGenerator } from 'blockly/python';
 import { Workspace } from 'blockly/core';
+import { pythonGenerator as baseGenerator } from 'blockly/python';
+
 import { GenerationMode, setGenerationContext } from './generationContext';
 
 export type WorkspaceToCodeOptions = {
@@ -32,6 +33,22 @@ baseGenerator.workspaceToCode = function (
   let code = '';
   try {
     code = originalWorkspaceToCode.call(this, workspace);
+
+    // --- BLOCKLY GEN --- ディレクティブの処理
+    const regex =
+      /# --- BLOCKLY GEN (\w+) ---([\s\S]*?)# --- BLOCKLY GEN END ---\n/gm;
+    code = code.replaceAll(regex, (match, genModeStr, innerCode) => {
+      const genMode = GenerationMode[genModeStr as keyof typeof GenerationMode];
+      if (genMode === undefined) {
+        throw new Error(`Unsupported. ${genMode}`); // 不明なモードの場合はそのまま
+      }
+      // 現在のモードに一致する場合は、中身のコードだけを返す
+      if (mode & genMode) {
+        return innerCode.trim();
+      }
+      // 一致しない場合は、ブロック全体を削除
+      return '';
+    });
   } finally {
     // 必ずコンテキストと STATEMENT_PREFIX をリセットする
     this.STATEMENT_PREFIX = originalStatementPrefix;

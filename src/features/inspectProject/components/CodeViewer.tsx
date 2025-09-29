@@ -2,12 +2,13 @@
 
 import React, { useEffect } from 'react';
 
-import { pythonGenerator } from '@/lib/blockly/python/generator';
 import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import { useBlockly } from '@/lib/blockly';
+import { GenerationMode } from '@/lib/blockly/python/generationContext';
+import { pythonGenerator } from '@/lib/blockly/python/generator';
 
 SyntaxHighlighter.registerLanguage('python', python);
 
@@ -19,7 +20,9 @@ export function CodeViewer() {
     if (!workspace) return;
 
     const generateCode = () => {
-      const rawCode = pythonGenerator.workspaceToCode(workspace);
+      const rawCode = pythonGenerator.workspaceToCode(workspace, {
+        mode: GenerationMode.ForViewing,
+      });
       setCode(rawCode);
     };
 

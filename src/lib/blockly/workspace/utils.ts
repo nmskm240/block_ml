@@ -5,6 +5,8 @@ import { PythonGenerator } from 'blockly/python';
 const SEPARATOR = '# --- BLOCKLY TEMPLATE ---';
 const FUNCTION_START = '# --- BLOCKLY FUNC ---';
 const FUNCTION_END = '# --- BLOCKLY FUNC END ---';
+const DEFINITION_START = '# --- BLOCKLY DEFINITIONS (.*?) ---';
+const DEFINITION_END = '# --- BLOCKLY DEFINITIONS END ---';
 
 function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -52,6 +54,32 @@ export function stripImports(
   }
 
   return body.trim();
+}
+
+export function stripDefinitions(
+  script: string,
+  generator: PythonGenerator,
+): string {
+  const regexp = new RegExp(`${DEFINITION_START}([\\s\\S]*?)${DEFINITION_END}`, 'g');
+
+  let remainingScript = script;
+  let match;
+  // execのループでマッチした部分を処理していく
+  while ((match = regexp.exec(script)) !== null) {
+    const defKey = match[1].trim();
+    const defBody = match[2].trim();
+
+    // キーと中身があれば、definitions_ に追加
+    if (defKey && defBody) {
+      (generator as any).definitions_[defKey] = defBody;
+    }
+
+    // 元のスクリプトから定義部分を削除
+    remainingScript = remainingScript.replace(match[0], '');
+  }
+
+  // 定義を削除した残りのコードを返す
+  return remainingScript.trim();
 }
 
 /**
