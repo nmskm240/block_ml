@@ -1,6 +1,8 @@
 import pandas as pd
 import plotly.express as px
+# --- BLOCKLY GEN ForRunning ---
 import plotly.graph_objects as go
+# --- BLOCKLY GEN END ---
 
 __BLOCKLY_df__ = pd.DataFrame()
 __BLOCKLY_x__ = ""
