@@ -8,7 +8,12 @@ import {
   PlotlyGraphType,
   VariableTypes,
 } from '../types';
-import { applyPlaceholders, stripDefinitions, stripImports } from '../utils';
+import {
+  applyPlaceholders,
+  createShadowBlock,
+  stripDefinitions,
+  stripImports,
+} from '../utils';
 import barTemplate from './template/plotly_plot_graph/bar.py';
 import boxTemplate from './template/plotly_plot_graph/box.py';
 import histogramTemplate from './template/plotly_plot_graph/histogram.py';
@@ -22,18 +27,19 @@ type PlotGraphBlock = Blockly.Block & {
 };
 
 enum Args {
-  DataFrame = "DATAFRAME",
-  Title = "TITLE",
-  X = "X",
-  Y = "Y",
-  Type = "TYPE",
-  HistFunc = "HIST_FUNC"
+  DataFrame = 'DATAFRAME',
+  Title = 'TITLE',
+  X = 'X',
+  Y = 'Y',
+  Type = 'TYPE',
+  HistFunc = 'HIST_FUNC',
 }
 
 Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
   init: function (this: PlotGraphBlock) {
     this.appendValueInput(Args.DataFrame)
       .appendField('グラフ作成')
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'df' }))
       .setCheck(VariableTypes.Dataframe);
     this.appendDummyInput()
       .appendField('タイトル')
