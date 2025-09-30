@@ -1,3 +1,5 @@
+@import './split.css';
+
 :root {
   --background: #ededed;
   --foreground: #0a0a0a;
