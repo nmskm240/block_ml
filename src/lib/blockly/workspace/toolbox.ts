@@ -137,6 +137,8 @@ const mlToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
         { kind: 'label', text: '可視化' },
         { kind: 'block', type: blocks.PLOTLY_PLOT_GRAPH },
         { kind: 'block', type: blocks.PLOTLY_PLOT_TABLE },
+        { kind: 'block', type: blocks.PLOTLY_ADD_TRACE },
+        { kind: 'block', type: blocks.PLOTLY_UPDATE_LAYOUT },
         // MEMO: 欠損値補完をsklearn_select_imputerに移管したため封鎖
         // { kind: 'block', type: blocks.DATAFRAME_FILL_MISSING, disabled: true },
       ],
