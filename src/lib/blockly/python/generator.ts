@@ -24,11 +24,12 @@ baseGenerator.workspaceToCode = function (
   setGenerationContext({ mode });
 
   const originalStatementPrefix = this.STATEMENT_PREFIX;
-  if (mode & GenerationMode.ForRunning) {
-    this.STATEMENT_PREFIX = '# block_id:%1\n';
-  } else {
-    this.STATEMENT_PREFIX = null;
-  }
+  // TODO: エラー発生時のブロックを特定するための仕組みだったが、idによって改行などが行わることがあるためそのままでは使えない
+  // if (mode & GenerationMode.ForRunning) {
+  //   this.STATEMENT_PREFIX = '# block_id:%1\n';
+  // } else {
+  //   this.STATEMENT_PREFIX = null;
+  // }
 
   let code = '';
   try {
