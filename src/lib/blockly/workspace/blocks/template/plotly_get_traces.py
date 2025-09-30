@@ -1,0 +1,2 @@
+# --- BLOCKLY TEMPLATE ---
+__BLOCKLY_FIGURE__.data

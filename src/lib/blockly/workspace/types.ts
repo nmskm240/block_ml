@@ -9,6 +9,7 @@ export enum VariableTypes {
   Transformer = 'Transformer',
   Pipeline = 'Pipeline',
   Figure = 'Figure',
+  Trace = 'Trace',
 }
 
 export enum SklearnClassificationModelType {

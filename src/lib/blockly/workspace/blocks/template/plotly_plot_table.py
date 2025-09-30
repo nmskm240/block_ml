@@ -29,7 +29,6 @@ go.Figure(
         )
     ],
     layout=dict(
-        title=__BLOCKLY_title__,
         autosize=False,
         width=__BLOCKLY_column_size__ * len(__BLOCKLY_df__.columns) + 100,
     ),

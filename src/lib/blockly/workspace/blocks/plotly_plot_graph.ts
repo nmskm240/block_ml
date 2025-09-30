@@ -28,7 +28,6 @@ type PlotGraphBlock = Blockly.Block & {
 
 enum Args {
   DataFrame = 'DATAFRAME',
-  Title = 'TITLE',
   X = 'X',
   Y = 'Y',
   Type = 'TYPE',
@@ -42,8 +41,6 @@ Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
       .setShadowDom(createShadowBlock('variables_get', { VAR: 'df' }))
       .setCheck(VariableTypes.Dataframe);
     this.appendDummyInput()
-      .appendField('タイトル')
-      .appendField(new Blockly.FieldTextInput('グラフ'), Args.Title)
       .appendField('x列')
       .appendField(new Blockly.FieldTextInput('x'), Args.X)
       .appendField('y列')
@@ -51,6 +48,7 @@ Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
       .appendField('種類')
       .appendField(new PlotlyGraphDropdown(), Args.Type);
     this.setOutput(true, VariableTypes.Figure);
+    this.setInputsInline(true);
     this.setColour(210);
     this.setTooltip('指定された列でグラフを作成');
 
@@ -82,7 +80,6 @@ Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
 
 pythonGenerator.forBlock[PLOTLY_PLOT_GRAPH] = (block, generator) => {
   const df = generator.valueToCode(block, Args.DataFrame, Order.NONE);
-  const title = block.getFieldValue(Args.Title);
   const x = block.getFieldValue(Args.X);
   const y = block.getFieldValue(Args.Y);
   const type = block.getFieldValue(Args.Type) as PlotlyGraphType;
@@ -105,7 +102,6 @@ pythonGenerator.forBlock[PLOTLY_PLOT_GRAPH] = (block, generator) => {
     __BLOCKLY_df__: df,
     __BLOCKLY_x__: x,
     __BLOCKLY_y__: y,
-    __BLOCKLY_title__: title,
     __BLOCKLY_histfunc__: histfunc,
   });
 
