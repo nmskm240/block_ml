@@ -2,22 +2,17 @@ import * as Blockly from 'blockly/core';
 import { pythonGenerator, Order } from 'blockly/python';
 
 import { VariableTypes } from '../types';
-import {
-  applyPlaceholders,
-  createShadowBlock,
-  stripDefinitions,
-  stripImports,
-} from '../utils';
-import template from './template/plotly_add_trace.py';
+import { applyPlaceholders, createShadowBlock, stripImports } from '../utils';
+import template from './template/plotly_add_traces.py';
 
-export const PLOTLY_ADD_TRACE = 'plotly_add_trace';
+export const PLOTLY_ADD_TRACES = 'plotly_add_traces';
 
 enum Args {
   Figure = 'FIGURE',
   Trace = 'TRACE',
 }
 
-Blockly.Blocks[PLOTLY_ADD_TRACE] = {
+Blockly.Blocks[PLOTLY_ADD_TRACES] = {
   init: function () {
     this.appendValueInput(Args.Figure)
       .appendField('グラフ')
@@ -26,7 +21,7 @@ Blockly.Blocks[PLOTLY_ADD_TRACE] = {
     this.appendValueInput(Args.Trace)
       .appendField('に、グラフ')
       .setShadowDom(createShadowBlock('variables_get', { VAR: 'trace' }))
-      .setCheck(VariableTypes.Figure);
+      .setCheck(VariableTypes.Trace);
     this.appendDummyInput().appendField('のデータを追加');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -37,16 +32,15 @@ Blockly.Blocks[PLOTLY_ADD_TRACE] = {
   },
 };
 
-pythonGenerator.forBlock[PLOTLY_ADD_TRACE] = (block, generator) => {
+pythonGenerator.forBlock[PLOTLY_ADD_TRACES] = (block, generator) => {
   const fig = generator.valueToCode(block, Args.Figure, Order.NONE);
   const trace = generator.valueToCode(block, Args.Trace, Order.NONE);
 
-  let body = stripImports(template, generator);
-  body = stripDefinitions(body, generator);
+  const body = stripImports(template, generator);
   const code = applyPlaceholders(body, {
     __BLOCKLY_FIGURE__: fig,
-    __BLOCKLY_FIGURE_TRACE__: trace,
+    __BLOCKLY_TRACE__: trace,
   });
 
-  return code;
+  return `${code}\n`;
 };

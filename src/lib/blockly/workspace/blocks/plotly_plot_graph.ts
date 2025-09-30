@@ -48,6 +48,7 @@ Blockly.Blocks[PLOTLY_PLOT_GRAPH] = {
       .appendField('種類')
       .appendField(new PlotlyGraphDropdown(), Args.Type);
     this.setOutput(true, VariableTypes.Figure);
+    this.setInputsInline(true);
     this.setColour(210);
     this.setTooltip('指定された列でグラフを作成');
 

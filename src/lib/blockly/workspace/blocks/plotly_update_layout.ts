@@ -47,7 +47,9 @@ Blockly.Blocks[PLOTLY_UPDATE_LAYOUT] = {
       this.updateShape_(value as PropertyValue);
       return value;
     });
-    this.appendDummyInput().appendField('の').appendField(dropdown, Args.Property);
+    this.appendDummyInput()
+      .appendField('の')
+      .appendField(dropdown, Args.Property);
 
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
@@ -102,5 +104,5 @@ pythonGenerator.forBlock[PLOTLY_UPDATE_LAYOUT] = (block, generator) => {
     __BLOCKLY_VALUE__: value,
   });
 
-  return code;
+  return `${code}\n`;
 };

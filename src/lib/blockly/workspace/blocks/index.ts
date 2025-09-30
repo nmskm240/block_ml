@@ -14,7 +14,8 @@ export { EVENT_RUN_PROJECT } from './event_run_project';
 
 export { PLOTLY_PLOT_GRAPH } from './plotly_plot_graph';
 export { PLOTLY_PLOT_TABLE } from './plotly_plot_table';
-export { PLOTLY_ADD_TRACE } from './plotly_add_trace';
+export { PLOTLY_ADD_TRACES } from './plotly_add_traces';
+export { PLOTLY_GET_TRACES } from './plotly_get_traces';
 export { PLOTLY_UPDATE_LAYOUT } from './plotly_update_layout';
 
 export {
