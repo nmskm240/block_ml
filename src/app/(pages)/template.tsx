@@ -11,10 +11,12 @@ type Props = {
 
 export default function ProjectPageTemplate({ children }: Props) {
   const { fs } = usePyodide();
-
-  return (
-    <BlocklyProvider workspaceParams={{ fileNames: () => fs?.list() ?? [] }}>
-      {children}
-    </BlocklyProvider>
+  const workspaceParams = React.useMemo(
+    () => ({
+      fileNames: () => fs?.list() ?? [],
+    }),
+    [fs],
   );
+
+  return <BlocklyProvider workspaceParams={workspaceParams}>{children}</BlocklyProvider>;
 }
