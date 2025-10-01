@@ -51,7 +51,9 @@ export function App({ children }: { children: React.ReactNode }) {
         }}
       >
         <Header />
-        <PyodideProvider>{children}</PyodideProvider>
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <PyodideProvider>{children}</PyodideProvider>
+        </div>
       </div>
     </MuiThemeProvider>
   );
