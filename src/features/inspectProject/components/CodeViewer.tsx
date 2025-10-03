@@ -2,19 +2,17 @@
 
 import React, { useEffect } from 'react';
 
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Editor from '@monaco-editor/react';
 
+import { useTheme } from '@/contexts/ThemeContext';
 import { useBlockly } from '@/lib/blockly';
 import { GenerationMode } from '@/lib/blockly/python/generationContext';
 import { pythonGenerator } from '@/lib/blockly/python/generator';
 
-SyntaxHighlighter.registerLanguage('python', python);
-
 export function CodeViewer() {
   const { workspace } = useBlockly();
   const [code, setCode] = React.useState('');
+  const { themeMode } = useTheme();
 
   useEffect(() => {
     if (!workspace) return;
@@ -37,8 +35,18 @@ export function CodeViewer() {
   }, [workspace]);
 
   return (
-    <SyntaxHighlighter language="python" style={vscDarkPlus} showLineNumbers>
-      {code}
-    </SyntaxHighlighter>
+    <Editor
+      height="100%"
+      language="python"
+      value={code}
+      theme={themeMode === 'dark' ? 'vs-dark' : 'light'}
+      options={{
+        readOnly: true,
+        lineNumbers: 'on',
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        wordWrap: 'on',
+      }}
+    />
   );
 }

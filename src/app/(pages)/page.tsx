@@ -19,7 +19,7 @@ export default function ProjectEditPage() {
       sizes={[75, 25]}
       minSize={[500, 300]}
       gutterSize={8}
-      style={{ display: 'flex', height: '100vh' }}
+      style={{ display: 'flex', height: '100%' }}
       className="split"
     >
       {/* Editor side */}
