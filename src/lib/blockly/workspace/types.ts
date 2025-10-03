@@ -8,6 +8,8 @@ export enum VariableTypes {
   Model = 'Model',
   Transformer = 'Transformer',
   Pipeline = 'Pipeline',
+  Figure = 'Figure',
+  Trace = 'Trace',
 }
 
 export enum SklearnClassificationModelType {

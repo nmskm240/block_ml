@@ -15,9 +15,10 @@ enum Args {
 
 Blockly.Blocks[SKLEARN_GET_FEATURE_IMPORTANCE] = {
   init: function (this: Blockly.Block) {
-    this.appendDummyInput()
+    this.appendValueInput(Args.Model)
       .appendField('学習器')
-      .appendField(new Blockly.FieldVariable('pipeline'), Args.Model);
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'pipeline' }))
+      .setCheck(VariableTypes.Pipeline);
     this.appendValueInput(Args.X)
       .appendField('で特徴量')
       .setCheck(VariableTypes.Dataframe)

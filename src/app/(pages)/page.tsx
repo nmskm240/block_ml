@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
 
 import { Box } from '@mui/material';
+import Split from 'react-split';
 
 import { Editor, SampleProjectLoader } from '@/features/editProject/components';
 import { ExportButton } from '@/features/exportProject/components';
@@ -9,23 +12,23 @@ import PyodideFileExplore from '@/features/inspectAsset/components/PyodideFileEx
 import { Inspector } from '@/features/inspectProject/components';
 import { RunProjectButton } from '@/features/runProject/components';
 
-
-export default async function ProjectEditPage() {
+export default function ProjectEditPage() {
   return (
-    <div
-      style={{
-        flexGrow: 1,
-        minHeight: 0,
-        display: 'flex',
-        flexDirection: 'row',
-      }}
+    <Split
+      direction="horizontal"
+      sizes={[75, 25]}
+      minSize={[500, 300]}
+      gutterSize={8}
+      style={{ display: 'flex', height: '100%' }}
+      className="split"
     >
+      {/* Editor side */}
       <div
         style={{
-          flexGrow: 1,
           minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
+          height: '100%',
         }}
       >
         <Box
@@ -45,39 +48,33 @@ export default async function ProjectEditPage() {
           <Editor />
         </div>
       </div>
+
+      {/* Inspector side */}
       <div
         style={{
-          flexGrow: 1,
-          flexBasis: 0,
           minWidth: 0,
           minHeight: 0,
-          maxWidth: '25%',
-          borderLeft: '1px solid #ddd',
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
         }}
       >
-        <div
-          style={{
-            flexGrow: 3,
-            height: 0,
-            minHeight: 0,
-          }}
+        <Split
+          direction="vertical"
+          sizes={[70, 30]}
+          minSize={[100, 100]}
+          gutterSize={8}
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+          className="split-vertical"
         >
-          <Inspector />
-        </div>
-        <div
-          style={{
-            flexGrow: 1,
-            height: 0,
-            minHeight: 0,
-            padding: '8px',
-          }}
-        >
-          <PyodideFileExplore />
-        </div>
+          <div style={{ overflow: 'hidden' }}>
+            <Inspector />
+          </div>
+          <div style={{ overflow: 'hidden', padding: '8px' }}>
+            <PyodideFileExplore />
+          </div>
+        </Split>
       </div>
-    </div>
+    </Split>
   );
 }

@@ -14,10 +14,11 @@ enum Args {
 
 Blockly.Blocks[SKLEARN_TRANSFORM] = {
   init: function (this: Blockly.Block) {
-    this.appendDummyInput()
+    this.appendValueInput(Args.Pipeline)
       .appendField('学習器')
-      .appendField(new Blockly.FieldVariable('pipeline'), Args.Pipeline)
-      .appendField('で');
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'pipeline' }))
+      .setCheck(VariableTypes.Pipeline);
+    this.appendDummyInput().appendField('で');
     this.appendValueInput(Args.X)
       .appendField('データ')
       .setCheck(VariableTypes.Dataframe)
@@ -32,7 +33,7 @@ Blockly.Blocks[SKLEARN_TRANSFORM] = {
 };
 
 pythonGenerator.forBlock[SKLEARN_TRANSFORM] = (block, generator) => {
-  const transformer = block.getField(Args.Pipeline)!.getText();
+  const transformer = generator.valueToCode(block, Args.Pipeline, Order.NONE);
   const x = generator.valueToCode(block, Args.X, Order.NONE);
 
   const body = stripImports(transformTemplate, generator);

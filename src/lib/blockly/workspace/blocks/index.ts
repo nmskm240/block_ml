@@ -7,16 +7,21 @@ export { DATAFRAME_READ_CSV } from './dataframe_read_csv';
 export { DATAFRAME_SELECT_COLUMN } from './dataframe_select_column';
 export { DATAFRAME_TO_CSV } from './dataframe_to_csv';
 export { DATAFRAME_TRAIN_TEST_SPLIT } from './dataframe_train_test_split';
+export { DATAFRAME_ISNULL } from './dataframe_isnull';
+export { DATAFRAME_DTYPES } from './dataframe_dtypes';
 
 export { EVENT_RUN_PROJECT } from './event_run_project';
 
 export { PLOTLY_PLOT_GRAPH } from './plotly_plot_graph';
 export { PLOTLY_PLOT_TABLE } from './plotly_plot_table';
+export { PLOTLY_ADD_TRACES } from './plotly_add_traces';
+export { PLOTLY_GET_TRACES } from './plotly_get_traces';
+export { PLOTLY_UPDATE_LAYOUT } from './plotly_update_layout';
 
 export {
   SKLEARN_COLUMN_TRANSFORMER,
   SKLEARN_COLUMN_TRANSFORMER_ITEM_COLUMN,
-  SKLEARN_COLUMN_TRANSFORMER_ITEM_DTYPE
+  SKLEARN_COLUMN_TRANSFORMER_ITEM_DTYPE,
 } from './sklearn_column_transformer';
 export { SKLEARN_CUSTOM_TRANSFORMER } from './sklearn_custom_transformer';
 export { SKLEARN_CUSTOM_TRANSFORMER_DEF } from './sklearn_custom_transformer_def';
@@ -35,4 +40,3 @@ export { SKLEARN_SELECT_REGRESSION_MODEL } from './sklearn_select_regression_mod
 export { SKLEARN_SELECT_SCALER } from './sklearn_select_scaler';
 export { SKLEARN_SELECT_IMPUTER } from './sklearn_select_imputer';
 export { SKLEARN_TRANSFORM } from './sklearn_transform';
-

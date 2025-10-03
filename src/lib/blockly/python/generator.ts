@@ -1,0 +1,46 @@
+import { Workspace } from 'blockly/core';
+import { pythonGenerator as baseGenerator } from 'blockly/python';
+
+import { GenerationMode, setGenerationContext } from './generationContext';
+
+export type WorkspaceToCodeOptions = {
+  mode?: GenerationMode;
+};
+
+export type CustomPythonGenerator = typeof baseGenerator & {
+  workspaceToCode: (
+    workspace: Workspace,
+    options?: WorkspaceToCodeOptions,
+  ) => string;
+};
+
+const originalWorkspaceToCode = baseGenerator.workspaceToCode;
+
+baseGenerator.workspaceToCode = function (
+  workspace: Workspace,
+  options: WorkspaceToCodeOptions = {},
+): string {
+  const { mode = GenerationMode.ForViewing } = options;
+  setGenerationContext({ mode });
+
+  const originalStatementPrefix = this.STATEMENT_PREFIX;
+  // TODO: エラー発生時のブロックを特定するための仕組みだったが、idによって改行などが行わることがあるためそのままでは使えない
+  // if (mode & GenerationMode.ForRunning) {
+  //   this.STATEMENT_PREFIX = '# block_id:%1\n';
+  // } else {
+  //   this.STATEMENT_PREFIX = null;
+  // }
+
+  let code = '';
+  try {
+    code = originalWorkspaceToCode.call(this, workspace);
+  } finally {
+    // 必ずコンテキストと STATEMENT_PREFIX をリセットする
+    this.STATEMENT_PREFIX = originalStatementPrefix;
+    setGenerationContext({ mode: GenerationMode.ForViewing });
+  }
+
+  return code;
+};
+
+export const pythonGenerator = baseGenerator as CustomPythonGenerator;

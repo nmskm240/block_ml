@@ -14,17 +14,18 @@ enum Args {
 
 Blockly.Blocks[SKLEARN_PREDICT] = {
   init: function (this: Blockly.Block) {
-    this.appendDummyInput()
+    this.appendValueInput(Args.Model)
       .appendField('学習器')
-      .appendField(new Blockly.FieldVariable('pipeline'), Args.Model)
+      .setShadowDom(createShadowBlock('variables_get', { VAR: 'pipeline' }))
+      .setCheck(VariableTypes.Pipeline);
+    this.appendDummyInput()
       .appendField('で');
     this.appendValueInput(Args.X)
       .appendField('特徴量')
       .setCheck(VariableTypes.Dataframe)
       .setShadowDom(createShadowBlock('variables_get', { VAR: 'X' }));
-    this.appendDummyInput()
-      .appendField("から予測する")
-    this.setOutput(true, VariableTypes.Dataframe);
+    this.appendDummyInput().appendField('から予測する');
+    this.setOutput(true);
     this.setInputsInline(true);
     this.setColour(220);
     this.setTooltip('学習済みの学習器を使用して予測を行います。');
@@ -33,7 +34,7 @@ Blockly.Blocks[SKLEARN_PREDICT] = {
 };
 
 pythonGenerator.forBlock[SKLEARN_PREDICT] = (block, generator) => {
-  const model = block.getField(Args.Model)!.getText();
+  const model = generator.valueToCode(block, Args.Model, Order.NONE);
   const xData = generator.valueToCode(block, Args.X, Order.NONE);
 
   const body = stripImports(template, generator);
