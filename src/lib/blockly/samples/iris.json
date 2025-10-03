@@ -43,12 +43,12 @@
                         "type": "dataframe_select_column",
                         "id": "%Ts[sCM||_t=v,:4Nd@F",
                         "fields": {
-                          "df": {
+                          "DATAFRAME": {
                             "id": "^RqkU~:;@8}5z@#2MQn;"
                           }
                         },
                         "inputs": {
-                          "column": {
+                          "COLUMN": {
                             "shadow": {
                               "type": "text",
                               "id": "504$OyJ]_8TmgYP@cmrE",
@@ -66,12 +66,12 @@
                       "type": "dataframe_drop_column",
                       "id": "2aICev}*f@@nO{k.*/Rd",
                       "fields": {
-                        "df": {
+                        "DATAFRAME": {
                           "id": "^RqkU~:;@8}5z@#2MQn;"
                         }
                       },
                       "inputs": {
-                        "columns": {
+                        "COLUMNS": {
                           "shadow": {
                             "type": "text",
                             "id": "POA,aC6jVmwft)xVoX~S",
